@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.alphay.boot</groupId>
+        <artifactId>d3code-cloud-plus</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>d3code-monitor</module>
+        <module>d3code-sentinel-dashboard</module>
+        <module>d3code-seata-server</module>
+        <module>d3code-nacos</module>
+        <module>d3code-snailjob-server</module>
+    </modules>
+
+    <artifactId>d3code-visual</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        d3code-visual图形化管理模块
+    </description>
+
+    <dependencies>
+        <!-- ELK 日志收集 -->
+        <!--        <dependency>-->
+        <!--            <groupId>com.alphay.boot</groupId>-->
+        <!--            <artifactId>d3code-common-logstash</artifactId>-->
+        <!--        </dependency>-->
+
+        <!-- skywalking 日志收集 -->
+        <!--        <dependency>-->
+        <!--            <groupId>com.alphay.boot</groupId>-->
+        <!--            <artifactId>d3code-common-skylog</artifactId>-->
+        <!--        </dependency>-->
+
+        <!-- prometheus 监控 -->
+        <!--        <dependency>-->
+        <!--            <groupId>com.alphay.boot</groupId>-->
+        <!--            <artifactId>d3code-common-prometheus</artifactId>-->
+        <!--        </dependency>-->
+    </dependencies>
+
+</project>

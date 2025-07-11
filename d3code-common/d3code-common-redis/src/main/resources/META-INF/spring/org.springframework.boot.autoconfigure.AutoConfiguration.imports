@@ -1,0 +1,2 @@
+com.alphay.boot.common.redis.config.RedisConfiguration
+com.alphay.boot.common.redis.config.CacheConfiguration

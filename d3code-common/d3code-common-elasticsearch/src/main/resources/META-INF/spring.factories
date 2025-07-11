@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  com.alphay.boot.common.elasticsearch.config.ActuatorEnvironmentPostProcessor

@@ -1,0 +1,15 @@
+package ${packageName}.mapper;
+
+import ${packageName}.domain.${ClassName};
+import com.alphay.boot.common.mybatis.core.mapper.BaseMapperX;
+
+/**
+ * ${functionName}Mapper接口
+ *
+ * @author Nottyjay
+ * @since 1.0.0
+ * @date ${datetime}
+ */
+public interface ${ClassName}Mapper extends BaseMapperX<${ClassName}> {
+
+}

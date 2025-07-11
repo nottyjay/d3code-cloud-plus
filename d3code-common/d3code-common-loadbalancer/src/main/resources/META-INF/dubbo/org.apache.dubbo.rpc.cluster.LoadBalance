@@ -1,0 +1,1 @@
+customDubboLoadBalancer=core.com.alphay.boot.common.loadbalance.CustomDubboLoadBalancer

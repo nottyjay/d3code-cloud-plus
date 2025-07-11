@@ -1,0 +1,2 @@
+com.alphay.boot.common.core.service.impl.DictServiceImpl
+com.alphay.boot.common.core.service.impl.PermissionServiceImpl

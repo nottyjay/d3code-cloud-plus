@@ -1,0 +1,56 @@
+package ${packageName}.domain;
+
+#if($isTenant==1)
+import com.alphay.boot.common.tenant.core.TenantEntity;
+#else
+import com.alphay.boot.common.mybatis.core.domain.BaseEntity;
+#end
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+#foreach ($import in $importList)
+import ${import};
+#end
+
+import java.io.Serial;
+
+/**
+ * ${functionName}对象 ${tableName}
+ *
+ * @author Nottyjay
+ * @since 1.0.0
+ * @date ${datetime}
+ */
+#if($IsTenant==1)
+#set($Entity="TenantEntity")
+#else
+#set($Entity="BaseEntity")
+#end
+@Data
+@EqualsAndHashCode(callSuper = true)
+@TableName("${tableName}")
+public class ${ClassName} extends ${Entity} {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
+
+#foreach ($column in $columns)
+#if(!$table.isSuperColumn($column.javaField))
+  /**
+   * $column.columnComment
+   */
+#if($column.javaField=='delFlag')
+  @TableLogic
+#end
+#if($column.javaField=='version')
+  @Version
+#end
+#if($column.isPk==1)
+  @TableId(value = "$column.columnName")
+#end
+  private $column.javaType $column.javaField;
+
+#end
+#end
+
+}

@@ -1,0 +1,7 @@
+{
+  "com.alphay.boot.common.ratelimiter.annotation.RateLimiter@key": {
+    "method": {
+      "parameters": true
+    }
+  }
+}

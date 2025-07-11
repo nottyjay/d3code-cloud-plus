@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.alphay.boot</groupId>
+        <artifactId>d3code-common</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>d3code-common-translation</artifactId>
+
+    <description>
+        d3code-common-translation 通用翻译功能
+    </description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-json</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-service-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-dubbo</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-api-resource</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

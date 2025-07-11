@@ -1,0 +1,6 @@
+com.alphay.boot.common.translation.config.TranslationConfig
+com.alphay.boot.common.translation.core.impl.DeptNameTranslationImpl
+com.alphay.boot.common.translation.core.impl.DictTypeTranslationImpl
+com.alphay.boot.common.translation.core.impl.OssUrlTranslationImpl
+com.alphay.boot.common.translation.core.impl.UserNameTranslationImpl
+com.alphay.boot.common.translation.core.impl.NicknameTranslationImpl

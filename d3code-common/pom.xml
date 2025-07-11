@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.alphay.boot</groupId>
+        <artifactId>d3code-cloud-plus</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>d3code-common-bom</module>
+        <module>d3code-common-alibaba-bom</module>
+        <module>d3code-common-log</module>
+        <module>d3code-common-service-impl</module>
+        <module>d3code-common-excel</module>
+        <module>d3code-common-core</module>
+        <module>d3code-common-redis</module>
+        <module>d3code-common-doc</module>
+        <module>d3code-common-security</module>
+        <module>d3code-common-satoken</module>
+        <module>d3code-common-web</module>
+        <module>d3code-common-mybatis</module>
+        <module>d3code-common-job</module>
+        <module>d3code-common-dubbo</module>
+        <module>d3code-common-seata</module>
+        <module>d3code-common-loadbalancer</module>
+        <module>d3code-common-oss</module>
+        <module>d3code-common-ratelimiter</module>
+        <module>d3code-common-idempotent</module>
+        <module>d3code-common-mail</module>
+        <module>d3code-common-sms</module>
+        <module>d3code-common-logstash</module>
+        <module>d3code-common-elasticsearch</module>
+        <module>d3code-common-sentinel</module>
+        <module>d3code-common-skylog</module>
+        <module>d3code-common-prometheus</module>
+        <module>d3code-common-translation</module>
+        <module>d3code-common-sensitive</module>
+        <module>d3code-common-json</module>
+        <module>d3code-common-encrypt</module>
+        <module>d3code-common-tenant</module>
+        <module>d3code-common-websocket</module>
+        <module>d3code-common-social</module>
+        <module>d3code-common-nacos</module>
+        <module>d3code-common-bus</module>
+        <module>d3code-common-sse</module>
+    </modules>
+
+    <artifactId>d3code-common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        d3code-common通用模块
+    </description>
+
+</project>

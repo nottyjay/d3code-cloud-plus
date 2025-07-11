@@ -1,0 +1,39 @@
+package ${packageName}.domain.param;
+
+import ${packageName}.domain.${ClassName};
+import com.alphay.boot.common.core.domain.param.PageReqParam;
+import io.github.linpeilie.annotations.AutoMapper;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import jakarta.validation.constraints.*;
+#foreach ($import in $importList)
+import ${import};
+#end
+
+/**
+ * ${functionName}查询参数 ${tableName}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Data
+public class ${ClassName}QueryParam extends PageReqParam {
+
+#foreach ($column in $columns)
+#if($column.query)
+#set($queryType=$column.queryType)
+#if($queryType != 'BETWEEN')
+  /**
+   * $column.columnComment
+   */
+  private $column.javaType $column.javaField;
+#else
+  /**
+   * $column.columnComment
+   */
+  private ${column.javaType}[] $column.javaField;
+#end
+#end
+#end
+
+}

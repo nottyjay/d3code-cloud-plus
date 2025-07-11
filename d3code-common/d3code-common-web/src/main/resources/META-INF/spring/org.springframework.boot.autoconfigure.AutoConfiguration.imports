@@ -1,0 +1,4 @@
+com.alphay.boot.common.web.config.FilterConfig
+com.alphay.boot.common.web.config.I18nConfig
+com.alphay.boot.common.web.config.UndertowConfig
+com.alphay.boot.common.web.config.ResourcesConfig

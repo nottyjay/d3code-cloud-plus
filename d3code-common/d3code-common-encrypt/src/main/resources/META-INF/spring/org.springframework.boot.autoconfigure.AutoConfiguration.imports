@@ -1,0 +1,2 @@
+com.alphay.boot.common.encrypt.config.EncryptorAutoConfiguration
+com.alphay.boot.common.encrypt.config.ApiDecryptAutoConfiguration

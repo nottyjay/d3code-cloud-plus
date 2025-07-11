@@ -1,0 +1,139 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.alphay.boot</groupId>
+        <artifactId>d3code-cloud-plus</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>d3code-auth</artifactId>
+
+    <description>
+        d3code-auth 认证授权中心
+    </description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-nacos</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-captcha</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-sentinel</artifactId>
+        </dependency>
+
+        <!-- d3code Common Security-->
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-social</artifactId>
+        </dependency>
+
+        <!-- D3code Common Log -->
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-doc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-ratelimiter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-encrypt</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-dubbo</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-seata</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-tenant</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-common-service-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alphay.boot</groupId>
+            <artifactId>d3code-api-resource</artifactId>
+        </dependency>
+
+        <!-- 自定义负载均衡(多团队开发使用) -->
+        <!--        <dependency>-->
+        <!--            <groupId>com.alphay.boot</groupId>-->
+        <!--            <artifactId>d3code-common-loadbalancer</artifactId>-->
+        <!--        </dependency>-->
+
+        <!-- ELK 日志收集 -->
+        <!--        <dependency>-->
+        <!--            <groupId>com.alphay.boot</groupId>-->
+        <!--            <artifactId>d3code-common-logstash</artifactId>-->
+        <!--        </dependency>-->
+
+        <!-- skywalking 日志收集 -->
+        <!--        <dependency>-->
+        <!--            <groupId>com.alphay.boot</groupId>-->
+        <!--            <artifactId>d3code-common-skylog</artifactId>-->
+        <!--        </dependency>-->
+
+        <!-- prometheus 监控 -->
+        <!--        <dependency>-->
+        <!--            <groupId>com.alphay.boot</groupId>-->
+        <!--            <artifactId>d3code-common-prometheus</artifactId>-->
+        <!--        </dependency>-->
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
