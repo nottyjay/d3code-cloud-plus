@@ -19,9 +19,9 @@ import com.alphay.boot.system.api.RemoteUserService;
 import com.alphay.boot.system.api.domain.vo.RemoteClientVo;
 import com.alphay.boot.system.api.domain.vo.RemoteSocialVo;
 import com.alphay.boot.system.api.model.LoginUser;
+import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;
@@ -36,10 +36,9 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service("social" + IAuthStrategy.BASE_NAME)
-@RequiredArgsConstructor
 public class SocialAuthStrategy implements IAuthStrategy {
 
-  private final SocialProperties socialProperties;
+  @Resource private SocialProperties socialProperties;
 
   @DubboReference private RemoteSocialService remoteSocialService;
   @DubboReference private RemoteUserService remoteUserService;

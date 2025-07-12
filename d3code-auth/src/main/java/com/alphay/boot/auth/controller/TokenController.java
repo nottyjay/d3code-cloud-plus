@@ -29,6 +29,7 @@ import com.alphay.boot.system.api.RemoteSocialService;
 import com.alphay.boot.system.api.RemoteTenantService;
 import com.alphay.boot.system.api.domain.vo.RemoteClientVo;
 import com.alphay.boot.system.api.domain.vo.RemoteTenantVo;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -37,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;
@@ -53,21 +53,20 @@ import org.springframework.web.bind.annotation.*;
  * @since 1.0.0
  */
 @Slf4j
-@RequiredArgsConstructor
 @RestController
 public class TokenController {
 
-  private final SocialProperties socialProperties;
-  private final SysLoginService sysLoginService;
-  private final ScheduledExecutorService scheduledExecutorService;
+  @Resource private SocialProperties socialProperties;
+  @Resource private SysLoginService sysLoginService;
+  @Resource private ScheduledExecutorService scheduledExecutorService;
 
-  @DubboReference private final RemoteConfigService remoteConfigService;
-  @DubboReference private final RemoteTenantService remoteTenantService;
-  @DubboReference private final RemoteClientService remoteClientService;
-  @DubboReference private final RemoteSocialService remoteSocialService;
+  @DubboReference private RemoteConfigService remoteConfigService;
+  @DubboReference private RemoteTenantService remoteTenantService;
+  @DubboReference private RemoteClientService remoteClientService;
+  @DubboReference private RemoteSocialService remoteSocialService;
 
   @DubboReference(stub = "true")
-  private final RemoteMessageService remoteMessageService;
+  private RemoteMessageService remoteMessageService;
 
   /**
    * 登录方法

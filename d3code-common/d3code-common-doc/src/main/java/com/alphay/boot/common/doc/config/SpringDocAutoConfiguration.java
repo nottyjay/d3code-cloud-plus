@@ -8,9 +8,9 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.*;
-import lombok.RequiredArgsConstructor;
 import org.springdoc.core.configuration.SpringDocConfiguration;
 import org.springdoc.core.customizers.OpenApiBuilderCustomizer;
 import org.springdoc.core.customizers.OpenApiCustomizer;
@@ -34,7 +34,6 @@ import org.springframework.context.annotation.Bean;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @AutoConfiguration(before = SpringDocConfiguration.class)
 @EnableConfigurationProperties(SpringDocProperties.class)
 @ConditionalOnProperty(
@@ -43,7 +42,7 @@ import org.springframework.context.annotation.Bean;
     matchIfMissing = true)
 public class SpringDocAutoConfiguration {
 
-  private final ServerProperties serverProperties;
+  @Resource private ServerProperties serverProperties;
 
   @Value("${spring.application.name}")
   private String appName;

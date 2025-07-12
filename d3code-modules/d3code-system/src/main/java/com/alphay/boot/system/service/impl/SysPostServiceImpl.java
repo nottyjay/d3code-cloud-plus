@@ -22,7 +22,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,7 +30,6 @@ import org.springframework.stereotype.Service;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @Service
 public class SysPostServiceImpl extends ServiceImplX<SysPostMapper, SysPost, SysPostVo>
     implements ISysPostService {

@@ -8,7 +8,7 @@ import com.alphay.boot.system.domain.bo.SysLogininforBo;
 import com.alphay.boot.system.domain.bo.SysOperLogBo;
 import com.alphay.boot.system.service.ISysLogininforService;
 import com.alphay.boot.system.service.ISysOperLogService;
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.Resource;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -19,13 +19,12 @@ import org.springframework.stereotype.Service;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteLogServiceImpl implements RemoteLogService {
 
-  private final ISysOperLogService operLogService;
-  private final ISysLogininforService logininforService;
+  @Resource private ISysOperLogService operLogService;
+  @Resource private ISysLogininforService logininforService;
 
   /**
    * 保存系统日志

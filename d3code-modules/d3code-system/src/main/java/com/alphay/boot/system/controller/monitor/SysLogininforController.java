@@ -12,9 +12,9 @@ import com.alphay.boot.common.web.core.BaseController;
 import com.alphay.boot.system.api.domain.param.SysLogininforQueryParam;
 import com.alphay.boot.system.domain.vo.SysLogininforVo;
 import com.alphay.boot.system.service.ISysLogininforService;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +25,11 @@ import org.springframework.web.bind.annotation.*;
  * @since 1.0.0
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/logininfor")
 public class SysLogininforController extends BaseController {
 
-  private final ISysLogininforService logininforService;
+  @Resource private ISysLogininforService logininforService;
 
   /** 获取系统访问记录列表 */
   @SaCheckPermission("monitor:logininfor:list")

@@ -13,7 +13,7 @@ import com.alphay.boot.common.satoken.utils.LoginHelper;
 import com.alphay.boot.system.api.RemoteUserService;
 import com.alphay.boot.system.api.domain.vo.RemoteClientVo;
 import com.alphay.boot.system.api.model.XcxLoginUser;
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.config.AuthConfig;
 import me.zhyd.oauth.model.AuthCallback;
@@ -33,10 +33,9 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service("xcx" + IAuthStrategy.BASE_NAME)
-@RequiredArgsConstructor
 public class XcxAuthStrategy implements IAuthStrategy {
 
-  private final SysLoginService loginService;
+  @Resource private SysLoginService loginService;
 
   @DubboReference private RemoteUserService remoteUserService;
 

@@ -33,15 +33,14 @@ import com.alphay.boot.system.api.domain.vo.RemoteSocialVo;
 import com.alphay.boot.system.api.domain.vo.RemoteTenantVo;
 import com.alphay.boot.system.api.model.LoginUser;
 import com.baomidou.lock.annotation.Lock4j;
+import jakarta.annotation.Resource;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthUser;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -50,16 +49,15 @@ import org.springframework.stereotype.Service;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @Service
 @Slf4j
 public class SysLoginService {
 
-  @Autowired private final CaptchaProperties captchaProperties;
+  @Resource private CaptchaProperties captchaProperties;
   @DubboReference private RemoteUserService remoteUserService;
   @DubboReference private RemoteTenantService remoteTenantService;
   @DubboReference private RemoteSocialService remoteSocialService;
-  @Autowired private UserPasswordProperties userPasswordProperties;
+  @Resource private UserPasswordProperties userPasswordProperties;
 
   /**
    * 绑定第三方用户

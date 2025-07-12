@@ -12,8 +12,8 @@ import com.alphay.boot.resource.api.domain.RemoteFile;
 import com.alphay.boot.resource.domain.bo.SysOssBo;
 import com.alphay.boot.resource.domain.vo.SysOssVo;
 import com.alphay.boot.resource.service.ISysOssService;
+import jakarta.annotation.Resource;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
@@ -27,11 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @DubboService
 public class RemoteFileServiceImpl implements RemoteFileService {
 
-  private final ISysOssService sysOssService;
+  @Resource private ISysOssService sysOssService;
 
   /** 文件上传请求 */
   @Transactional(rollbackFor = Exception.class)

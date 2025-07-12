@@ -3,7 +3,6 @@ package com.alphay.boot.resource.dubbo;
 import com.alphay.boot.common.core.exception.ServiceException;
 import com.alphay.boot.common.mail.utils.MailUtils;
 import com.alphay.boot.resource.api.RemoteMailService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
  * @since 1.0.0
  */
 @Slf4j
-@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteMailServiceImpl implements RemoteMailService {

@@ -15,8 +15,8 @@ import com.alphay.boot.common.core.utils.reflect.ReflectUtils;
 import com.alphay.boot.common.ratelimiter.annotation.RateLimiter;
 import com.alphay.boot.common.ratelimiter.enums.LimitType;
 import com.alphay.boot.common.redis.utils.RedisUtils;
+import jakarta.annotation.Resource;
 import java.time.Duration;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -33,11 +33,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @Validated
-@RequiredArgsConstructor
 @RestController
 public class CaptchaController {
 
-  private final CaptchaProperties captchaProperties;
+  @Resource private CaptchaProperties captchaProperties;
 
   /** 生成验证码 */
   @GetMapping("/code")

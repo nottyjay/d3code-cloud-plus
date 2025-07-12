@@ -20,6 +20,7 @@ import ${packageName}.domain.vo.${ClassName}Vo;
 import ${packageName}.domain.bo.${ClassName}Bo;
 import ${packageName}.domain.param.${ClassName}QueryParam;
 import ${packageName}.service.I${ClassName}Service;
+import jakarta.annotation.Resource;
 #if($table.crud)
 #elseif($table.tree)
 #end
@@ -33,12 +34,11 @@ import ${packageName}.service.I${ClassName}Service;
  * @date ${datetime}
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/${businessName}")
 public class ${ClassName}Controller extends BaseController {
 
-  private final I${ClassName}Service ${className}Service;
+  @Resource private I${ClassName}Service ${className}Service;
 
   /**
    * 查询${functionName}列表

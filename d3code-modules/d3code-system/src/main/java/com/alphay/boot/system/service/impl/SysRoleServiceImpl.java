@@ -34,7 +34,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import jakarta.annotation.Resource;
 import java.util.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +44,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @Service
 public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, SysRoleVo>
     implements ISysRoleService {

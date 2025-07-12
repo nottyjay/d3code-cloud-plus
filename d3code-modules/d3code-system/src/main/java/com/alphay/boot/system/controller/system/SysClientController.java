@@ -19,7 +19,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
  * @since 1.0.0
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/client")
 public class SysClientController extends BaseController {

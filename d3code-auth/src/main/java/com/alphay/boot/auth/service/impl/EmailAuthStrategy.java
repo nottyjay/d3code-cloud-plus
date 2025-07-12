@@ -20,7 +20,7 @@ import com.alphay.boot.common.tenant.helper.TenantHelper;
 import com.alphay.boot.system.api.RemoteUserService;
 import com.alphay.boot.system.api.domain.vo.RemoteClientVo;
 import com.alphay.boot.system.api.model.LoginUser;
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
@@ -33,10 +33,9 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service("email" + IAuthStrategy.BASE_NAME)
-@RequiredArgsConstructor
 public class EmailAuthStrategy implements IAuthStrategy {
 
-  private final SysLoginService loginService;
+  @Resource private SysLoginService loginService;
 
   @DubboReference private RemoteUserService remoteUserService;
 

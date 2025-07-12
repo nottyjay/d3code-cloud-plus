@@ -30,9 +30,9 @@ import com.alphay.boot.system.domain.vo.SysUserVo;
 import com.alphay.boot.system.mapper.*;
 import com.alphay.boot.system.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
@@ -42,19 +42,18 @@ import org.springframework.stereotype.Service;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteUserServiceImpl implements RemoteUserService {
 
-  private final ISysUserService userService;
-  private final ISysPermissionService permissionService;
-  private final ISysConfigService configService;
-  private final ISysRoleService roleService;
-  private final ISysDeptService deptService;
-  private final ISysPostService postService;
-  private SysUserPostMapper userPostMapper;
-  private SysUserRoleMapper userRoleMapper;
+  @Resource private ISysUserService userService;
+  @Resource private ISysPermissionService permissionService;
+  @Resource private ISysConfigService configService;
+  @Resource private ISysRoleService roleService;
+  @Resource private ISysDeptService deptService;
+  @Resource private ISysPostService postService;
+  @Resource private SysUserPostMapper userPostMapper;
+  @Resource private SysUserRoleMapper userRoleMapper;
 
   /**
    * 通过用户名查询用户信息

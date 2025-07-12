@@ -6,8 +6,8 @@ import com.alphay.boot.system.api.domain.param.SysTenantQueryParam;
 import com.alphay.boot.system.api.domain.vo.RemoteTenantVo;
 import com.alphay.boot.system.domain.vo.SysTenantVo;
 import com.alphay.boot.system.service.ISysTenantService;
+import jakarta.annotation.Resource;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +15,11 @@ import org.springframework.stereotype.Service;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteTenantServiceImpl implements RemoteTenantService {
 
-  private final ISysTenantService tenantService;
+  @Resource private ISysTenantService tenantService;
 
   /** 根据租户id获取租户详情 */
   @Override

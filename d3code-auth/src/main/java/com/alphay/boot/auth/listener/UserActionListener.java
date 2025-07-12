@@ -20,7 +20,6 @@ import com.alphay.boot.resource.api.RemoteMessageService;
 import com.alphay.boot.system.api.RemoteUserService;
 import com.alphay.boot.system.api.domain.SysUserOnline;
 import java.time.Duration;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
@@ -31,7 +30,6 @@ import org.springframework.stereotype.Component;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @Component
 @Slf4j
 public class UserActionListener implements SaTokenListener {

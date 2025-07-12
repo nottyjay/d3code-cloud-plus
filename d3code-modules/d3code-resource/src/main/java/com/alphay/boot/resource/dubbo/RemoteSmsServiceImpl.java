@@ -4,7 +4,6 @@ import com.alphay.boot.resource.api.RemoteSmsService;
 import com.alphay.boot.resource.api.domain.RemoteSms;
 import java.util.LinkedHashMap;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.dromara.sms4j.api.SmsBlend;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
  * @since 1.0.0
  */
 @Slf4j
-@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteSmsServiceImpl implements RemoteSmsService {

@@ -4,7 +4,6 @@ import com.alphay.boot.common.sse.dto.SseMessageDto;
 import com.alphay.boot.common.sse.utils.SseMessageUtils;
 import com.alphay.boot.resource.api.RemoteMessageService;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 1.0.0
  */
 @Slf4j
-@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteMessageServiceImpl implements RemoteMessageService {

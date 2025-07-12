@@ -5,8 +5,8 @@ import com.alphay.boot.common.core.domain.R;
 import com.alphay.boot.common.satoken.utils.LoginHelper;
 import com.alphay.boot.common.sse.core.SseEmitterManager;
 import com.alphay.boot.common.sse.dto.SseMessageDto;
+import jakarta.annotation.Resource;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
@@ -22,10 +22,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
  */
 @RestController
 @ConditionalOnProperty(value = "sse.enabled", havingValue = "true")
-@RequiredArgsConstructor
 public class SseController implements DisposableBean {
 
-  private final SseEmitterManager sseEmitterManager;
+  @Resource private SseEmitterManager sseEmitterManager;
 
   /** 建立 SSE 连接 */
   @GetMapping(value = "${sse.path}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

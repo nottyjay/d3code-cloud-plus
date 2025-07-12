@@ -32,7 +32,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +44,6 @@ import org.springframework.web.multipart.MultipartFile;
  * @since 1.0.0
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/user")
 public class SysUserController extends BaseController {

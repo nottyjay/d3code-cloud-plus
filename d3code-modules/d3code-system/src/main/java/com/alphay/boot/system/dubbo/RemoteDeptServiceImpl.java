@@ -5,8 +5,8 @@ import com.alphay.boot.system.api.RemoteDeptService;
 import com.alphay.boot.system.api.domain.vo.RemoteDeptVo;
 import com.alphay.boot.system.domain.vo.SysDeptVo;
 import com.alphay.boot.system.service.ISysDeptService;
+import jakarta.annotation.Resource;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +16,11 @@ import org.springframework.stereotype.Service;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteDeptServiceImpl implements RemoteDeptService {
 
-  private final ISysDeptService sysDeptService;
+  @Resource private ISysDeptService sysDeptService;
 
   /**
    * 通过部门ID查询部门名称

@@ -31,7 +31,6 @@ import jakarta.annotation.Resource;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -45,7 +44,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 1.0.0
  */
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class SysUserServiceImpl extends ServiceImplX<SysUserMapper, SysUser, SysUserVo>
     implements ISysUserService {

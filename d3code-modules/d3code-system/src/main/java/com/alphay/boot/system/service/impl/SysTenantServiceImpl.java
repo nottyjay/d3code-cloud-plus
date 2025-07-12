@@ -29,7 +29,6 @@ import com.alphay.boot.system.service.ISysTenantService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import java.util.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @Service
 public class SysTenantServiceImpl extends ServiceImplX<SysTenantMapper, SysTenant, SysTenantVo>
     implements ISysTenantService {

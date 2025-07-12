@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/online")
 public class SysUserOnlineController extends BaseController {

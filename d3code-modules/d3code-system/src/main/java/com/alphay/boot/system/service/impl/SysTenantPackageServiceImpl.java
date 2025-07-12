@@ -21,7 +21,6 @@ import jakarta.annotation.Resource;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @Service
 public class SysTenantPackageServiceImpl
     extends ServiceImplX<SysTenantPackageMapper, SysTenantPackage, SysTenantPackageVo>

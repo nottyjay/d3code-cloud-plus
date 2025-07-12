@@ -13,7 +13,6 @@ import com.alphay.boot.system.service.ISysOperLogService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
  * @since 1.0.0
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/operlog")
 public class SysOperlogController extends BaseController {

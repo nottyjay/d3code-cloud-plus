@@ -8,8 +8,8 @@ import com.alphay.boot.system.api.domain.vo.RemoteSocialVo;
 import com.alphay.boot.system.domain.bo.SysSocialBo;
 import com.alphay.boot.system.domain.vo.SysSocialVo;
 import com.alphay.boot.system.service.ISysSocialService;
+import jakarta.annotation.Resource;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +19,11 @@ import org.springframework.stereotype.Service;
  * @author Nottyjay
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteSocialServiceImpl implements RemoteSocialService {
 
-  private final ISysSocialService sysSocialService;
+  @Resource private ISysSocialService sysSocialService;
 
   /**
    * 根据 authId 查询用户授权信息
