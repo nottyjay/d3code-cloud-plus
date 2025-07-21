@@ -1,5 +1,5 @@
 services:
-    nacos:
+  nacos:
     image: registry.cn-hangzhou.aliyuncs.com/altech/nacos:3.0.2
     container_name: nacos
     ports:
@@ -143,7 +143,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    
+
 
   d3code-snailjob-server:
     image: d3code/d3code-snailjob-server:2.4.1
@@ -157,7 +157,7 @@ services:
     volumes:
       - /docker/snailjob/logs/:/d3code/snailjob/logs
     privileged: true
-    
+
 
   d3code-gateway:
     image: d3code/d3code-gateway:2.4.1
@@ -173,7 +173,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    
+
 
   d3code-auth:
     image: d3code/d3code-auth:2.4.1
@@ -189,7 +189,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    
+
 
   d3code-system:
     image: d3code/d3code-system:2.4.1
@@ -205,7 +205,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    
+
 
   d3code-gen:
     image: d3code/d3code-gen:2.4.1
@@ -221,7 +221,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    
+
 
   d3code-job:
     image: d3code/d3code-job:2.4.1
@@ -239,7 +239,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    
+
 
   d3code-resource:
     image: d3code/d3code-resource:2.4.1
@@ -255,7 +255,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    
+
 
 
   #################################################################################################
@@ -278,7 +278,7 @@ services:
       - /docker/elk/elasticsearch/plugins:/usr/share/elasticsearch/plugins
       - /docker/elk/elasticsearch/data:/usr/share/elasticsearch/data
       - /docker/elk/elasticsearch/logs:/usr/share/elasticsearch/logs
-    
+
 
   kibana:
     image: kibana:7.17.6
@@ -295,7 +295,7 @@ services:
       # SERVER_PUBLICBASEURL: https://kibana.cloud.com
     volumes:
       - /docker/elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
-    
+
 
   logstash:
     image: logstash:7.17.6
@@ -307,7 +307,7 @@ services:
       - /docker/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
     depends_on:
       - elasticsearch
-    
+
 
   rmqnamesrv:
     image: apache/rocketmq:5.2.0
@@ -319,7 +319,7 @@ services:
     command: sh mqnamesrv
     volumes:
       - /docker/rocketmq/namesrv/logs:/home/rocketmq/logs/rocketmqlogs
-    
+
 
   rmqbroker1:
     image: apache/rocketmq:5.2.0
@@ -340,7 +340,7 @@ services:
       - /docker/rocketmq/broker1/logs:/home/rocketmq/logs/rocketmqlogs
       - /docker/rocketmq/broker1/store:/home/rocketmq/store
     privileged: true
-    
+
 
   rmqconsole:
     image: apacherocketmq/rocketmq-dashboard:latest
@@ -351,7 +351,7 @@ services:
       JAVA_OPTS: -Dserver.port=19876 -Drocketmq.namesrv.addr=127.0.0.1:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
     depends_on:
       - rmqnamesrv
-    
+
 
   rabbitmq:
     container_name: rabbitmq
@@ -366,7 +366,7 @@ services:
     volumes:
       - /docker/rabbitmq/log:/var/log/rabbitmq
       - /docker/rabbitmq/data:/var/lib/rabbitmq
-    
+
 
   zookeeper:
     image: 'bitnami/zookeeper:3.8.0'
@@ -382,7 +382,7 @@ services:
       ZOO_ENABLE_ADMIN_SERVER: "no"
       # 自带控制台的端口
       ZOO_ADMIN_SERVER_PORT_NUMBER: 8080
-    
+
 
   kafka:
     image: 'bitnami/kafka:3.6.2'
@@ -403,7 +403,7 @@ services:
       - /docker/kafka/data:/bitnami/kafka/data
     depends_on:
       - zookeeper
-    
+
 
   kafka-manager:
     image: sheepkiller/kafka-manager:latest
@@ -418,7 +418,7 @@ services:
       KM_ARGS: -Dhttp.port=19092
     depends_on:
       - kafka
-    
+
 
   sky-oap:
     image: apache/skywalking-oap-server:9.7.0
@@ -435,7 +435,7 @@ services:
       SW_STORAGE: elasticsearch
       SW_STORAGE_ES_CLUSTER_NODES: 127.0.0.1:9200
       TZ: Asia/Shanghai
-    
+
 
   sky-ui:
     image: apache/skywalking-ui:9.7.0
@@ -448,7 +448,7 @@ services:
       TZ: Asia/Shanghai
     depends_on:
       - sky-oap
-    
+
 
   prometheus:
     image: prom/prometheus:v2.40.1
@@ -457,7 +457,7 @@ services:
       - "9090:9090"
     volumes:
       - /docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    
+
 
   grafana:
     image: grafana/grafana:9.2.4
@@ -473,7 +473,7 @@ services:
     volumes:
       - /docker/grafana/grafana.ini:/etc/grafana/grafana.ini
       - /docker/grafana:/var/lib/grafana
-    
+
 
   shardingproxy:
     image: apache/shardingsphere-proxy:5.4.0
@@ -486,4 +486,4 @@ services:
       - /docker/shardingproxy/ext-lib:/opt/shardingsphere-proxy/ext-lib
     environment:
       - JVM_OPTS="-Djava.awt.headless=true"
-    
+
