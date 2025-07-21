@@ -28,6 +28,7 @@ import com.alphay.boot.system.domain.bo.SysUserBo;
 import com.alphay.boot.system.domain.vo.*;
 import com.alphay.boot.system.listener.SysUserImportListener;
 import com.alphay.boot.system.service.*;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
