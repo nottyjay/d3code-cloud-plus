@@ -1,47 +1,33 @@
 services:
-  mysql:
-    image: mysql:8.0.42
-    container_name: mysql
-    environment:
-      # 时区上海
-      TZ: Asia/Shanghai
-      # root 密码
-      MYSQL_ROOT_PASSWORD: d3code123
-      # 初始化数据库
-      MYSQL_DATABASE: d3code-cloud
-    ports:
-      - "3306:3306"
-    volumes:
-      # 数据挂载
-      - /docker/mysql/data/:/var/lib/mysql/
-      # 配置挂载
-      - /docker/mysql/conf/:/etc/mysql/conf.d/
-    command:
-      # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)
-      --default-authentication-plugin=mysql_native_password
-      --character-set-server=utf8mb4
-      --collation-server=utf8mb4_general_ci
-      --explicit_defaults_for_timestamp=true
-      --lower_case_table_names=1
-    privileged: true
-    network_mode: "host"
-
-  nacos:
-    image: d3code/d3code-nacos:2.4.1
+    nacos:
+    image: registry.cn-hangzhou.aliyuncs.com/altech/nacos:3.0.2
     container_name: nacos
     ports:
       - "8848:8848"
-      - "9848:9848"
-      - "9849:9849"
+      - "8080:8080"
+      - "9080:9080"
     environment:
       TZ: Asia/Shanghai
       JAVA_OPTS: "-Xms256m -Xmx512m"
+      MODE: "standalone"
     volumes:
       # 日志目录 注意集群模式下 日志目录不能一致 需要区分例如 nacos1 nacos2
-      - /docker/nacos/logs/:/root/nacos/logs
+      - /docker/nacos/logs/:/home/nacos/logs
       # 集群配置文件 集群所有nacos都必须使用此文件
-      - /docker/nacos/conf/cluster.conf:/root/nacos/conf/cluster.conf
-    network_mode: "host"
+      - /docker/nacos/conf/cluster.conf:/home/nacos/conf/cluster.conf
+      - /docker/nacos/conf/application.properties:/home/nacos/conf/application.properties
+
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
 
   redis:
     image: redis:7.2.8
@@ -58,7 +44,6 @@ services:
       - /docker/redis/data/:/redis/data/
     command: "redis-server /redis/config/redis.conf"
     privileged: true
-    network_mode: "host"
 
   minio:
     # minio 最后一个未阉割版本 不能再进行升级 在往上的版本功能被阉割
@@ -92,7 +77,6 @@ services:
       - /docker/minio/config:/root/.minio/
     command: server --address ':9000' --console-address ':9001' /data  # 指定容器中的目录 /data
     privileged: true
-    network_mode: "host"
 
   seata-server:
     image: d3code/d3code-seata-server:2.4.1
@@ -110,7 +94,6 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    network_mode: "host"
 
   nginx-web:
     image: nginx:1.22.1
@@ -131,7 +114,6 @@ services:
       # 日志目录
       - /docker/nginx/log:/var/log/nginx
     privileged: true
-    network_mode: "host"
 
   sentinel:
     image: d3code/d3code-sentinel-dashboard:2.4.1
@@ -146,7 +128,6 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     restart: always
-    network_mode: "host"
 
   d3code-monitor:
     image: d3code/d3code-monitor:2.4.1
@@ -162,7 +143,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    network_mode: "host"
+    
 
   d3code-snailjob-server:
     image: d3code/d3code-snailjob-server:2.4.1
@@ -176,7 +157,7 @@ services:
     volumes:
       - /docker/snailjob/logs/:/d3code/snailjob/logs
     privileged: true
-    network_mode: "host"
+    
 
   d3code-gateway:
     image: d3code/d3code-gateway:2.4.1
@@ -192,7 +173,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    network_mode: "host"
+    
 
   d3code-auth:
     image: d3code/d3code-auth:2.4.1
@@ -208,7 +189,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    network_mode: "host"
+    
 
   d3code-system:
     image: d3code/d3code-system:2.4.1
@@ -224,7 +205,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    network_mode: "host"
+    
 
   d3code-gen:
     image: d3code/d3code-gen:2.4.1
@@ -240,7 +221,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    network_mode: "host"
+    
 
   d3code-job:
     image: d3code/d3code-job:2.4.1
@@ -258,7 +239,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    network_mode: "host"
+    
 
   d3code-resource:
     image: d3code/d3code-resource:2.4.1
@@ -274,7 +255,7 @@ services:
       # skywalking 探针
       - /docker/skywalking/agent/:/d3code/skywalking/agent
     privileged: true
-    network_mode: "host"
+    
 
 
   #################################################################################################
@@ -297,7 +278,7 @@ services:
       - /docker/elk/elasticsearch/plugins:/usr/share/elasticsearch/plugins
       - /docker/elk/elasticsearch/data:/usr/share/elasticsearch/data
       - /docker/elk/elasticsearch/logs:/usr/share/elasticsearch/logs
-    network_mode: "host"
+    
 
   kibana:
     image: kibana:7.17.6
@@ -314,7 +295,7 @@ services:
       # SERVER_PUBLICBASEURL: https://kibana.cloud.com
     volumes:
       - /docker/elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
-    network_mode: "host"
+    
 
   logstash:
     image: logstash:7.17.6
@@ -326,7 +307,7 @@ services:
       - /docker/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
     depends_on:
       - elasticsearch
-    network_mode: "host"
+    
 
   rmqnamesrv:
     image: apache/rocketmq:5.2.0
@@ -338,7 +319,7 @@ services:
     command: sh mqnamesrv
     volumes:
       - /docker/rocketmq/namesrv/logs:/home/rocketmq/logs/rocketmqlogs
-    network_mode: "host"
+    
 
   rmqbroker1:
     image: apache/rocketmq:5.2.0
@@ -359,7 +340,7 @@ services:
       - /docker/rocketmq/broker1/logs:/home/rocketmq/logs/rocketmqlogs
       - /docker/rocketmq/broker1/store:/home/rocketmq/store
     privileged: true
-    network_mode: "host"
+    
 
   rmqconsole:
     image: apacherocketmq/rocketmq-dashboard:latest
@@ -370,7 +351,7 @@ services:
       JAVA_OPTS: -Dserver.port=19876 -Drocketmq.namesrv.addr=127.0.0.1:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
     depends_on:
       - rmqnamesrv
-    network_mode: "host"
+    
 
   rabbitmq:
     container_name: rabbitmq
@@ -385,7 +366,7 @@ services:
     volumes:
       - /docker/rabbitmq/log:/var/log/rabbitmq
       - /docker/rabbitmq/data:/var/lib/rabbitmq
-    network_mode: "host"
+    
 
   zookeeper:
     image: 'bitnami/zookeeper:3.8.0'
@@ -401,7 +382,7 @@ services:
       ZOO_ENABLE_ADMIN_SERVER: "no"
       # 自带控制台的端口
       ZOO_ADMIN_SERVER_PORT_NUMBER: 8080
-    network_mode: "host"
+    
 
   kafka:
     image: 'bitnami/kafka:3.6.2'
@@ -422,7 +403,7 @@ services:
       - /docker/kafka/data:/bitnami/kafka/data
     depends_on:
       - zookeeper
-    network_mode: "host"
+    
 
   kafka-manager:
     image: sheepkiller/kafka-manager:latest
@@ -437,7 +418,7 @@ services:
       KM_ARGS: -Dhttp.port=19092
     depends_on:
       - kafka
-    network_mode: "host"
+    
 
   sky-oap:
     image: apache/skywalking-oap-server:9.7.0
@@ -454,7 +435,7 @@ services:
       SW_STORAGE: elasticsearch
       SW_STORAGE_ES_CLUSTER_NODES: 127.0.0.1:9200
       TZ: Asia/Shanghai
-    network_mode: "host"
+    
 
   sky-ui:
     image: apache/skywalking-ui:9.7.0
@@ -467,7 +448,7 @@ services:
       TZ: Asia/Shanghai
     depends_on:
       - sky-oap
-    network_mode: "host"
+    
 
   prometheus:
     image: prom/prometheus:v2.40.1
@@ -476,7 +457,7 @@ services:
       - "9090:9090"
     volumes:
       - /docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    network_mode: "host"
+    
 
   grafana:
     image: grafana/grafana:9.2.4
@@ -492,7 +473,7 @@ services:
     volumes:
       - /docker/grafana/grafana.ini:/etc/grafana/grafana.ini
       - /docker/grafana:/var/lib/grafana
-    network_mode: "host"
+    
 
   shardingproxy:
     image: apache/shardingsphere-proxy:5.4.0
@@ -505,4 +486,4 @@ services:
       - /docker/shardingproxy/ext-lib:/opt/shardingsphere-proxy/ext-lib
     environment:
       - JVM_OPTS="-Djava.awt.headless=true"
-    network_mode: "host"
+    

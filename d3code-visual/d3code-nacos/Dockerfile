@@ -1,21 +1,16 @@
-# 贝尔实验室 Spring 官方推荐镜像 JDK下载地址 https://bell-sw.com/pages/downloads/
-FROM bellsoft/liberica-openjdk-rocky:17.0.15-cds
-#FROM bellsoft/liberica-openjdk-rocky:21.0.7-cds
-#FROM findepi/graalvm:java17-native
-
+FROM nacos/nacos-server:v3.0.2
 LABEL maintainer="Alphay Tech"
+WORKDIR /home/nacos
 
-RUN mkdir -p /d3code/nacos
+RUN mkdir /home/nacos/plugins
 
-WORKDIR /d3code/nacos
+COPY ./plugins/*.jar plugins/
+ADD ./bin/docker-startup.sh bin/docker-startup.sh
+
+RUN chmod +x bin/docker-startup.sh
 
 EXPOSE 8848
+EXPOSE 8080
+EXPOSE 9080
 
-ENV TZ=Asia/Shanghai LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS="-Xms512m -Xmx1024m"
-
-ADD ./target/d3code-nacos.jar ./app.jar
-
-SHELL ["/bin/bash", "-c"]
-
-ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom ${JAVA_OPTS} -jar app.jar
-
+ENTRYPOINT ["sh", "bin/docker-startup.sh"]

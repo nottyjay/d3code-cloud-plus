@@ -12,7 +12,6 @@
         <module>d3code-monitor</module>
         <module>d3code-sentinel-dashboard</module>
         <module>d3code-seata-server</module>
-        <module>d3code-nacos</module>
         <module>d3code-snailjob-server</module>
     </modules>
 

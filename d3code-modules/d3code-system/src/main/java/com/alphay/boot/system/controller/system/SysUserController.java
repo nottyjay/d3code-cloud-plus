@@ -48,11 +48,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/user")
 public class SysUserController extends BaseController {
 
-  private final ISysUserService userService;
-  private final ISysRoleService roleService;
-  private final ISysPostService postService;
-  private final ISysDeptService deptService;
-  private final ISysTenantService tenantService;
+  @Resource private ISysUserService userService;
+  @Resource private ISysRoleService roleService;
+  @Resource private ISysPostService postService;
+  @Resource private ISysDeptService deptService;
+  @Resource private ISysTenantService tenantService;
 
   /** 获取用户列表 */
   @SaCheckPermission("system:user:list")

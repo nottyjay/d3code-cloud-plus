@@ -22,9 +22,10 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
  */
 @RestController
 @ConditionalOnProperty(value = "sse.enabled", havingValue = "true")
+@RequiredArgsConstructor
 public class SseController implements DisposableBean {
 
-  @Resource private SseEmitterManager sseEmitterManager;
+  private final SseEmitterManager sseEmitterManager;
 
   /** 建立 SSE 连接 */
   @GetMapping(value = "${sse.path}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
