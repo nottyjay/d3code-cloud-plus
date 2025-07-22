@@ -1,6 +1,6 @@
 package com.alphay.boot.resource.api;
 
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,9 +11,10 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
+@RequiredArgsConstructor
 public class RemoteMessageServiceStub implements RemoteMessageService {
 
-  @Resource private RemoteMessageService remoteMessageService;
+  private final RemoteMessageService remoteMessageService;
 
   /**
    * 发送消息

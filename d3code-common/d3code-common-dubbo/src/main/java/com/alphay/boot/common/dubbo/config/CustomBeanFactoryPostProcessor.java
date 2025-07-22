@@ -1,13 +1,15 @@
 package com.alphay.boot.common.dubbo.config;
 
 import com.alphay.boot.common.core.utils.StringUtils;
-import java.net.Inet6Address;
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
+import lombok.SneakyThrows;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.core.Ordered;
 
 /**
@@ -41,23 +43,23 @@ public class CustomBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
     if (StringUtils.isNotBlank(property)) {
       return;
     }
-    // 获取 InetUtils bean，用于获取 IP 地址
-    InetUtils inetUtils = beanFactory.getBean(InetUtils.class);
     String ip = "127.0.0.1";
-    // 获取第一个非回环地址
-    InetAddress address = inetUtils.findFirstNonLoopbackAddress();
-    if (address != null) {
-      if (address instanceof Inet6Address) {
-        // 处理 IPv6 地址
-        String ipv6AddressString = address.getHostAddress();
-        if (ipv6AddressString.contains("%")) {
-          // 去掉可能存在的范围 ID
-          ipv6AddressString = ipv6AddressString.substring(0, ipv6AddressString.indexOf("%"));
+    // 获取第一个非虚拟网卡地址
+    Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+    while (interfaces.hasMoreElements()) {
+      NetworkInterface ni = interfaces.nextElement();
+      // 排除回环、虚拟和禁用的接口
+      if (ni.isLoopback() || ni.isVirtual() || !ni.isUp()) continue;
+
+      // 排除 WSL 网卡（名称通常包含 "vEthernet" 或 "WSL"）
+      if (ni.getName().contains("vEthernet") || ni.getDisplayName().contains("WSL")) continue;
+
+      Enumeration<InetAddress> addresses = ni.getInetAddresses();
+      while (addresses.hasMoreElements()) {
+        InetAddress addr = addresses.nextElement();
+        if (addr instanceof Inet4Address && !addr.isLinkLocalAddress()) {
+          ip = addr.getHostAddress();
         }
-        ip = ipv6AddressString;
-      } else {
-        // 处理 IPv4 地址
-        ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
       }
     }
     // 设置系统属性 DUBBO_IP_TO_REGISTRY 为获取到的 IP 地址
