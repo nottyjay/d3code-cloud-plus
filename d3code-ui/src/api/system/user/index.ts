@@ -1,9 +1,9 @@
-import { DeptTreeVO } from './../dept/types'
-import { RoleVO } from '@/api/system/role/types'
+import {DeptTreeVO} from './../dept/types'
+import {RoleVO} from '@/api/system/role/types'
 import request from '@/utils/request'
-import { AxiosPromise } from 'axios'
-import { UserForm, UserInfoVO, UserQuery, UserVO } from './types'
-import { parseStrEmpty } from '@/utils/d3code'
+import {AxiosPromise} from 'axios'
+import {UserForm, UserInfoVO, UserQuery, UserVO} from './types'
+import {parseStrEmpty} from '@/utils/d3code'
 
 /**
  * 查询用户列表

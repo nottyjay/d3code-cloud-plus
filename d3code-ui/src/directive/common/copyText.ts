@@ -2,10 +2,10 @@
  * v-copyText 复制文本内容
  * Copyright (c) 2022 d3code
  */
-import { DirectiveBinding } from 'vue'
+import {DirectiveBinding} from 'vue'
 
 export default {
-  beforeMount(el: any, { value, arg }: DirectiveBinding) {
+  beforeMount(el: any, {value, arg}: DirectiveBinding) {
     if (arg === 'callback') {
       el.$copyCallback = value
     } else {
@@ -22,7 +22,7 @@ export default {
   },
 }
 
-function copyTextToClipboard(input: string, { target = document.body } = {}) {
+function copyTextToClipboard(input: string, {target = document.body} = {}) {
   const element = document.createElement('textarea')
   const previouslyFocusedElement = document.activeElement as HTMLInputElement
   element.value = input

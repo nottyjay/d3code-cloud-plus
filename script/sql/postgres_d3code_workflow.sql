@@ -3,23 +3,23 @@
 -- ----------------------------
 CREATE TABLE flow_definition
 (
-    id              int8         NOT NULL,                                 -- 主键id
-    flow_code       varchar(40)  NOT NULL,                                 -- 流程编码
-    flow_name       varchar(100) NOT NULL,                                 -- 流程名称
-    category        varchar(100) NULL,                                     -- 流程类别
-    "version"       varchar(20)  NOT NULL,                                 -- 流程版本
-    is_publish      int2         NOT NULL DEFAULT 0,                       -- 是否发布（0未发布 1已发布 9失效）
-    form_custom     bpchar(1)    NULL     DEFAULT 'N':: character varying, -- 审批表单是否自定义（Y是 N否）
-    form_path       varchar(100) NULL,                                     -- 审批表单路径
-    activity_status int2         NOT NULL DEFAULT 1,                       -- 流程激活状态（0挂起 1激活）
-    listener_type   varchar(100) NULL,                                     -- 监听器类型
-    listener_path   varchar(400) NULL,                                     -- 监听器路径
-    ext             varchar(500) NULL,                                     -- 扩展字段，预留给业务系统使用
-    create_time     timestamp NULL,                                        -- 创建时间
-    update_time     timestamp NULL,                                        -- 更新时间
-    del_flag        bpchar(1)    NULL     DEFAULT '0':: character varying, -- 删除标志
-    tenant_id       varchar(40) NULL,                                      -- 租户id
-    CONSTRAINT flow_definition_pkey PRIMARY KEY (id)
+  id              int8         NOT NULL,                                 -- 主键id
+  flow_code       varchar(40)  NOT NULL,                                 -- 流程编码
+  flow_name       varchar(100) NOT NULL,                                 -- 流程名称
+  category        varchar(100) NULL,                                     -- 流程类别
+  "version"       varchar(20)  NOT NULL,                                 -- 流程版本
+  is_publish      int2         NOT NULL DEFAULT 0,                       -- 是否发布（0未发布 1已发布 9失效）
+  form_custom     bpchar(1)    NULL     DEFAULT 'N':: character varying, -- 审批表单是否自定义（Y是 N否）
+  form_path       varchar(100) NULL,                                     -- 审批表单路径
+  activity_status int2         NOT NULL DEFAULT 1,                       -- 流程激活状态（0挂起 1激活）
+  listener_type   varchar(100) NULL,                                     -- 监听器类型
+  listener_path   varchar(400) NULL,                                     -- 监听器路径
+  ext             varchar(500) NULL,                                     -- 扩展字段，预留给业务系统使用
+  create_time     timestamp NULL,                                        -- 创建时间
+  update_time     timestamp NULL,                                        -- 更新时间
+  del_flag        bpchar(1)    NULL     DEFAULT '0':: character varying, -- 删除标志
+  tenant_id       varchar(40) NULL,                                      -- 租户id
+  CONSTRAINT flow_definition_pkey PRIMARY KEY (id)
 );
 COMMENT
 ON TABLE flow_definition IS '流程定义表';
@@ -59,28 +59,28 @@ ON COLUMN flow_definition.tenant_id IS '租户id';
 
 CREATE TABLE flow_node
 (
-    id              int8         NOT NULL,                              -- 主键id
-    node_type       int2         NOT NULL,                              -- 节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
-    definition_id   int8         NOT NULL,                              -- 流程定义id
-    node_code       varchar(100) NOT NULL,                              -- 流程节点编码
-    node_name       varchar(100) NULL,                                  -- 流程节点名称
-    permission_flag varchar(200) NULL,                                  -- 权限标识（权限类型:权限标识，可以多个，用@@隔开)
-    node_ratio      numeric(6, 3) NULL,                                 -- 流程签署比例值
-    coordinate      varchar(100) NULL,                                  -- 坐标
-    any_node_skip   varchar(100) NULL,                                  -- 任意结点跳转
-    listener_type   varchar(100) NULL,                                  -- 监听器类型
-    listener_path   varchar(400) NULL,                                  -- 监听器路径
-    handler_type    varchar(100) NULL,                                  -- 处理器类型
-    handler_path    varchar(400) NULL,                                  -- 处理器路径
-    form_custom     bpchar(1)     NULL DEFAULT 'N':: character varying, -- 审批表单是否自定义（Y是 N否）
-    form_path       varchar(100) NULL,                                  -- 审批表单路径
-    "version"       varchar(20)  NOT NULL,                              -- 版本
-    create_time     timestamp NULL,                                     -- 创建时间
-    update_time     timestamp NULL,                                     -- 更新时间
-    ext             text NULL,                                          -- 扩展属性
-    del_flag        bpchar(1)     NULL DEFAULT '0':: character varying, -- 删除标志
-    tenant_id       varchar(40) NULL,                                   -- 租户id
-    CONSTRAINT flow_node_pkey PRIMARY KEY (id)
+  id              int8         NOT NULL,                              -- 主键id
+  node_type       int2         NOT NULL,                              -- 节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
+  definition_id   int8         NOT NULL,                              -- 流程定义id
+  node_code       varchar(100) NOT NULL,                              -- 流程节点编码
+  node_name       varchar(100) NULL,                                  -- 流程节点名称
+  permission_flag varchar(200) NULL,                                  -- 权限标识（权限类型:权限标识，可以多个，用@@隔开)
+  node_ratio      numeric(6, 3) NULL,                                 -- 流程签署比例值
+  coordinate      varchar(100) NULL,                                  -- 坐标
+  any_node_skip   varchar(100) NULL,                                  -- 任意结点跳转
+  listener_type   varchar(100) NULL,                                  -- 监听器类型
+  listener_path   varchar(400) NULL,                                  -- 监听器路径
+  handler_type    varchar(100) NULL,                                  -- 处理器类型
+  handler_path    varchar(400) NULL,                                  -- 处理器路径
+  form_custom     bpchar(1)     NULL DEFAULT 'N':: character varying, -- 审批表单是否自定义（Y是 N否）
+  form_path       varchar(100) NULL,                                  -- 审批表单路径
+  "version"       varchar(20)  NOT NULL,                              -- 版本
+  create_time     timestamp NULL,                                     -- 创建时间
+  update_time     timestamp NULL,                                     -- 更新时间
+  ext             text NULL,                                          -- 扩展属性
+  del_flag        bpchar(1)     NULL DEFAULT '0':: character varying, -- 删除标志
+  tenant_id       varchar(40) NULL,                                   -- 租户id
+  CONSTRAINT flow_node_pkey PRIMARY KEY (id)
 );
 COMMENT
 ON TABLE flow_node IS '流程节点表';
@@ -131,21 +131,21 @@ ON COLUMN flow_node.tenant_id IS '租户id';
 
 CREATE TABLE flow_skip
 (
-    id             int8         NOT NULL,                             -- 主键id
-    definition_id  int8         NOT NULL,                             -- 流程定义id
-    now_node_code  varchar(100) NOT NULL,                             -- 当前流程节点的编码
-    now_node_type  int2 NULL,                                         -- 当前节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
-    next_node_code varchar(100) NOT NULL,                             -- 下一个流程节点的编码
-    next_node_type int2 NULL,                                         -- 下一个节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
-    skip_name      varchar(100) NULL,                                 -- 跳转名称
-    skip_type      varchar(40) NULL,                                  -- 跳转类型（PASS审批通过 REJECT退回）
-    skip_condition varchar(200) NULL,                                 -- 跳转条件
-    coordinate     varchar(100) NULL,                                 -- 坐标
-    create_time    timestamp NULL,                                    -- 创建时间
-    update_time    timestamp NULL,                                    -- 更新时间
-    del_flag       bpchar(1)    NULL DEFAULT '0':: character varying, -- 删除标志
-    tenant_id      varchar(40) NULL,                                  -- 租户id
-    CONSTRAINT flow_skip_pkey PRIMARY KEY (id)
+  id             int8         NOT NULL,                             -- 主键id
+  definition_id  int8         NOT NULL,                             -- 流程定义id
+  now_node_code  varchar(100) NOT NULL,                             -- 当前流程节点的编码
+  now_node_type  int2 NULL,                                         -- 当前节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
+  next_node_code varchar(100) NOT NULL,                             -- 下一个流程节点的编码
+  next_node_type int2 NULL,                                         -- 下一个节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
+  skip_name      varchar(100) NULL,                                 -- 跳转名称
+  skip_type      varchar(40) NULL,                                  -- 跳转类型（PASS审批通过 REJECT退回）
+  skip_condition varchar(200) NULL,                                 -- 跳转条件
+  coordinate     varchar(100) NULL,                                 -- 坐标
+  create_time    timestamp NULL,                                    -- 创建时间
+  update_time    timestamp NULL,                                    -- 更新时间
+  del_flag       bpchar(1)    NULL DEFAULT '0':: character varying, -- 删除标志
+  tenant_id      varchar(40) NULL,                                  -- 租户id
+  CONSTRAINT flow_skip_pkey PRIMARY KEY (id)
 );
 COMMENT
 ON TABLE flow_skip IS '节点跳转关联表';
@@ -181,23 +181,23 @@ ON COLUMN flow_skip.tenant_id IS '租户id';
 
 CREATE TABLE flow_instance
 (
-    id              int8        NOT NULL,                                  -- 主键id
-    definition_id   int8        NOT NULL,                                  -- 对应flow_definition表的id
-    business_id     varchar(40) NOT NULL,                                  -- 业务id
-    node_type       int2        NOT NULL,                                  -- 节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
-    node_code       varchar(40) NOT NULL,                                  -- 流程节点编码
-    node_name       varchar(100) NULL,                                     -- 流程节点名称
-    variable        text NULL,                                             -- 任务变量
-    flow_status     varchar(20) NOT NULL,                                  -- 流程状态（0待提交 1审批中 2 审批通过 8已完成 9已退回 10失效）
-    activity_status int2        NOT NULL DEFAULT 1,                        -- 流程激活状态（0挂起 1激活）
-    def_json        text NULL,                                             -- 流程定义json
-    create_by       varchar(64) NULL     DEFAULT '':: character varying,   -- 创建者
-    create_time     timestamp NULL,                                        -- 创建时间
-    update_time     timestamp NULL,                                        -- 更新时间
-    ext             varchar(500) NULL,                                     -- 扩展字段，预留给业务系统使用
-    del_flag        bpchar(1)    NULL     DEFAULT '0':: character varying, -- 删除标志
-    tenant_id       varchar(40) NULL,                                      -- 租户id
-    CONSTRAINT flow_instance_pkey PRIMARY KEY (id)
+  id              int8        NOT NULL,                                  -- 主键id
+  definition_id   int8        NOT NULL,                                  -- 对应flow_definition表的id
+  business_id     varchar(40) NOT NULL,                                  -- 业务id
+  node_type       int2        NOT NULL,                                  -- 节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
+  node_code       varchar(40) NOT NULL,                                  -- 流程节点编码
+  node_name       varchar(100) NULL,                                     -- 流程节点名称
+  variable        text NULL,                                             -- 任务变量
+  flow_status     varchar(20) NOT NULL,                                  -- 流程状态（0待提交 1审批中 2 审批通过 8已完成 9已退回 10失效）
+  activity_status int2        NOT NULL DEFAULT 1,                        -- 流程激活状态（0挂起 1激活）
+  def_json        text NULL,                                             -- 流程定义json
+  create_by       varchar(64) NULL     DEFAULT '':: character varying,   -- 创建者
+  create_time     timestamp NULL,                                        -- 创建时间
+  update_time     timestamp NULL,                                        -- 更新时间
+  ext             varchar(500) NULL,                                     -- 扩展字段，预留给业务系统使用
+  del_flag        bpchar(1)    NULL     DEFAULT '0':: character varying, -- 删除标志
+  tenant_id       varchar(40) NULL,                                      -- 租户id
+  CONSTRAINT flow_instance_pkey PRIMARY KEY (id)
 );
 COMMENT
 ON TABLE flow_instance IS '流程实例表';
@@ -237,20 +237,20 @@ ON COLUMN flow_instance.tenant_id IS '租户id';
 
 CREATE TABLE flow_task
 (
-    id            int8         NOT NULL,                             -- 主键id
-    definition_id int8         NOT NULL,                             -- 对应flow_definition表的id
-    instance_id   int8         NOT NULL,                             -- 对应flow_instance表的id
-    node_code     varchar(100) NOT NULL,                             -- 节点编码
-    node_name     varchar(100) NULL,                                 -- 节点名称
-    node_type     int2         NOT NULL,                             -- 节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
-    flow_status   varchar(20)  NOT NULL,                             -- 流程状态（0待提交 1审批中 2 审批通过 8已完成 9已退回 10失效）
-    form_custom   bpchar(1)    NULL DEFAULT 'N':: character varying, -- 审批表单是否自定义（Y是 N否）
-    form_path     varchar(100) NULL,                                 -- 审批表单路径
-    create_time   timestamp NULL,                                    -- 创建时间
-    update_time   timestamp NULL,                                    -- 更新时间
-    del_flag      bpchar(1)    NULL DEFAULT '0':: character varying, -- 删除标志
-    tenant_id     varchar(40) NULL,                                  -- 租户id
-    CONSTRAINT flow_task_pkey PRIMARY KEY (id)
+  id            int8         NOT NULL,                             -- 主键id
+  definition_id int8         NOT NULL,                             -- 对应flow_definition表的id
+  instance_id   int8         NOT NULL,                             -- 对应flow_instance表的id
+  node_code     varchar(100) NOT NULL,                             -- 节点编码
+  node_name     varchar(100) NULL,                                 -- 节点名称
+  node_type     int2         NOT NULL,                             -- 节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
+  flow_status   varchar(20)  NOT NULL,                             -- 流程状态（0待提交 1审批中 2 审批通过 8已完成 9已退回 10失效）
+  form_custom   bpchar(1)    NULL DEFAULT 'N':: character varying, -- 审批表单是否自定义（Y是 N否）
+  form_path     varchar(100) NULL,                                 -- 审批表单路径
+  create_time   timestamp NULL,                                    -- 创建时间
+  update_time   timestamp NULL,                                    -- 更新时间
+  del_flag      bpchar(1)    NULL DEFAULT '0':: character varying, -- 删除标志
+  tenant_id     varchar(40) NULL,                                  -- 租户id
+  CONSTRAINT flow_task_pkey PRIMARY KEY (id)
 );
 COMMENT
 ON TABLE flow_task IS '待办任务表';
@@ -284,30 +284,30 @@ ON COLUMN flow_task.tenant_id IS '租户id';
 
 CREATE TABLE flow_his_task
 (
-    id               int8        NOT NULL,                                  -- 主键id
-    definition_id    int8        NOT NULL,                                  -- 对应flow_definition表的id
-    instance_id      int8        NOT NULL,                                  -- 对应flow_instance表的id
-    task_id          int8        NOT NULL,                                  -- 对应flow_task表的id
-    node_code        varchar(100) NULL,                                     -- 开始节点编码
-    node_name        varchar(100) NULL,                                     -- 开始节点名称
-    node_type        int2 NULL,                                             -- 开始节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
-    target_node_code varchar(200) NULL,                                     -- 目标节点编码
-    target_node_name varchar(200) NULL,                                     -- 结束节点名称
-    approver         varchar(40) NULL,                                      -- 审批者
-    cooperate_type   int2        NOT NULL DEFAULT 0,                        -- 协作方式(1审批 2转办 3委派 4会签 5票签 6加签 7减签)
-    collaborator     varchar(40) NULL,                                      -- 协作人(只有转办、会签、票签、委派)
-    skip_type        varchar(10) NULL,                                      -- 流转类型（PASS通过 REJECT退回 NONE无动作）
-    flow_status      varchar(20) NOT NULL,                                  -- 流程状态（0待提交 1审批中 2 审批通过 8已完成 9已退回 10失效）
-    form_custom      bpchar(1)    NULL     DEFAULT 'N':: character varying, -- 审批表单是否自定义（Y是 N否）
-    form_path        varchar(100) NULL,                                     -- 审批表单路径
-    ext              text NULL,                                             -- 扩展字段，预留给业务系统使用
-    message          varchar(500) NULL,                                     -- 审批意见
-    variable         text NULL,                                             -- 任务变量
-    create_time      timestamp NULL,                                        -- 创建时间
-    update_time      timestamp NULL,                                        -- 更新时间
-    del_flag         bpchar(1)    NULL     DEFAULT '0':: character varying, -- 删除标志
-    tenant_id        varchar(40) NULL,                                      -- 租户id
-    CONSTRAINT flow_his_task_pkey PRIMARY KEY (id)
+  id               int8        NOT NULL,                                  -- 主键id
+  definition_id    int8        NOT NULL,                                  -- 对应flow_definition表的id
+  instance_id      int8        NOT NULL,                                  -- 对应flow_instance表的id
+  task_id          int8        NOT NULL,                                  -- 对应flow_task表的id
+  node_code        varchar(100) NULL,                                     -- 开始节点编码
+  node_name        varchar(100) NULL,                                     -- 开始节点名称
+  node_type        int2 NULL,                                             -- 开始节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）
+  target_node_code varchar(200) NULL,                                     -- 目标节点编码
+  target_node_name varchar(200) NULL,                                     -- 结束节点名称
+  approver         varchar(40) NULL,                                      -- 审批者
+  cooperate_type   int2        NOT NULL DEFAULT 0,                        -- 协作方式(1审批 2转办 3委派 4会签 5票签 6加签 7减签)
+  collaborator     varchar(40) NULL,                                      -- 协作人(只有转办、会签、票签、委派)
+  skip_type        varchar(10) NULL,                                      -- 流转类型（PASS通过 REJECT退回 NONE无动作）
+  flow_status      varchar(20) NOT NULL,                                  -- 流程状态（0待提交 1审批中 2 审批通过 8已完成 9已退回 10失效）
+  form_custom      bpchar(1)    NULL     DEFAULT 'N':: character varying, -- 审批表单是否自定义（Y是 N否）
+  form_path        varchar(100) NULL,                                     -- 审批表单路径
+  ext              text NULL,                                             -- 扩展字段，预留给业务系统使用
+  message          varchar(500) NULL,                                     -- 审批意见
+  variable         text NULL,                                             -- 任务变量
+  create_time      timestamp NULL,                                        -- 创建时间
+  update_time      timestamp NULL,                                        -- 更新时间
+  del_flag         bpchar(1)    NULL     DEFAULT '0':: character varying, -- 删除标志
+  tenant_id        varchar(40) NULL,                                      -- 租户id
+  CONSTRAINT flow_his_task_pkey PRIMARY KEY (id)
 );
 COMMENT
 ON TABLE flow_his_task IS '历史任务记录表';
@@ -361,16 +361,16 @@ ON COLUMN flow_his_task.tenant_id IS '租户id';
 
 CREATE TABLE flow_user
 (
-    id           int8 NOT NULL,                                    -- 主键id
-    "type"       bpchar(1)   NOT NULL,                             -- 人员类型（1待办任务的审批人权限 2待办任务的转办人权限 3流程实例的抄送人权限 4待办任务的委托人权限）
-    processed_by varchar(80) NULL,                                 -- 权限人
-    associated   int8 NOT NULL,                                    -- 任务表id
-    create_time  timestamp NULL,                                   -- 创建时间
-    create_by    varchar(80) NULL,                                 -- 创建人
-    update_time  timestamp NULL,                                   -- 更新时间
-    del_flag     bpchar(1)   NULL DEFAULT '0':: character varying, -- 删除标志
-    tenant_id    varchar(40) NULL,                                 -- 租户id
-    CONSTRAINT flow_user_pk PRIMARY KEY (id)
+  id           int8 NOT NULL,                                    -- 主键id
+  "type"       bpchar(1)   NOT NULL,                             -- 人员类型（1待办任务的审批人权限 2待办任务的转办人权限 3流程实例的抄送人权限 4待办任务的委托人权限）
+  processed_by varchar(80) NULL,                                 -- 权限人
+  associated   int8 NOT NULL,                                    -- 任务表id
+  create_time  timestamp NULL,                                   -- 创建时间
+  create_by    varchar(80) NULL,                                 -- 创建人
+  update_time  timestamp NULL,                                   -- 更新时间
+  del_flag     bpchar(1)   NULL DEFAULT '0':: character varying, -- 删除标志
+  tenant_id    varchar(40) NULL,                                 -- 租户id
+  CONSTRAINT flow_user_pk PRIMARY KEY (id)
 );
 CREATE INDEX user_processed_type ON flow_user USING btree (processed_by, type);
 CREATE INDEX user_associated_idx ON FLOW_USER USING btree (associated);
@@ -401,19 +401,19 @@ ON COLUMN flow_user.tenant_id IS '租户id';
 -- ----------------------------
 CREATE TABLE flow_category
 (
-    category_id   int8        NOT NULL,
-    tenant_id     VARCHAR(20)  DEFAULT '000000'::varchar,
-    parent_id     int8         DEFAULT 0,
-    ancestors     VARCHAR(500) DEFAULT ''::varchar,
-    category_name VARCHAR(30) NOT NULL,
-    order_num     INT          DEFAULT 0,
-    del_flag      CHAR         DEFAULT '0'::bpchar,
-    create_dept   int8,
-    create_by     int8,
-    create_time   TIMESTAMP,
-    update_by     int8,
-    update_time   TIMESTAMP,
-    PRIMARY KEY (category_id)
+  category_id   int8        NOT NULL,
+  tenant_id     VARCHAR(20)  DEFAULT '000000'::varchar,
+  parent_id     int8         DEFAULT 0,
+  ancestors     VARCHAR(500) DEFAULT ''::varchar,
+  category_name VARCHAR(30) NOT NULL,
+  order_num     INT          DEFAULT 0,
+  del_flag      CHAR         DEFAULT '0'::bpchar,
+  create_dept   int8,
+  create_by     int8,
+  create_time   TIMESTAMP,
+  update_by     int8,
+  update_time   TIMESTAMP,
+  PRIMARY KEY (category_id)
 );
 
 COMMENT
@@ -469,20 +469,20 @@ VALUES (109, '000000', 102, '0,100,102', '离职', 2, '0', 103, 1, now(), NULL, 
 -- ----------------------------
 CREATE TABLE test_leave
 (
-    id          int8         NOT NULL,
-    tenant_id   VARCHAR(20) DEFAULT '000000'::varchar,
-    leave_type  VARCHAR(255) NOT NULL,
-    start_date  TIMESTAMP    NOT NULL,
-    end_date    TIMESTAMP    NOT NULL,
-    leave_days  int2         NOT NULL,
-    remark      VARCHAR(255),
-    status      VARCHAR(255),
-    create_dept int8,
-    create_by   int8,
-    create_time TIMESTAMP,
-    update_by   int8,
-    update_time TIMESTAMP,
-    PRIMARY KEY (id)
+  id          int8         NOT NULL,
+  tenant_id   VARCHAR(20) DEFAULT '000000'::varchar,
+  leave_type  VARCHAR(255) NOT NULL,
+  start_date  TIMESTAMP    NOT NULL,
+  end_date    TIMESTAMP    NOT NULL,
+  leave_days  int2         NOT NULL,
+  remark      VARCHAR(255),
+  status      VARCHAR(255),
+  create_dept int8,
+  create_by   int8,
+  create_time TIMESTAMP,
+  update_by   int8,
+  update_time TIMESTAMP,
+  PRIMARY KEY (id)
 );
 
 COMMENT
@@ -518,43 +518,43 @@ ON COLUMN test_leave.update_time IS '更新时间';
 -- for AT mode you must to init this sql for you business database. the seata server not need it.
 CREATE TABLE IF NOT EXISTS public.undo_log
 (
-    id
-    SERIAL
-    NOT
-    NULL,
-    branch_id
-    BIGINT
-    NOT
-    NULL,
-    xid
-    VARCHAR
+  id
+  SERIAL
+  NOT
+  NULL,
+  branch_id
+  BIGINT
+  NOT
+  NULL,
+  xid
+  VARCHAR
 (
-    128
+  128
 ) NOT NULL,
-    context VARCHAR
+  context VARCHAR
 (
-    128
+  128
 ) NOT NULL,
-    rollback_info BYTEA NOT NULL,
-    log_status INT NOT NULL,
-    log_created TIMESTAMP
+  rollback_info BYTEA NOT NULL,
+  log_status INT NOT NULL,
+  log_created TIMESTAMP
 (
-    0
+  0
 ) NOT NULL,
-    log_modified TIMESTAMP
+  log_modified TIMESTAMP
 (
-    0
+  0
 ) NOT NULL,
-    CONSTRAINT pk_undo_log PRIMARY KEY
+  CONSTRAINT pk_undo_log PRIMARY KEY
 (
-    id
+  id
 ),
-    CONSTRAINT ux_undo_log UNIQUE
+  CONSTRAINT ux_undo_log UNIQUE
 (
-    xid,
-    branch_id
+  xid,
+  branch_id
 )
-    );
+  );
 CREATE INDEX ix_log_created ON undo_log (log_created);
 
 COMMENT

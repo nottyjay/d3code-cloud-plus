@@ -2,6 +2,7 @@ package com.alphay.boot.system.api.domain.param;
 
 import com.alphay.boot.common.core.domain.param.PageReqParam;
 import java.util.Date;
+import java.util.List;
 import lombok.Data;
 
 /**
@@ -17,6 +18,8 @@ public class SysRoleQueryParam extends PageReqParam {
   private String roleName;
   private String status;
   private String roleKey;
+
+  private List<Long> roleIds;
 
   private Date[] createTime;
 }

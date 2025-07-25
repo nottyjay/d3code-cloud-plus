@@ -10,9 +10,7 @@ import com.alphay.boot.common.core.utils.MapstructUtils;
 import com.alphay.boot.common.core.utils.StreamUtils;
 import com.alphay.boot.common.core.utils.StringUtils;
 import com.alphay.boot.common.core.utils.TreeBuildUtils;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
 import com.alphay.boot.common.satoken.utils.LoginHelper;
-import com.alphay.boot.system.api.domain.param.SysMenuQueryParam;
 import com.alphay.boot.system.domain.SysMenu;
 import com.alphay.boot.system.domain.SysRole;
 import com.alphay.boot.system.domain.SysRoleMenu;
@@ -28,24 +26,25 @@ import com.alphay.boot.system.mapper.SysTenantPackageMapper;
 import com.alphay.boot.system.service.ISysMenuService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import jakarta.annotation.Resource;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import java.util.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 菜单 业务层处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
-public class SysMenuServiceImpl extends ServiceImplX<SysMenuMapper, SysMenu, SysMenuVo>
-    implements ISysMenuService {
+public class SysMenuServiceImpl implements ISysMenuService {
 
-  @Resource private SysRoleMapper roleMapper;
-  @Resource private SysRoleMenuMapper roleMenuMapper;
-  @Resource private SysTenantPackageMapper tenantPackageMapper;
+  private final SysMenuMapper baseMapper;
+  private final SysRoleMapper roleMapper;
+  private final SysRoleMenuMapper roleMenuMapper;
+  private final SysTenantPackageMapper tenantPackageMapper;
 
   /**
    * 根据用户查询系统菜单列表
@@ -54,42 +53,57 @@ public class SysMenuServiceImpl extends ServiceImplX<SysMenuMapper, SysMenu, Sys
    * @return 菜单列表
    */
   @Override
-  public List<SysMenuVo> queryList(Long userId) {
-    return queryList(new SysMenuQueryParam(), userId);
+  public List<SysMenuVo> selectMenuList(Long userId) {
+    return selectMenuList(new SysMenuBo(), userId);
   }
 
   /**
    * 查询系统菜单列表
    *
-   * @param param 菜单信息
+   * @param menu 菜单信息
    * @return 菜单列表
    */
   @Override
-  public List<SysMenuVo> queryList(SysMenuQueryParam param, Long userId) {
+  public List<SysMenuVo> selectMenuList(SysMenuBo menu, Long userId) {
     List<SysMenuVo> menuList;
     // 管理员显示所有菜单信息
     if (LoginHelper.isSuperAdmin(userId)) {
       menuList =
-          listVo(
-              this.lambdaQueryWrapper()
-                  .likeIfPresent(SysMenu::getMenuName, param.getMenuName())
-                  .eqIfPresent(SysMenu::getVisible, param.getVisible())
-                  .eqIfPresent(SysMenu::getStatus, param.getStatus())
-                  .eqIfPresent(SysMenu::getMenuType, param.getMenuType())
-                  .eqIfPresent(SysMenu::getParentId, param.getParentId())
+          baseMapper.selectVoList(
+              new LambdaQueryWrapper<SysMenu>()
+                  .like(
+                      StringUtils.isNotBlank(menu.getMenuName()),
+                      SysMenu::getMenuName,
+                      menu.getMenuName())
+                  .eq(
+                      StringUtils.isNotBlank(menu.getVisible()),
+                      SysMenu::getVisible,
+                      menu.getVisible())
+                  .eq(
+                      StringUtils.isNotBlank(menu.getStatus()),
+                      SysMenu::getStatus,
+                      menu.getStatus())
+                  .eq(
+                      StringUtils.isNotBlank(menu.getMenuType()),
+                      SysMenu::getMenuType,
+                      menu.getMenuType())
+                  .eq(
+                      ObjectUtil.isNotNull(menu.getParentId()),
+                      SysMenu::getParentId,
+                      menu.getParentId())
                   .orderByAsc(SysMenu::getParentId)
                   .orderByAsc(SysMenu::getOrderNum));
     } else {
-      QueryWrapper<SysMenu> wrapper =
-          this.queryWrapper()
-              .inSql("r.role_id", "select role_id from sys_user_role where user_id = " + userId)
-              .likeIfPresent("m.menu_name", param.getMenuName())
-              .eqIfPresent("m.visible", param.getVisible())
-              .eqIfPresent("m.status", param.getStatus())
-              .eqIfPresent("m.menu_type", param.getMenuType())
-              .eqIfPresent("m.parent_id", param.getParentId())
-              .orderByAsc("m.parent_id")
-              .orderByAsc("m.order_num");
+      QueryWrapper<SysMenu> wrapper = Wrappers.query();
+      wrapper
+          .inSql("r.role_id", "select role_id from sys_user_role where user_id = " + userId)
+          .like(StringUtils.isNotBlank(menu.getMenuName()), "m.menu_name", menu.getMenuName())
+          .eq(StringUtils.isNotBlank(menu.getVisible()), "m.visible", menu.getVisible())
+          .eq(StringUtils.isNotBlank(menu.getStatus()), "m.status", menu.getStatus())
+          .eq(StringUtils.isNotBlank(menu.getMenuType()), "m.menu_type", menu.getMenuType())
+          .eq(ObjectUtil.isNotNull(menu.getParentId()), "m.parent_id", menu.getParentId())
+          .orderByAsc("m.parent_id")
+          .orderByAsc("m.order_num");
       List<SysMenu> list = baseMapper.selectMenuListByUserId(wrapper);
       menuList = MapstructUtils.convert(list, SysMenuVo.class);
     }
@@ -103,7 +117,7 @@ public class SysMenuServiceImpl extends ServiceImplX<SysMenuMapper, SysMenu, Sys
    * @return 权限列表
    */
   @Override
-  public Set<String> fetchMenuPermsByUserId(Long userId) {
+  public Set<String> selectMenuPermsByUserId(Long userId) {
     List<String> perms = baseMapper.selectMenuPermsByUserId(userId);
     Set<String> permsSet = new HashSet<>();
     for (String perm : perms) {
@@ -121,7 +135,7 @@ public class SysMenuServiceImpl extends ServiceImplX<SysMenuMapper, SysMenu, Sys
    * @return 权限列表
    */
   @Override
-  public Set<String> fetchMenuPermsByRoleId(Long roleId) {
+  public Set<String> selectMenuPermsByRoleId(Long roleId) {
     List<String> perms = baseMapper.selectMenuPermsByRoleId(roleId);
     Set<String> permsSet = new HashSet<>();
     for (String perm : perms) {
@@ -139,7 +153,7 @@ public class SysMenuServiceImpl extends ServiceImplX<SysMenuMapper, SysMenu, Sys
    * @return 菜单列表
    */
   @Override
-  public List<SysMenu> queryMenuTreeByUserId(Long userId) {
+  public List<SysMenu> selectMenuTreeByUserId(Long userId) {
     List<SysMenu> menus;
     if (LoginHelper.isSuperAdmin(userId)) {
       menus = baseMapper.selectMenuTreeAll();
@@ -156,7 +170,7 @@ public class SysMenuServiceImpl extends ServiceImplX<SysMenuMapper, SysMenu, Sys
    * @return 选中菜单列表
    */
   @Override
-  public List<Long> fetchMenuListByRoleId(Long roleId) {
+  public List<Long> selectMenuListByRoleId(Long roleId) {
     SysRole role = roleMapper.selectById(roleId);
     return baseMapper.selectMenuListByRoleId(roleId, role.getMenuCheckStrictly());
   }
@@ -168,7 +182,7 @@ public class SysMenuServiceImpl extends ServiceImplX<SysMenuMapper, SysMenu, Sys
    * @return 选中菜单列表
    */
   @Override
-  public List<Long> fetchMenuListByPackageId(Long packageId) {
+  public List<Long> selectMenuListByPackageId(Long packageId) {
     SysTenantPackage tenantPackage = tenantPackageMapper.selectById(packageId);
     List<Long> menuIds = StringUtils.splitTo(tenantPackage.getMenuIds(), Convert::toLong);
     if (CollUtil.isEmpty(menuIds)) {
@@ -280,6 +294,17 @@ public class SysMenuServiceImpl extends ServiceImplX<SysMenuMapper, SysMenu, Sys
           menuTree.put("menuType", menu.getMenuType());
           menuTree.put("icon", menu.getIcon());
         });
+  }
+
+  /**
+   * 根据菜单ID查询信息
+   *
+   * @param menuId 菜单ID
+   * @return 菜单信息
+   */
+  @Override
+  public SysMenuVo selectMenuById(Long menuId) {
+    return baseMapper.selectVoById(menuId);
   }
 
   /**

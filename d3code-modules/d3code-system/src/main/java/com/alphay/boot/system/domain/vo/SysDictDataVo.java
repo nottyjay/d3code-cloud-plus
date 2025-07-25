@@ -14,8 +14,7 @@ import lombok.Data;
 /**
  * 字典数据视图对象 sys_dict_data
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @ExcelIgnoreUnannotated

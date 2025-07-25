@@ -5,22 +5,22 @@ import com.alphay.boot.common.satoken.utils.LoginHelper;
 import com.alphay.boot.system.service.ISysMenuService;
 import com.alphay.boot.system.service.ISysPermissionService;
 import com.alphay.boot.system.service.ISysRoleService;
-import jakarta.annotation.Resource;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
  * 用户权限处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author ruoyi
  */
+@RequiredArgsConstructor
 @Service
 public class SysPermissionServiceImpl implements ISysPermissionService {
 
-  @Resource private ISysRoleService roleService;
-  @Resource private ISysMenuService menuService;
+  private final ISysRoleService roleService;
+  private final ISysMenuService menuService;
 
   /**
    * 获取角色数据权限
@@ -35,7 +35,7 @@ public class SysPermissionServiceImpl implements ISysPermissionService {
     if (LoginHelper.isSuperAdmin(userId)) {
       roles.add(TenantConstants.SUPER_ADMIN_ROLE_KEY);
     } else {
-      roles.addAll(roleService.fetchPermissionByUserId(userId));
+      roles.addAll(roleService.selectRolePermissionByUserId(userId));
     }
     return roles;
   }
@@ -53,7 +53,7 @@ public class SysPermissionServiceImpl implements ISysPermissionService {
     if (LoginHelper.isSuperAdmin(userId)) {
       perms.add("*:*:*");
     } else {
-      perms.addAll(menuService.fetchMenuPermsByUserId(userId));
+      perms.addAll(menuService.selectMenuPermsByUserId(userId));
     }
     return perms;
   }

@@ -15,8 +15,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 菜单权限业务对象 sys_menu
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

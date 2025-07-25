@@ -12,8 +12,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 通知公告业务对象 sys_notice
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

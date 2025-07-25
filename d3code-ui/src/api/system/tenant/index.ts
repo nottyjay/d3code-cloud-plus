@@ -1,6 +1,6 @@
 import request from '@/utils/request'
-import { TenantForm, TenantQuery, TenantVO } from './types'
-import { AxiosPromise } from 'axios'
+import {TenantForm, TenantQuery, TenantVO} from './types'
+import {AxiosPromise} from 'axios'
 
 // 查询租户列表
 export function listTenant(query: TenantQuery): AxiosPromise<TenantVO[]> {

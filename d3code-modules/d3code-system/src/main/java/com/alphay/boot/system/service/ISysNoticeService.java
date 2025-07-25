@@ -1,9 +1,7 @@
 package com.alphay.boot.system.service;
 
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.IServiceX;
-import com.alphay.boot.system.api.domain.param.SysNoticeQueryParam;
-import com.alphay.boot.system.domain.SysNotice;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.bo.SysNoticeBo;
 import com.alphay.boot.system.domain.vo.SysNoticeVo;
 import java.util.List;
@@ -11,20 +9,27 @@ import java.util.List;
 /**
  * 公告 服务层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface ISysNoticeService extends IServiceX<SysNotice, SysNoticeVo> {
+public interface ISysNoticeService {
 
-  PageResult<SysNoticeVo> queryPageList(SysNoticeQueryParam param);
+  TableDataInfo<SysNoticeVo> selectPageNoticeList(SysNoticeBo notice, PageQuery pageQuery);
+
+  /**
+   * 查询公告信息
+   *
+   * @param noticeId 公告ID
+   * @return 公告信息
+   */
+  SysNoticeVo selectNoticeById(Long noticeId);
 
   /**
    * 查询公告列表
    *
-   * @param param 公告信息
+   * @param notice 公告信息
    * @return 公告集合
    */
-  List<SysNoticeVo> queryList(SysNoticeQueryParam param);
+  List<SysNoticeVo> selectNoticeList(SysNoticeBo notice);
 
   /**
    * 新增公告

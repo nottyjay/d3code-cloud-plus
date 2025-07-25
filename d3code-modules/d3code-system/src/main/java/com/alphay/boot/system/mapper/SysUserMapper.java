@@ -2,7 +2,7 @@ package com.alphay.boot.system.mapper;
 
 import com.alphay.boot.common.mybatis.annotation.DataColumn;
 import com.alphay.boot.common.mybatis.annotation.DataPermission;
-import com.alphay.boot.common.mybatis.core.mapper.BaseMapperX;
+import com.alphay.boot.common.mybatis.core.mapper.BaseMapperPlus;
 import com.alphay.boot.system.domain.SysUser;
 import com.alphay.boot.system.domain.vo.SysUserExportVo;
 import com.alphay.boot.system.domain.vo.SysUserVo;
@@ -16,17 +16,24 @@ import org.apache.ibatis.annotations.Param;
 /**
  * 用户表 数据层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface SysUserMapper extends BaseMapperX<SysUser> {
+public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
+
+  @DataPermission({
+    @DataColumn(key = "deptName", value = "dept_id"),
+    @DataColumn(key = "userName", value = "user_id")
+  })
+  default Page<SysUserVo> selectPageUserList(Page<SysUser> page, Wrapper<SysUser> queryWrapper) {
+    return this.selectVoPage(page, queryWrapper);
+  }
 
   @DataPermission({
     @DataColumn(key = "deptName", value = "dept_id"),
     @DataColumn(key = "userName", value = "user_id")
   })
   default List<SysUserVo> selectUserList(Wrapper<SysUser> queryWrapper) {
-    return this.selectList(queryWrapper, SysUserVo.class);
+    return this.selectVoList(queryWrapper);
   }
 
   /**

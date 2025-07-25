@@ -2,22 +2,22 @@ package com.alphay.boot.system.dubbo;
 
 import com.alphay.boot.system.api.RemotePermissionService;
 import com.alphay.boot.system.service.ISysPermissionService;
-import jakarta.annotation.Resource;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
 /**
  * 权限服务
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemotePermissionServiceImpl implements RemotePermissionService {
 
-  @Resource private ISysPermissionService permissionService;
+  private final ISysPermissionService permissionService;
 
   @Override
   public Set<String> getRolePermission(Long userId) {

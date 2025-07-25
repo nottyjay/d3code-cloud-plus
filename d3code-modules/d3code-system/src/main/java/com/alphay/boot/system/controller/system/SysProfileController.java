@@ -15,15 +15,14 @@ import com.alphay.boot.common.satoken.utils.LoginHelper;
 import com.alphay.boot.common.web.core.BaseController;
 import com.alphay.boot.resource.api.RemoteFileService;
 import com.alphay.boot.resource.api.domain.RemoteFile;
-import com.alphay.boot.system.api.domain.param.SysUserQueryParam;
 import com.alphay.boot.system.domain.bo.SysUserBo;
 import com.alphay.boot.system.domain.bo.SysUserPasswordBo;
 import com.alphay.boot.system.domain.bo.SysUserProfileBo;
 import com.alphay.boot.system.domain.vo.SysUserVo;
 import com.alphay.boot.system.service.ISysUserService;
-import jakarta.annotation.Resource;
 import java.io.IOException;
 import java.util.Arrays;
+import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.seata.spring.annotation.GlobalTransactional;
 import org.springframework.http.MediaType;
@@ -34,22 +33,22 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 个人信息 业务处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/user/profile")
 public class SysProfileController extends BaseController {
 
-  @Resource private ISysUserService userService;
+  private final ISysUserService userService;
 
   @DubboReference private RemoteFileService remoteFileService;
 
   /** 个人信息 */
   @GetMapping
   public R<ProfileVo> profile() {
-    SysUserVo user = userService.getVoById(LoginHelper.getUserId());
+    SysUserVo user = userService.selectUserById(LoginHelper.getUserId());
     String roleGroup = userService.selectUserRoleGroup(user.getUserId());
     String postGroup = userService.selectUserPostGroup(user.getUserId());
     ProfileVo profileVo = new ProfileVo(user, roleGroup, postGroup);
@@ -61,17 +60,16 @@ public class SysProfileController extends BaseController {
   @Log(title = "个人信息", businessType = BusinessType.UPDATE)
   @PutMapping
   public R<Void> updateProfile(@Validated @RequestBody SysUserProfileBo profile) {
-    SysUserQueryParam param = BeanUtil.toBean(profile, SysUserQueryParam.class);
-    param.setUserId(LoginHelper.getUserId());
+    SysUserBo user = BeanUtil.toBean(profile, SysUserBo.class);
+    user.setUserId(LoginHelper.getUserId());
     String username = LoginHelper.getUsername();
-    if (StringUtils.isNotEmpty(param.getPhonenumber()) && !userService.checkPhoneUnique(param)) {
+    if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
       return R.fail("修改用户'" + username + "'失败，手机号码已存在");
     }
-    if (StringUtils.isNotEmpty(param.getEmail()) && !userService.checkEmailUnique(param)) {
+    if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
       return R.fail("修改用户'" + username + "'失败，邮箱账号已存在");
     }
-    SysUserBo userBo = BeanUtil.toBean(param, SysUserBo.class);
-    int rows = DataPermissionHelper.ignore(() -> userService.updateUserProfile(userBo));
+    int rows = DataPermissionHelper.ignore(() -> userService.updateUserProfile(user));
     if (rows > 0) {
       return R.ok();
     }
@@ -88,7 +86,7 @@ public class SysProfileController extends BaseController {
   @Log(title = "个人信息", businessType = BusinessType.UPDATE)
   @PutMapping("/updatePwd")
   public R<Void> updatePwd(@Validated @RequestBody SysUserPasswordBo bo) {
-    SysUserVo user = userService.getVoById(LoginHelper.getUserId());
+    SysUserVo user = userService.selectUserById(LoginHelper.getUserId());
     String password = user.getPassword();
     if (!BCrypt.checkpw(bo.getOldPassword(), password)) {
       return R.fail("修改密码失败，旧密码错误");

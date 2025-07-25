@@ -1,9 +1,7 @@
 package com.alphay.boot.system.service;
 
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.IServiceX;
-import com.alphay.boot.system.api.domain.param.SysLogininforQueryParam;
-import com.alphay.boot.system.domain.SysLogininfor;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.bo.SysLogininforBo;
 import com.alphay.boot.system.domain.vo.SysLogininforVo;
 import java.util.List;
@@ -11,12 +9,12 @@ import java.util.List;
 /**
  * 系统访问日志情况信息 服务层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface ISysLogininforService extends IServiceX<SysLogininfor, SysLogininforVo> {
+public interface ISysLogininforService {
 
-  PageResult<SysLogininforVo> queryPageList(SysLogininforQueryParam param);
+  TableDataInfo<SysLogininforVo> selectPageLogininforList(
+      SysLogininforBo logininfor, PageQuery pageQuery);
 
   /**
    * 新增系统登录日志
@@ -28,10 +26,10 @@ public interface ISysLogininforService extends IServiceX<SysLogininfor, SysLogin
   /**
    * 查询系统登录日志集合
    *
-   * @param param 访问日志对象
+   * @param logininfor 访问日志对象
    * @return 登录记录集合
    */
-  List<SysLogininforVo> queryList(SysLogininforQueryParam param);
+  List<SysLogininforVo> selectLogininforList(SysLogininforBo logininfor);
 
   /**
    * 批量删除系统登录日志

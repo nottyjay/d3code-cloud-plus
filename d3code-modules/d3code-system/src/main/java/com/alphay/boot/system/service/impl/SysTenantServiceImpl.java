@@ -15,20 +15,21 @@ import com.alphay.boot.common.core.utils.MapstructUtils;
 import com.alphay.boot.common.core.utils.SpringUtils;
 import com.alphay.boot.common.core.utils.StreamUtils;
 import com.alphay.boot.common.core.utils.StringUtils;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.redis.utils.CacheUtils;
 import com.alphay.boot.common.tenant.core.TenantEntity;
 import com.alphay.boot.common.tenant.helper.TenantHelper;
-import com.alphay.boot.system.api.domain.param.SysTenantQueryParam;
 import com.alphay.boot.system.domain.*;
 import com.alphay.boot.system.domain.bo.SysTenantBo;
 import com.alphay.boot.system.domain.vo.SysTenantVo;
 import com.alphay.boot.system.mapper.*;
 import com.alphay.boot.system.service.ISysTenantService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import jakarta.annotation.Resource;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -37,58 +38,79 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 租户Service业务层处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
+@RequiredArgsConstructor
 @Service
-public class SysTenantServiceImpl extends ServiceImplX<SysTenantMapper, SysTenant, SysTenantVo>
-    implements ISysTenantService {
+public class SysTenantServiceImpl implements ISysTenantService {
 
-  @Resource private SysTenantPackageMapper tenantPackageMapper;
-  @Resource private SysUserMapper userMapper;
-  @Resource private SysDeptMapper deptMapper;
-  @Resource private SysRoleMapper roleMapper;
-  @Resource private SysRoleMenuMapper roleMenuMapper;
-  @Resource private SysRoleDeptMapper roleDeptMapper;
-  @Resource private SysUserRoleMapper userRoleMapper;
-  @Resource private SysDictTypeMapper dictTypeMapper;
-  @Resource private SysDictDataMapper dictDataMapper;
-  @Resource private SysConfigMapper configMapper;
+  private final SysTenantMapper baseMapper;
+  private final SysTenantPackageMapper tenantPackageMapper;
+  private final SysUserMapper userMapper;
+  private final SysDeptMapper deptMapper;
+  private final SysRoleMapper roleMapper;
+  private final SysRoleMenuMapper roleMenuMapper;
+  private final SysRoleDeptMapper roleDeptMapper;
+  private final SysUserRoleMapper userRoleMapper;
+  private final SysDictTypeMapper dictTypeMapper;
+  private final SysDictDataMapper dictDataMapper;
+  private final SysConfigMapper configMapper;
+
+  /** 查询租户 */
+  @Override
+  public SysTenantVo queryById(Long id) {
+    return baseMapper.selectVoById(id);
+  }
 
   /** 基于租户ID查询租户 */
   @Cacheable(cacheNames = CacheNames.SYS_TENANT, key = "#tenantId")
   @Override
-  public SysTenantVo getVoByTenantId(String tenantId) {
-    return getOneVo(SysTenant::getTenantId, tenantId);
+  public SysTenantVo queryByTenantId(String tenantId) {
+    return baseMapper.selectVoOne(
+        new LambdaQueryWrapper<SysTenant>().eq(SysTenant::getTenantId, tenantId));
   }
 
   /** 查询租户列表 */
   @Override
-  public PageResult<SysTenantVo> queryPageList(SysTenantQueryParam param) {
-    return listPageVo(param, buildQueryWrapper(param));
+  public TableDataInfo<SysTenantVo> queryPageList(SysTenantBo bo, PageQuery pageQuery) {
+    LambdaQueryWrapper<SysTenant> lqw = buildQueryWrapper(bo);
+    Page<SysTenantVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+    return TableDataInfo.build(result);
   }
 
   /** 查询租户列表 */
   @Override
-  public List<SysTenantVo> queryList(SysTenantQueryParam param) {
-    return listVo(buildQueryWrapper(param));
+  public List<SysTenantVo> queryList(SysTenantBo bo) {
+    LambdaQueryWrapper<SysTenant> lqw = buildQueryWrapper(bo);
+    return baseMapper.selectVoList(lqw);
   }
 
-  private LambdaQueryWrapper<SysTenant> buildQueryWrapper(SysTenantQueryParam param) {
-    LambdaQueryWrapper<SysTenant> lqw =
-        this.lambdaQueryWrapper()
-            .eqIfPresent(SysTenant::getTenantId, param.getTenantId())
-            .likeIfPresent(SysTenant::getContactUserName, param.getContactUserName())
-            .eqIfPresent(SysTenant::getContactPhone, param.getContactPhone())
-            .likeIfPresent(SysTenant::getCompanyName, param.getCompanyName())
-            .eqIfPresent(SysTenant::getLicenseNumber, param.getLicenseNumber())
-            .eqIfPresent(SysTenant::getAddress, param.getAddress())
-            .eqIfPresent(SysTenant::getIntro, param.getIntro())
-            .likeIfPresent(SysTenant::getDomain, param.getDomain())
-            .eqIfPresent(SysTenant::getPackageId, param.getPackageId())
-            .eqIfPresent(SysTenant::getExpireTime, param.getExpireTime())
-            .eqIfPresent(SysTenant::getAccountCount, param.getAccountCount())
-            .eqIfPresent(SysTenant::getStatus, param.getStatus());
+  private LambdaQueryWrapper<SysTenant> buildQueryWrapper(SysTenantBo bo) {
+    LambdaQueryWrapper<SysTenant> lqw = Wrappers.lambdaQuery();
+    lqw.eq(StringUtils.isNotBlank(bo.getTenantId()), SysTenant::getTenantId, bo.getTenantId());
+    lqw.like(
+        StringUtils.isNotBlank(bo.getContactUserName()),
+        SysTenant::getContactUserName,
+        bo.getContactUserName());
+    lqw.eq(
+        StringUtils.isNotBlank(bo.getContactPhone()),
+        SysTenant::getContactPhone,
+        bo.getContactPhone());
+    lqw.like(
+        StringUtils.isNotBlank(bo.getCompanyName()),
+        SysTenant::getCompanyName,
+        bo.getCompanyName());
+    lqw.eq(
+        StringUtils.isNotBlank(bo.getLicenseNumber()),
+        SysTenant::getLicenseNumber,
+        bo.getLicenseNumber());
+    lqw.eq(StringUtils.isNotBlank(bo.getAddress()), SysTenant::getAddress, bo.getAddress());
+    lqw.eq(StringUtils.isNotBlank(bo.getIntro()), SysTenant::getIntro, bo.getIntro());
+    lqw.like(StringUtils.isNotBlank(bo.getDomain()), SysTenant::getDomain, bo.getDomain());
+    lqw.eq(bo.getPackageId() != null, SysTenant::getPackageId, bo.getPackageId());
+    lqw.eq(bo.getExpireTime() != null, SysTenant::getExpireTime, bo.getExpireTime());
+    lqw.eq(bo.getAccountCount() != null, SysTenant::getAccountCount, bo.getAccountCount());
+    lqw.eq(StringUtils.isNotBlank(bo.getStatus()), SysTenant::getStatus, bo.getStatus());
     lqw.orderByAsc(SysTenant::getId);
     return lqw;
   }
@@ -193,6 +215,9 @@ public class SysTenantServiceImpl extends ServiceImplX<SysTenantMapper, SysTenan
       config.setUpdateTime(null);
     }
     configMapper.insertBatch(sysConfigList);
+
+    // 新增租户流程定义
+    //    remoteWorkflowService.syncDef(tenantId);
     return true;
   }
 
@@ -319,7 +344,7 @@ public class SysTenantServiceImpl extends ServiceImplX<SysTenantMapper, SysTenan
   /** 校验账号余额 */
   @Override
   public boolean checkAccountBalance(String tenantId) {
-    SysTenantVo tenant = SpringUtils.getAopProxy(this).getVoByTenantId(tenantId);
+    SysTenantVo tenant = SpringUtils.getAopProxy(this).queryByTenantId(tenantId);
     // 如果余额为-1代表不限制
     if (tenant.getAccountCount() == -1) {
       return true;
@@ -332,7 +357,7 @@ public class SysTenantServiceImpl extends ServiceImplX<SysTenantMapper, SysTenan
   /** 校验有效期 */
   @Override
   public boolean checkExpireTime(String tenantId) {
-    SysTenantVo tenant = SpringUtils.getAopProxy(this).getVoByTenantId(tenantId);
+    SysTenantVo tenant = SpringUtils.getAopProxy(this).queryByTenantId(tenantId);
     // 如果未设置过期时间代表不限制
     if (ObjectUtil.isNull(tenant.getExpireTime())) {
       return true;
@@ -386,8 +411,8 @@ public class SysTenantServiceImpl extends ServiceImplX<SysTenantMapper, SysTenan
     List<SysDictData> dictDataList = new ArrayList<>();
     TenantHelper.ignore(
         () -> {
-          dictTypeList.addAll(dictTypeMapper.selectList(null));
-          dictDataList.addAll(dictDataMapper.selectList(null));
+          dictTypeList.addAll(dictTypeMapper.selectList());
+          dictDataList.addAll(dictDataMapper.selectList());
         });
     Map<String, List<SysDictType>> typeMap =
         StreamUtils.groupByKey(dictTypeList, TenantEntity::getTenantId);

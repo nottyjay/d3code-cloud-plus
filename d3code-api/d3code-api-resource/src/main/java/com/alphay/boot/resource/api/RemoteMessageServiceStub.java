@@ -1,7 +1,7 @@
 package com.alphay.boot.resource.api;
 
-import lombok.RequiredArgsConstructor;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**

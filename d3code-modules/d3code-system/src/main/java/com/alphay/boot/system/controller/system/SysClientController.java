@@ -8,46 +8,46 @@ import com.alphay.boot.common.excel.utils.ExcelUtil;
 import com.alphay.boot.common.idempotent.annotation.RepeatSubmit;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.web.core.BaseController;
-import com.alphay.boot.system.api.domain.param.SysClientQueryParam;
 import com.alphay.boot.system.domain.bo.SysClientBo;
 import com.alphay.boot.system.domain.vo.SysClientVo;
 import com.alphay.boot.system.service.ISysClientService;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 客户端管理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/client")
 public class SysClientController extends BaseController {
 
-  @Resource private ISysClientService sysClientService;
+  private final ISysClientService sysClientService;
 
   /** 查询客户端管理列表 */
   @SaCheckPermission("system:client:list")
   @GetMapping("/list")
-  public PageResult<SysClientVo> list(SysClientQueryParam param) {
-    return sysClientService.queryPageList(param);
+  public TableDataInfo<SysClientVo> list(SysClientBo bo, PageQuery pageQuery) {
+    return sysClientService.queryPageList(bo, pageQuery);
   }
 
   /** 导出客户端管理列表 */
   @SaCheckPermission("system:client:export")
   @Log(title = "客户端管理", businessType = BusinessType.EXPORT)
   @PostMapping("/export")
-  public void export(SysClientQueryParam param, HttpServletResponse response) {
-    List<SysClientVo> list = sysClientService.queryList(param);
+  public void export(SysClientBo bo, HttpServletResponse response) {
+    List<SysClientVo> list = sysClientService.queryList(bo);
     ExcelUtil.exportExcel(list, "客户端管理", SysClientVo.class, response);
   }
 
@@ -59,7 +59,7 @@ public class SysClientController extends BaseController {
   @SaCheckPermission("system:client:query")
   @GetMapping("/{id}")
   public R<SysClientVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-    return R.ok(sysClientService.getVoById(id));
+    return R.ok(sysClientService.queryById(id));
   }
 
   /** 新增客户端管理 */

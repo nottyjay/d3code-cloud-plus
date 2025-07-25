@@ -4,12 +4,11 @@ import download from '@/plugins/download'
 import auth from '@/plugins/auth'
 import cache from '@/plugins/cache'
 import animate from '@/animate'
-import { useDict } from '@/utils/dict'
-import { addDateRange, handleTree, parseTime, selectDictLabel, selectDictLabels } from '@/utils/d3code'
-import { getConfigKey, updateConfigByKey } from '@/api/system/config'
-import { download as rd } from '@/utils/request'
-import { ComponentCustomProperties } from '@vue/runtime-core';
-import type { LanguageType } from '@/lang'
+import {useDict} from '@/utils/dict'
+import {addDateRange, handleTree, parseTime, selectDictLabel, selectDictLabels} from '@/utils/d3code'
+import {getConfigKey, updateConfigByKey} from '@/api/system/config'
+import {download as rd} from '@/utils/request'
+import type {LanguageType} from '@/lang'
 
 export {}
 
@@ -47,6 +46,6 @@ declare module 'vue' {
  */
 export type ObjKeysToUnion<T, P extends string = ''> = T extends object
   ? {
-      [K in keyof T]: ObjKeysToUnion<T[K], P extends '' ? `${K & string}` : `${P}.${K & string}`>
-    }[keyof T]
+    [K in keyof T]: ObjKeysToUnion<T[K], P extends '' ? `${K & string}` : `${P}.${K & string}`>
+  }[keyof T]
   : P

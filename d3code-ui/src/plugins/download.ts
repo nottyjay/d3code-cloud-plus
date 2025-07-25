@@ -1,8 +1,8 @@
 import axios from 'axios'
 import FileSaver from 'file-saver'
 import errorCode from '@/utils/errorCode'
-import { blobValidate } from '@/utils/d3code'
-import { globalHeaders } from '@/utils/request'
+import {blobValidate} from '@/utils/d3code'
+import {globalHeaders} from '@/utils/request'
 
 const baseURL = import.meta.env.VITE_APP_BASE_API
 let downloadLoadingInstance: ReturnType<typeof ElLoading.service> | null = null
@@ -10,7 +10,7 @@ let downloadLoadingInstance: ReturnType<typeof ElLoading.service> | null = null
 export default {
   async oss(ossId: string | number) {
     const url = baseURL + '/resource/oss/download/' + ossId
-    downloadLoadingInstance = ElLoading.service({ text: '正在下载数据，请稍候', background: 'rgba(0, 0, 0, 0.7)' })
+    downloadLoadingInstance = ElLoading.service({text: '正在下载数据，请稍候', background: 'rgba(0, 0, 0, 0.7)'})
     try {
       const res = await axios({
         method: 'get',
@@ -20,7 +20,7 @@ export default {
       })
       const isBlob = blobValidate(res.data)
       if (isBlob) {
-        const blob = new Blob([res.data], { type: 'application/octet-stream' })
+        const blob = new Blob([res.data], {type: 'application/octet-stream'})
         FileSaver.saveAs(blob, decodeURIComponent(res.headers['download-filename'] as string))
       } else {
         this.printErrMsg(res.data)
@@ -34,7 +34,7 @@ export default {
   },
   async zip(url: string, name: string) {
     url = baseURL + url
-    downloadLoadingInstance = ElLoading.service({ text: '正在下载数据，请稍候', background: 'rgba(0, 0, 0, 0.7)' })
+    downloadLoadingInstance = ElLoading.service({text: '正在下载数据，请稍候', background: 'rgba(0, 0, 0, 0.7)'})
     try {
       const res = await axios({
         method: 'get',
@@ -44,7 +44,7 @@ export default {
       })
       const isBlob = blobValidate(res.data)
       if (isBlob) {
-        const blob = new Blob([res.data], { type: 'application/zip' })
+        const blob = new Blob([res.data], {type: 'application/zip'})
         FileSaver.saveAs(blob, name)
       } else {
         this.printErrMsg(res.data)

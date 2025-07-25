@@ -1,9 +1,7 @@
 package com.alphay.boot.system.service;
 
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.IServiceX;
-import com.alphay.boot.system.api.domain.param.SysTenantQueryParam;
-import com.alphay.boot.system.domain.SysTenant;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.bo.SysTenantBo;
 import com.alphay.boot.system.domain.vo.SysTenantVo;
 import java.util.Collection;
@@ -12,19 +10,21 @@ import java.util.List;
 /**
  * 租户Service接口
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
-public interface ISysTenantService extends IServiceX<SysTenant, SysTenantVo> {
+public interface ISysTenantService {
+
+  /** 查询租户 */
+  SysTenantVo queryById(Long id);
 
   /** 基于租户ID查询租户 */
-  SysTenantVo getVoByTenantId(String tenantId);
+  SysTenantVo queryByTenantId(String tenantId);
 
   /** 查询租户列表 */
-  PageResult<SysTenantVo> queryPageList(SysTenantQueryParam param);
+  TableDataInfo<SysTenantVo> queryPageList(SysTenantBo bo, PageQuery pageQuery);
 
   /** 查询租户列表 */
-  List<SysTenantVo> queryList(SysTenantQueryParam param);
+  List<SysTenantVo> queryList(SysTenantBo bo);
 
   /** 新增租户 */
   Boolean insertByBo(SysTenantBo bo);

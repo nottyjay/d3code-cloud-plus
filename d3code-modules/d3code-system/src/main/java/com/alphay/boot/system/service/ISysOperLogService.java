@@ -1,9 +1,7 @@
 package com.alphay.boot.system.service;
 
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.IServiceX;
-import com.alphay.boot.system.api.domain.param.SysOperLogQueryParam;
-import com.alphay.boot.system.domain.SysOperLog;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.bo.SysOperLogBo;
 import com.alphay.boot.system.domain.vo.SysOperLogVo;
 import java.util.List;
@@ -11,12 +9,11 @@ import java.util.List;
 /**
  * 操作日志 服务层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface ISysOperLogService extends IServiceX<SysOperLog, SysOperLogVo> {
+public interface ISysOperLogService {
 
-  PageResult<SysOperLogVo> queryPageList(SysOperLogQueryParam param);
+  TableDataInfo<SysOperLogVo> selectPageOperLogList(SysOperLogBo operLog, PageQuery pageQuery);
 
   /**
    * 新增操作日志
@@ -28,10 +25,10 @@ public interface ISysOperLogService extends IServiceX<SysOperLog, SysOperLogVo> 
   /**
    * 查询系统操作日志集合
    *
-   * @param param 操作日志对象
+   * @param operLog 操作日志对象
    * @return 操作日志集合
    */
-  List<SysOperLogVo> queryList(SysOperLogQueryParam param);
+  List<SysOperLogVo> selectOperLogList(SysOperLogBo operLog);
 
   /**
    * 批量删除系统操作日志
@@ -40,6 +37,14 @@ public interface ISysOperLogService extends IServiceX<SysOperLog, SysOperLogVo> 
    * @return 结果
    */
   int deleteOperLogByIds(Long[] operIds);
+
+  /**
+   * 查询操作日志详细
+   *
+   * @param operId 操作ID
+   * @return 操作日志对象
+   */
+  SysOperLogVo selectOperLogById(Long operId);
 
   /** 清空操作日志 */
   void cleanOperLog();

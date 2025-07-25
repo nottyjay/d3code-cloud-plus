@@ -1,8 +1,9 @@
 package com.alphay.boot.system.mapper;
 
 import com.alphay.boot.common.core.constant.SystemConstants;
-import com.alphay.boot.common.mybatis.core.mapper.BaseMapperX;
+import com.alphay.boot.common.mybatis.core.mapper.BaseMapperPlus;
 import com.alphay.boot.system.domain.SysMenu;
+import com.alphay.boot.system.domain.vo.SysMenuVo;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
@@ -12,10 +13,9 @@ import org.apache.ibatis.annotations.Param;
 /**
  * 菜单表 数据层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface SysMenuMapper extends BaseMapperX<SysMenu> {
+public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
 
   /**
    * 根据用户查询系统菜单列表

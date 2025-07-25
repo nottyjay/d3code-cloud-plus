@@ -8,35 +8,34 @@ import com.alphay.boot.common.core.utils.StringUtils;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
 import com.alphay.boot.common.web.core.BaseController;
-import com.alphay.boot.system.api.domain.param.SysDeptQueryParam;
 import com.alphay.boot.system.domain.bo.SysDeptBo;
 import com.alphay.boot.system.domain.vo.SysDeptVo;
 import com.alphay.boot.system.service.ISysDeptService;
 import com.alphay.boot.system.service.ISysPostService;
-import jakarta.annotation.Resource;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 部门信息
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/dept")
 public class SysDeptController extends BaseController {
 
-  @Resource private ISysDeptService deptService;
-  @Resource private ISysPostService postService;
+  private final ISysDeptService deptService;
+  private final ISysPostService postService;
 
   /** 获取部门列表 */
   @SaCheckPermission("system:dept:list")
   @GetMapping("/list")
-  public R<List<SysDeptVo>> list(SysDeptQueryParam param) {
-    List<SysDeptVo> depts = deptService.queryList(param);
+  public R<List<SysDeptVo>> list(SysDeptBo dept) {
+    List<SysDeptVo> depts = deptService.selectDeptList(dept);
     return R.ok(depts);
   }
 
@@ -49,7 +48,7 @@ public class SysDeptController extends BaseController {
   @GetMapping("/list/exclude/{deptId}")
   public R<List<SysDeptVo>> excludeChild(
       @PathVariable(value = "deptId", required = false) Long deptId) {
-    List<SysDeptVo> depts = deptService.queryList(new SysDeptQueryParam());
+    List<SysDeptVo> depts = deptService.selectDeptList(new SysDeptBo());
     depts.removeIf(
         d ->
             d.getDeptId().equals(deptId)
@@ -66,7 +65,7 @@ public class SysDeptController extends BaseController {
   @GetMapping(value = "/{deptId}")
   public R<SysDeptVo> getInfo(@PathVariable Long deptId) {
     deptService.checkDeptDataScope(deptId);
-    return R.ok(deptService.getVoById(deptId));
+    return R.ok(deptService.selectDeptById(deptId));
   }
 
   /** 新增部门 */

@@ -12,8 +12,7 @@ import lombok.Data;
 /**
  * 操作日志记录业务对象 sys_oper_log
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  * @date 2023-02-07
  */
 @Data

@@ -1,18 +1,22 @@
 <template>
   <div class="p-2">
-    <transition :enter-active-class="proxy?.animate.searchAnimate.enter" :leave-active-class="proxy?.animate.searchAnimate.leave">
+    <transition :enter-active-class="proxy?.animate.searchAnimate.enter"
+                :leave-active-class="proxy?.animate.searchAnimate.leave">
       <div v-show="showSearch" class="mb-[10px]">
         <el-card shadow="hover">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true">
             <el-form-item label="部门名称" prop="deptName">
-              <el-input v-model="queryParams.deptName" placeholder="请输入部门名称" clearable @keyup.enter="handleQuery" />
+              <el-input v-model="queryParams.deptName" placeholder="请输入部门名称" clearable
+                        @keyup.enter="handleQuery"/>
             </el-form-item>
             <el-form-item label="类别编码" prop="deptCategory">
-              <el-input v-model="queryParams.deptCategory" placeholder="请输入类别编码" clearable style="width: 240px" @keyup.enter="handleQuery" />
+              <el-input v-model="queryParams.deptCategory" placeholder="请输入类别编码" clearable style="width: 240px"
+                        @keyup.enter="handleQuery"/>
             </el-form-item>
             <el-form-item label="状态" prop="status">
               <el-select v-model="queryParams.status" placeholder="部门状态" clearable>
-                <el-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="dict.value" />
+                <el-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label"
+                           :value="dict.value"/>
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -28,7 +32,8 @@
       <template #header>
         <el-row :gutter="10">
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dept:add']" type="primary" plain icon="Plus" @click="handleAdd()">新增</el-button>
+            <el-button v-hasPermi="['system:dept:add']" type="primary" plain icon="Plus" @click="handleAdd()">新增
+            </el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button type="info" plain icon="Sort" @click="handleToggleExpandAll">展开/折叠</el-button>
@@ -51,7 +56,7 @@
         <el-table-column prop="orderNum" align="center" label="排序" width="200"></el-table-column>
         <el-table-column prop="status" align="center" label="状态" width="100">
           <template #default="scope">
-            <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+            <dict-tag :options="sys_normal_disable" :value="scope.row.status"/>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" prop="createTime" width="200">
@@ -62,13 +67,16 @@
         <el-table-column fixed="right" align="center" label="操作">
           <template #default="scope">
             <el-tooltip content="修改" placement="top">
-              <el-button v-hasPermi="['system:dept:edit']" link type="primary" icon="Edit" @click="handleUpdate(scope.row)" />
+              <el-button v-hasPermi="['system:dept:edit']" link type="primary" icon="Edit"
+                         @click="handleUpdate(scope.row)"/>
             </el-tooltip>
             <el-tooltip content="新增" placement="top">
-              <el-button v-hasPermi="['system:dept:add']" link type="primary" icon="Plus" @click="handleAdd(scope.row)" />
+              <el-button v-hasPermi="['system:dept:add']" link type="primary" icon="Plus"
+                         @click="handleAdd(scope.row)"/>
             </el-tooltip>
             <el-tooltip content="删除" placement="top">
-              <el-button v-hasPermi="['system:dept:remove']" link type="primary" icon="Delete" @click="handleDelete(scope.row)" />
+              <el-button v-hasPermi="['system:dept:remove']" link type="primary" icon="Delete"
+                         @click="handleDelete(scope.row)"/>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -92,40 +100,43 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="部门名称" prop="deptName">
-              <el-input v-model="form.deptName" placeholder="请输入部门名称" />
+              <el-input v-model="form.deptName" placeholder="请输入部门名称"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="类别编码" prop="deptCategory">
-              <el-input v-model="form.deptCategory" placeholder="请输入类别编码" />
+              <el-input v-model="form.deptCategory" placeholder="请输入类别编码"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="显示排序" prop="orderNum">
-              <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
+              <el-input-number v-model="form.orderNum" controls-position="right" :min="0"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="负责人" prop="leader">
               <el-select v-model="form.leader" placeholder="请选择负责人">
-                <el-option v-for="item in deptUserList" :key="item.userId" :label="item.userName" :value="item.userId" />
+                <el-option v-for="item in deptUserList" :key="item.userId" :label="item.userName" :value="item.userId"/>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="联系电话" prop="phone">
-              <el-input v-model="form.phone" placeholder="请输入联系电话" maxlength="11" />
+              <el-input v-model="form.phone" placeholder="请输入联系电话" maxlength="11"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
+              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="部门状态">
               <el-radio-group v-model="form.status">
-                <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{ dict.label }}</el-radio>
+                <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
+                    dict.label
+                  }}
+                </el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -142,10 +153,10 @@
 </template>
 
 <script setup name="Dept" lang="ts">
-import { addDept, delDept, getDept, listDept, listDeptExcludeChild, updateDept } from '@/api/system/dept'
-import { DeptForm, DeptQuery, DeptVO } from '@/api/system/dept/types'
-import { UserVO } from '@/api/system/user/types'
-import { listUserByDeptId } from '@/api/system/user'
+import {addDept, delDept, getDept, listDept, listDeptExcludeChild, updateDept} from '@/api/system/dept'
+import {DeptForm, DeptQuery, DeptVO} from '@/api/system/dept/types'
+import {UserVO} from '@/api/system/user/types'
+import {listUserByDeptId} from '@/api/system/user'
 
 interface DeptOptionsType {
   deptId: number | string
@@ -153,8 +164,8 @@ interface DeptOptionsType {
   children: DeptOptionsType[]
 }
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
-const { sys_normal_disable } = toRefs<any>(proxy?.useDict('sys_normal_disable'))
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
+const {sys_normal_disable} = toRefs<any>(proxy?.useDict('sys_normal_disable'))
 
 const deptList = ref<DeptVO[]>([])
 const loading = ref(true)
@@ -184,7 +195,7 @@ const initFormData: DeptForm = {
   status: '0',
 }
 const initData: PageData<DeptForm, DeptQuery> = {
-  form: { ...initFormData },
+  form: {...initFormData},
   queryParams: {
     pageNum: 1,
     pageSize: 10,
@@ -193,16 +204,16 @@ const initData: PageData<DeptForm, DeptQuery> = {
     status: undefined,
   },
   rules: {
-    parentId: [{ required: true, message: '上级部门不能为空', trigger: 'blur' }],
-    deptName: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
-    orderNum: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }],
-    email: [{ type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }],
-    phone: [{ pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
+    parentId: [{required: true, message: '上级部门不能为空', trigger: 'blur'}],
+    deptName: [{required: true, message: '部门名称不能为空', trigger: 'blur'}],
+    orderNum: [{required: true, message: '显示排序不能为空', trigger: 'blur'}],
+    email: [{type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change']}],
+    phone: [{pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur'}],
   },
 }
 const data = reactive<PageData<DeptForm, DeptQuery>>(initData)
 
-const { queryParams, form, rules } = toRefs<PageData<DeptForm, DeptQuery>>(data)
+const {queryParams, form, rules} = toRefs<PageData<DeptForm, DeptQuery>>(data)
 
 /** 查询菜单列表 */
 const getList = async () => {
@@ -230,7 +241,7 @@ const cancel = () => {
 }
 /** 表单重置 */
 const reset = () => {
-  form.value = { ...initFormData }
+  form.value = {...initFormData}
   deptFormRef.value?.resetFields()
 }
 

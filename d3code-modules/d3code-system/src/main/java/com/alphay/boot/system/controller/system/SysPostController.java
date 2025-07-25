@@ -7,45 +7,45 @@ import com.alphay.boot.common.core.domain.R;
 import com.alphay.boot.common.excel.utils.ExcelUtil;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.web.core.BaseController;
-import com.alphay.boot.system.api.domain.param.SysPostQueryParam;
 import com.alphay.boot.system.domain.bo.SysPostBo;
 import com.alphay.boot.system.domain.vo.SysPostVo;
 import com.alphay.boot.system.service.ISysPostService;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 岗位信息操作处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/post")
 public class SysPostController extends BaseController {
 
-  @Resource private ISysPostService postService;
+  private final ISysPostService postService;
 
   /** 获取岗位列表 */
   @SaCheckPermission("system:post:list")
   @GetMapping("/list")
-  public PageResult<SysPostVo> list(SysPostQueryParam param) {
-    return postService.queryPageList(param);
+  public TableDataInfo<SysPostVo> list(SysPostBo post, PageQuery pageQuery) {
+    return postService.selectPagePostList(post, pageQuery);
   }
 
   /** 导出岗位列表 */
   @Log(title = "岗位管理", businessType = BusinessType.EXPORT)
   @SaCheckPermission("system:post:export")
   @PostMapping("/export")
-  public void export(SysPostQueryParam param, HttpServletResponse response) {
-    List<SysPostVo> list = postService.queryList(param);
+  public void export(SysPostBo post, HttpServletResponse response) {
+    List<SysPostVo> list = postService.selectPostList(post);
     ExcelUtil.exportExcel(list, "岗位数据", SysPostVo.class, response);
   }
 
@@ -57,7 +57,7 @@ public class SysPostController extends BaseController {
   @SaCheckPermission("system:post:query")
   @GetMapping(value = "/{postId}")
   public R<SysPostVo> getInfo(@PathVariable Long postId) {
-    return R.ok(postService.getVoById(postId));
+    return R.ok(postService.selectPostById(postId));
   }
 
   /** 新增岗位 */
@@ -113,9 +113,9 @@ public class SysPostController extends BaseController {
       @RequestParam(required = false) Long[] postIds, @RequestParam(required = false) Long deptId) {
     List<SysPostVo> list = new ArrayList<>();
     if (ObjectUtil.isNotNull(deptId)) {
-      SysPostQueryParam param = new SysPostQueryParam();
-      param.setDeptId(deptId);
-      list = postService.queryList(param);
+      SysPostBo post = new SysPostBo();
+      post.setDeptId(deptId);
+      list = postService.selectPostList(post);
     } else if (postIds != null) {
       list = postService.selectPostByIds(List.of(postIds));
     }

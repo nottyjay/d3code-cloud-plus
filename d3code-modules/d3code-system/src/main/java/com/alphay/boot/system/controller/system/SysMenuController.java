@@ -12,30 +12,29 @@ import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
 import com.alphay.boot.common.satoken.utils.LoginHelper;
 import com.alphay.boot.common.web.core.BaseController;
-import com.alphay.boot.system.api.domain.param.SysMenuQueryParam;
 import com.alphay.boot.system.domain.SysMenu;
 import com.alphay.boot.system.domain.bo.SysMenuBo;
 import com.alphay.boot.system.domain.vo.RouterVo;
 import com.alphay.boot.system.domain.vo.SysMenuVo;
 import com.alphay.boot.system.service.ISysMenuService;
-import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 菜单信息
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/menu")
 public class SysMenuController extends BaseController {
 
-  @Resource private ISysMenuService menuService;
+  private final ISysMenuService menuService;
 
   /**
    * 获取路由信息
@@ -44,7 +43,7 @@ public class SysMenuController extends BaseController {
    */
   @GetMapping("/getRouters")
   public R<List<RouterVo>> getRouters() {
-    List<SysMenu> menus = menuService.queryMenuTreeByUserId(LoginHelper.getUserId());
+    List<SysMenu> menus = menuService.selectMenuTreeByUserId(LoginHelper.getUserId());
     return R.ok(menuService.buildMenus(menus));
   }
 
@@ -54,8 +53,8 @@ public class SysMenuController extends BaseController {
       mode = SaMode.OR)
   @SaCheckPermission("system:menu:list")
   @GetMapping("/list")
-  public R<List<SysMenuVo>> list(SysMenuQueryParam menu) {
-    List<SysMenuVo> menus = menuService.queryList(menu, LoginHelper.getUserId());
+  public R<List<SysMenuVo>> list(SysMenuBo menu) {
+    List<SysMenuVo> menus = menuService.selectMenuList(menu, LoginHelper.getUserId());
     return R.ok(menus);
   }
 
@@ -70,14 +69,14 @@ public class SysMenuController extends BaseController {
   @SaCheckPermission("system:menu:query")
   @GetMapping(value = "/{menuId}")
   public R<SysMenuVo> getInfo(@PathVariable Long menuId) {
-    return R.ok(menuService.getVoById(menuId));
+    return R.ok(menuService.selectMenuById(menuId));
   }
 
   /** 获取菜单下拉树列表 */
   @SaCheckPermission("system:menu:query")
   @GetMapping("/treeselect")
-  public R<List<Tree<Long>>> treeselect(SysMenuQueryParam menu) {
-    List<SysMenuVo> menus = menuService.queryList(menu, LoginHelper.getUserId());
+  public R<List<Tree<Long>>> treeselect(SysMenuBo menu) {
+    List<SysMenuVo> menus = menuService.selectMenuList(menu, LoginHelper.getUserId());
     return R.ok(menuService.buildMenuTreeSelect(menus));
   }
 
@@ -89,10 +88,10 @@ public class SysMenuController extends BaseController {
   @SaCheckPermission("system:menu:query")
   @GetMapping(value = "/roleMenuTreeselect/{roleId}")
   public R<MenuTreeSelectVo> roleMenuTreeselect(@PathVariable("roleId") Long roleId) {
-    List<SysMenuVo> menus = menuService.queryList(LoginHelper.getUserId());
+    List<SysMenuVo> menus = menuService.selectMenuList(LoginHelper.getUserId());
     MenuTreeSelectVo selectVo =
         new MenuTreeSelectVo(
-            menuService.fetchMenuListByRoleId(roleId), menuService.buildMenuTreeSelect(menus));
+            menuService.selectMenuListByRoleId(roleId), menuService.buildMenuTreeSelect(menus));
     return R.ok(selectVo);
   }
 
@@ -106,13 +105,13 @@ public class SysMenuController extends BaseController {
   @GetMapping(value = "/tenantPackageMenuTreeselect/{packageId}")
   public R<MenuTreeSelectVo> tenantPackageMenuTreeselect(
       @PathVariable("packageId") Long packageId) {
-    List<SysMenuVo> menus = menuService.queryList(LoginHelper.getUserId());
+    List<SysMenuVo> menus = menuService.selectMenuList(LoginHelper.getUserId());
     List<Tree<Long>> list = menuService.buildMenuTreeSelect(menus);
     // 删除租户管理菜单
     list.removeIf(menu -> menu.getId() == 6L);
     List<Long> ids = new ArrayList<>();
     if (packageId > 0L) {
-      ids = menuService.fetchMenuListByPackageId(packageId);
+      ids = menuService.selectMenuListByPackageId(packageId);
     }
     MenuTreeSelectVo selectVo = new MenuTreeSelectVo(ids, list);
     return R.ok(selectVo);
@@ -169,6 +168,8 @@ public class SysMenuController extends BaseController {
     return toAjax(menuService.deleteMenuById(menuId));
   }
 
+  public record MenuTreeSelectVo(List<Long> checkedKeys, List<Tree<Long>> menus) {}
+
   /**
    * 批量级联删除菜单
    *
@@ -186,6 +187,4 @@ public class SysMenuController extends BaseController {
     menuService.deleteMenuById(menuIdList);
     return R.ok();
   }
-
-  public record MenuTreeSelectVo(List<Long> checkedKeys, List<Tree<Long>> menus) {}
 }

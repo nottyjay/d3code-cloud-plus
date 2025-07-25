@@ -24,10 +24,10 @@
 </template>
 
 <script setup lang="ts" name="layoutBreadcrumbUserNews">
-import { useNoticeStore } from '@/store/modules/notice'
+import {useNoticeStore} from '@/store/modules/notice'
 
 const noticeStore = useNoticeStore()
-const { readAll } = useNoticeStore()
+const {readAll} = useNoticeStore()
 
 // 定义变量内容
 const state = reactive({

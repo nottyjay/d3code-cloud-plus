@@ -1,16 +1,16 @@
-import { to as tos } from 'await-to-js'
+import {to as tos} from 'await-to-js'
 import router from './router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { getToken } from '@/utils/auth'
-import { isHttp, isPathMatch } from '@/utils/validate'
-import { isRelogin } from '@/utils/request'
-import { useUserStore } from '@/store/modules/user'
-import { useSettingsStore } from '@/store/modules/settings'
-import { usePermissionStore } from '@/store/modules/permission'
-import { ElMessage } from 'element-plus'
+import {getToken} from '@/utils/auth'
+import {isHttp, isPathMatch} from '@/utils/validate'
+import {isRelogin} from '@/utils/request'
+import {useUserStore} from '@/store/modules/user'
+import {useSettingsStore} from '@/store/modules/settings'
+import {usePermissionStore} from '@/store/modules/permission'
+import {ElMessage} from 'element-plus'
 
-NProgress.configure({ showSpinner: false })
+NProgress.configure({showSpinner: false})
 const whiteList = ['/login', '/register', '/register*', '/register/*']
 
 const isWhiteList = (path: string) => {
@@ -23,7 +23,7 @@ router.beforeEach(async (to, from, next) => {
     to.meta.title && useSettingsStore().setTitle(to.meta.title as string)
     /* has token*/
     if (to.path === '/login') {
-      next({ path: '/' })
+      next({path: '/'})
       NProgress.done()
     } else if (isWhiteList(to.path)) {
       next()
@@ -35,7 +35,7 @@ router.beforeEach(async (to, from, next) => {
         if (err) {
           await useUserStore().logout()
           ElMessage.error(err)
-          next({ path: '/' })
+          next({path: '/'})
         } else {
           isRelogin.show = false
           const accessRoutes = await usePermissionStore().generateRoutes()

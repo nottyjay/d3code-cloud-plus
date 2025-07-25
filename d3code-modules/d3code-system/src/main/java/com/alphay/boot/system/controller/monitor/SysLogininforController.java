@@ -6,44 +6,45 @@ import com.alphay.boot.common.core.domain.R;
 import com.alphay.boot.common.excel.utils.ExcelUtil;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.redis.utils.RedisUtils;
 import com.alphay.boot.common.web.core.BaseController;
-import com.alphay.boot.system.api.domain.param.SysLogininforQueryParam;
+import com.alphay.boot.system.domain.bo.SysLogininforBo;
 import com.alphay.boot.system.domain.vo.SysLogininforVo;
 import com.alphay.boot.system.service.ISysLogininforService;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 系统访问记录
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/logininfor")
 public class SysLogininforController extends BaseController {
 
-  @Resource private ISysLogininforService logininforService;
+  private final ISysLogininforService logininforService;
 
   /** 获取系统访问记录列表 */
   @SaCheckPermission("monitor:logininfor:list")
   @GetMapping("/list")
-  public PageResult<SysLogininforVo> list(SysLogininforQueryParam param) {
-    return logininforService.queryPageList(param);
+  public TableDataInfo<SysLogininforVo> list(SysLogininforBo logininfor, PageQuery pageQuery) {
+    return logininforService.selectPageLogininforList(logininfor, pageQuery);
   }
 
   /** 导出系统访问记录列表 */
   @Log(title = "登录日志", businessType = BusinessType.EXPORT)
   @SaCheckPermission("monitor:logininfor:export")
   @PostMapping("/export")
-  public void export(SysLogininforQueryParam param, HttpServletResponse response) {
-    List<SysLogininforVo> list = logininforService.queryList(param);
+  public void export(SysLogininforBo logininfor, HttpServletResponse response) {
+    List<SysLogininforVo> list = logininforService.selectLogininforList(logininfor);
     ExcelUtil.exportExcel(list, "登录日志", SysLogininforVo.class, response);
   }
 

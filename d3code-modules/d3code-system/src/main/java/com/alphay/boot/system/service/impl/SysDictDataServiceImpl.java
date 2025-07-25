@@ -4,53 +4,60 @@ import cn.hutool.core.util.ObjectUtil;
 import com.alphay.boot.common.core.constant.CacheNames;
 import com.alphay.boot.common.core.exception.ServiceException;
 import com.alphay.boot.common.core.utils.MapstructUtils;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
+import com.alphay.boot.common.core.utils.StringUtils;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.redis.utils.CacheUtils;
-import com.alphay.boot.system.api.domain.param.SysDictDataQueryParam;
 import com.alphay.boot.system.domain.SysDictData;
 import com.alphay.boot.system.domain.bo.SysDictDataBo;
 import com.alphay.boot.system.domain.vo.SysDictDataVo;
 import com.alphay.boot.system.mapper.SysDictDataMapper;
 import com.alphay.boot.system.service.ISysDictDataService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
 /**
  * 字典 业务层处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
-public class SysDictDataServiceImpl
-    extends ServiceImplX<SysDictDataMapper, SysDictData, SysDictDataVo>
-    implements ISysDictDataService {
+public class SysDictDataServiceImpl implements ISysDictDataService {
+
+  private final SysDictDataMapper baseMapper;
 
   @Override
-  public PageResult<SysDictDataVo> queryPageDictDataList(SysDictDataQueryParam param) {
-    return listPageVo(param, buildQueryWrapper(param));
+  public TableDataInfo<SysDictDataVo> selectPageDictDataList(
+      SysDictDataBo dictData, PageQuery pageQuery) {
+    LambdaQueryWrapper<SysDictData> lqw = buildQueryWrapper(dictData);
+    Page<SysDictDataVo> page = baseMapper.selectVoPage(pageQuery.build(), lqw);
+    return TableDataInfo.build(page);
   }
 
   /**
    * 根据条件分页查询字典数据
    *
-   * @param param 字典数据信息
+   * @param dictData 字典数据信息
    * @return 字典数据集合信息
    */
   @Override
-  public List<SysDictDataVo> queryList(SysDictDataQueryParam param) {
-    return listVo(buildQueryWrapper(param));
+  public List<SysDictDataVo> selectDictDataList(SysDictDataBo dictData) {
+    LambdaQueryWrapper<SysDictData> lqw = buildQueryWrapper(dictData);
+    return baseMapper.selectVoList(lqw);
   }
 
-  private LambdaQueryWrapper<SysDictData> buildQueryWrapper(SysDictDataQueryParam param) {
-    LambdaQueryWrapper<SysDictData> lqw =
-        this.lambdaQueryWrapper()
-            .eqIfPresent(SysDictData::getDictSort, param.getDictSort())
-            .likeIfPresent(SysDictData::getDictLabel, param.getDictLabel())
-            .eqIfPresent(SysDictData::getDictType, param.getDictType());
+  private LambdaQueryWrapper<SysDictData> buildQueryWrapper(SysDictDataBo bo) {
+    LambdaQueryWrapper<SysDictData> lqw = Wrappers.lambdaQuery();
+    lqw.eq(bo.getDictSort() != null, SysDictData::getDictSort, bo.getDictSort());
+    lqw.like(
+        StringUtils.isNotBlank(bo.getDictLabel()), SysDictData::getDictLabel, bo.getDictLabel());
+    lqw.eq(StringUtils.isNotBlank(bo.getDictType()), SysDictData::getDictType, bo.getDictType());
     lqw.orderByAsc(SysDictData::getDictSort, SysDictData::getDictCode);
     return lqw;
   }
@@ -64,12 +71,24 @@ public class SysDictDataServiceImpl
    */
   @Override
   public String selectDictLabel(String dictType, String dictValue) {
-    return getOne(
+    return baseMapper
+        .selectOne(
             new LambdaQueryWrapper<SysDictData>()
                 .select(SysDictData::getDictLabel)
                 .eq(SysDictData::getDictType, dictType)
                 .eq(SysDictData::getDictValue, dictValue))
         .getDictLabel();
+  }
+
+  /**
+   * 根据字典数据ID查询信息
+   *
+   * @param dictCode 字典数据ID
+   * @return 字典数据
+   */
+  @Override
+  public SysDictDataVo selectDictDataById(Long dictCode) {
+    return baseMapper.selectVoById(dictCode);
   }
 
   /**

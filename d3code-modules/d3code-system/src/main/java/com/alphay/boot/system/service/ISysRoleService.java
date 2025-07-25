@@ -1,9 +1,7 @@
 package com.alphay.boot.system.service;
 
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.IServiceX;
-import com.alphay.boot.system.api.domain.param.SysRoleQueryParam;
-import com.alphay.boot.system.domain.SysRole;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.SysUserRole;
 import com.alphay.boot.system.domain.bo.SysRoleBo;
 import com.alphay.boot.system.domain.vo.SysRoleVo;
@@ -13,20 +11,19 @@ import java.util.Set;
 /**
  * 角色业务层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface ISysRoleService extends IServiceX<SysRole, SysRoleVo> {
+public interface ISysRoleService {
 
-  PageResult<SysRoleVo> queryPageList(SysRoleQueryParam param);
+  TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleBo role, PageQuery pageQuery);
 
   /**
    * 根据条件分页查询角色数据
    *
-   * @param param 角色信息
+   * @param role 角色信息
    * @return 角色数据集合信息
    */
-  List<SysRoleVo> queryList(SysRoleQueryParam param);
+  List<SysRoleVo> selectRoleList(SysRoleBo role);
 
   /**
    * 根据用户ID查询角色列表
@@ -34,7 +31,7 @@ public interface ISysRoleService extends IServiceX<SysRole, SysRoleVo> {
    * @param userId 用户ID
    * @return 角色列表
    */
-  List<SysRoleVo> queryListByUserId(Long userId);
+  List<SysRoleVo> selectRolesByUserId(Long userId);
 
   /**
    * 根据用户ID查询角色列表(包含被授权状态)
@@ -42,7 +39,7 @@ public interface ISysRoleService extends IServiceX<SysRole, SysRoleVo> {
    * @param userId 用户ID
    * @return 角色列表
    */
-  List<SysRoleVo> queryListAuthByUserId(Long userId);
+  List<SysRoleVo> selectRolesAuthByUserId(Long userId);
 
   /**
    * 根据用户ID查询角色权限
@@ -50,14 +47,14 @@ public interface ISysRoleService extends IServiceX<SysRole, SysRoleVo> {
    * @param userId 用户ID
    * @return 权限列表
    */
-  Set<String> fetchPermissionByUserId(Long userId);
+  Set<String> selectRolePermissionByUserId(Long userId);
 
   /**
    * 查询所有角色
    *
    * @return 角色列表
    */
-  List<SysRoleVo> queryAll();
+  List<SysRoleVo> selectRoleAll();
 
   /**
    * 根据用户ID获取角色选择框列表
@@ -65,7 +62,15 @@ public interface ISysRoleService extends IServiceX<SysRole, SysRoleVo> {
    * @param userId 用户ID
    * @return 选中角色ID列表
    */
-  List<Long> fetchListByUserId(Long userId);
+  List<Long> selectRoleListByUserId(Long userId);
+
+  /**
+   * 通过角色ID查询角色
+   *
+   * @param roleId 角色ID
+   * @return 角色对象信息
+   */
+  SysRoleVo selectRoleById(Long roleId);
 
   /**
    * 通过角色ID串查询角色
@@ -73,7 +78,7 @@ public interface ISysRoleService extends IServiceX<SysRole, SysRoleVo> {
    * @param roleIds 角色ID串
    * @return 角色列表信息
    */
-  List<SysRoleVo> queryListByIds(List<Long> roleIds);
+  List<SysRoleVo> selectRoleByIds(List<Long> roleIds);
 
   /**
    * 校验角色名称是否唯一
@@ -81,7 +86,7 @@ public interface ISysRoleService extends IServiceX<SysRole, SysRoleVo> {
    * @param role 角色信息
    * @return 结果
    */
-  boolean checkRoleNameUnique(SysRoleQueryParam role);
+  boolean checkRoleNameUnique(SysRoleBo role);
 
   /**
    * 校验角色权限是否唯一
@@ -89,14 +94,14 @@ public interface ISysRoleService extends IServiceX<SysRole, SysRoleVo> {
    * @param role 角色信息
    * @return 结果
    */
-  boolean checkRoleKeyUnique(SysRoleQueryParam role);
+  boolean checkRoleKeyUnique(SysRoleBo role);
 
   /**
    * 校验角色是否允许操作
    *
    * @param role 角色信息
    */
-  void checkRoleAllowed(SysRoleQueryParam role);
+  void checkRoleAllowed(SysRoleBo role);
 
   /**
    * 校验角色是否有数据权限

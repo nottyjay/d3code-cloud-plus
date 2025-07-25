@@ -7,22 +7,22 @@ import com.alphay.boot.system.api.domain.vo.RemoteDictTypeVo;
 import com.alphay.boot.system.domain.vo.SysDictDataVo;
 import com.alphay.boot.system.domain.vo.SysDictTypeVo;
 import com.alphay.boot.system.service.ISysDictTypeService;
-import jakarta.annotation.Resource;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
 /**
  * 字典服务
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteDictServiceImpl implements RemoteDictService {
 
-  @Resource private ISysDictTypeService sysDictTypeService;
+  private final ISysDictTypeService sysDictTypeService;
 
   @Override
   public RemoteDictTypeVo selectDictTypeByType(String dictType) {

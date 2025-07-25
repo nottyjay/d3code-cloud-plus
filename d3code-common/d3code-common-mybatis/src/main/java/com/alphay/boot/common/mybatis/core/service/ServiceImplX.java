@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.yulichang.interfaces.MPJBaseJoin;
 import java.io.Serializable;
 import java.util.List;
 
@@ -68,8 +69,16 @@ public abstract class ServiceImplX<M extends BaseMapperX<T>, T, VO> extends Serv
     return baseMapper.selectPage(param, queryWrapper, getVoClass());
   }
 
+  public PageResult<VO> joinPageVo(PageReqParam param, MPJBaseJoin<T> queryWrapper) {
+    return baseMapper.selectJoinPage(param, queryWrapper, getVoClass());
+  }
+
   public List<VO> listVo(Wrapper<T> queryWrapper) {
     return baseMapper.selectList(queryWrapper, getVoClass());
+  }
+
+  public List<VO> joinListVo(MPJBaseJoin<T> queryWrapper) {
+    return baseMapper.selectJoinList(getVoClass(), queryWrapper);
   }
 
   public Class<VO> getVoClass() {

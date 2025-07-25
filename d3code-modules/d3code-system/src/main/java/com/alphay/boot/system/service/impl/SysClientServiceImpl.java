@@ -5,9 +5,8 @@ import cn.hutool.crypto.SecureUtil;
 import com.alphay.boot.common.core.constant.CacheNames;
 import com.alphay.boot.common.core.utils.MapstructUtils;
 import com.alphay.boot.common.core.utils.StringUtils;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
-import com.alphay.boot.system.api.domain.param.SysClientQueryParam;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.SysClient;
 import com.alphay.boot.system.domain.bo.SysClientBo;
 import com.alphay.boot.system.domain.vo.SysClientVo;
@@ -15,9 +14,11 @@ import com.alphay.boot.system.mapper.SysClientMapper;
 import com.alphay.boot.system.service.ISysClientService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Collection;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,18 +27,19 @@ import org.springframework.stereotype.Service;
 /**
  * 客户端管理Service业务层处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Slf4j
+@RequiredArgsConstructor
 @Service
-public class SysClientServiceImpl extends ServiceImplX<SysClientMapper, SysClient, SysClientVo>
-    implements ISysClientService {
+public class SysClientServiceImpl implements ISysClientService {
+
+  private final SysClientMapper baseMapper;
 
   /** 查询客户端管理 */
   @Override
-  public SysClientVo getVoById(Serializable id) {
-    SysClientVo vo = super.getVoById(id);
+  public SysClientVo queryById(Long id) {
+    SysClientVo vo = baseMapper.selectVoById(id);
     vo.setGrantTypeList(StringUtils.splitList(vo.getGrantType()));
     return vo;
   }
@@ -46,31 +48,35 @@ public class SysClientServiceImpl extends ServiceImplX<SysClientMapper, SysClien
   @Cacheable(cacheNames = CacheNames.SYS_CLIENT, key = "#clientId")
   @Override
   public SysClientVo queryByClientId(String clientId) {
-    return this.getOneVo(SysClient::getClientId, clientId);
+    return baseMapper.selectVoOne(
+        new LambdaQueryWrapper<SysClient>().eq(SysClient::getClientId, clientId));
   }
 
   /** 查询客户端管理列表 */
   @Override
-  public PageResult<SysClientVo> queryPageList(SysClientQueryParam param) {
-    LambdaQueryWrapper<SysClient> lqw = buildQueryWrapper(param);
-    PageResult<SysClientVo> result = this.listPageVo(param, lqw);
-    result.getRows().forEach(r -> r.setGrantTypeList(StringUtils.splitList(r.getGrantType())));
-    return result;
+  public TableDataInfo<SysClientVo> queryPageList(SysClientBo bo, PageQuery pageQuery) {
+    LambdaQueryWrapper<SysClient> lqw = buildQueryWrapper(bo);
+    Page<SysClientVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+    result.getRecords().forEach(r -> r.setGrantTypeList(StringUtils.splitList(r.getGrantType())));
+    return TableDataInfo.build(result);
   }
 
   /** 查询客户端管理列表 */
   @Override
-  public List<SysClientVo> queryList(SysClientQueryParam param) {
-    return listVo(buildQueryWrapper(param));
+  public List<SysClientVo> queryList(SysClientBo bo) {
+    LambdaQueryWrapper<SysClient> lqw = buildQueryWrapper(bo);
+    return baseMapper.selectVoList(lqw);
   }
 
-  private LambdaQueryWrapper<SysClient> buildQueryWrapper(SysClientQueryParam param) {
-    LambdaQueryWrapper<SysClient> lqw =
-        this.lambdaQueryWrapper()
-            .eqIfPresent(SysClient::getClientId, param.getClientId())
-            .eqIfPresent(SysClient::getClientKey, param.getClientKey())
-            .eqIfPresent(SysClient::getClientSecret, param.getClientSecret())
-            .eqIfPresent(SysClient::getStatus, param.getStatus());
+  private LambdaQueryWrapper<SysClient> buildQueryWrapper(SysClientBo bo) {
+    LambdaQueryWrapper<SysClient> lqw = Wrappers.lambdaQuery();
+    lqw.eq(StringUtils.isNotBlank(bo.getClientId()), SysClient::getClientId, bo.getClientId());
+    lqw.eq(StringUtils.isNotBlank(bo.getClientKey()), SysClient::getClientKey, bo.getClientKey());
+    lqw.eq(
+        StringUtils.isNotBlank(bo.getClientSecret()),
+        SysClient::getClientSecret,
+        bo.getClientSecret());
+    lqw.eq(StringUtils.isNotBlank(bo.getStatus()), SysClient::getStatus, bo.getStatus());
     lqw.orderByAsc(SysClient::getId);
     return lqw;
   }

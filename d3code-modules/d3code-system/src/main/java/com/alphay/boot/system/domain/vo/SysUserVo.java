@@ -17,8 +17,7 @@ import lombok.Data;
 /**
  * 用户信息视图对象 sys_user
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @AutoMapper(target = SysUser.class)

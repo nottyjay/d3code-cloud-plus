@@ -2,25 +2,27 @@
   <div class="relative" :style="{ 'width': width }">
     <el-input v-model="modelValue" readonly placeholder="点击选择图标" @click="visible = !visible">
       <template #prepend>
-        <svg-icon :icon-class="modelValue" />
+        <svg-icon :icon-class="modelValue"/>
       </template>
     </el-input>
 
     <el-popover shadow="none" :visible="visible" placement="bottom-end" trigger="click" :width="450">
       <template #reference>
-        <div class="cursor-pointer text-[#999] absolute right-[10px] top-0 height-[32px] leading-[32px]" @click="visible = !visible">
+        <div class="cursor-pointer text-[#999] absolute right-[10px] top-0 height-[32px] leading-[32px]"
+             @click="visible = !visible">
           <i-ep-caret-top v-show="visible"></i-ep-caret-top>
           <i-ep-caret-bottom v-show="!visible"></i-ep-caret-bottom>
         </div>
       </template>
 
-      <el-input v-model="filterValue" class="p-2" placeholder="搜索图标" clearable @input="filterIcons" />
+      <el-input v-model="filterValue" class="p-2" placeholder="搜索图标" clearable @input="filterIcons"/>
 
       <el-scrollbar height="w-[200px]">
         <ul class="icon-list">
-          <el-tooltip v-for="(iconName, index) in iconNames" :key="index" :content="iconName" placement="bottom" effect="light">
+          <el-tooltip v-for="(iconName, index) in iconNames" :key="index" :content="iconName" placement="bottom"
+                      effect="light">
             <li :class="['icon-item', { active: modelValue == iconName }]" @click="selectedIcon(iconName)">
-              <svg-icon color="var(--el-text-color-regular)" :icon-class="iconName" />
+              <svg-icon color="var(--el-text-color-regular)" :icon-class="iconName"/>
             </li>
           </el-tooltip>
         </ul>
@@ -31,7 +33,7 @@
 
 <script setup lang="ts">
 import icons from '@/components/IconSelect/requireIcons'
-import { propTypes } from '@/utils/propTypes'
+import {propTypes} from '@/utils/propTypes'
 
 const props = defineProps({
   modelValue: propTypes.string.isRequired,
@@ -40,7 +42,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 const visible = ref(false)
-const { modelValue, width } = toRefs(props)
+const {modelValue, width} = toRefs(props)
 const iconNames = ref<string[]>(icons)
 
 const filterValue = ref('')

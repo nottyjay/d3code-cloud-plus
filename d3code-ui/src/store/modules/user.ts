@@ -1,10 +1,10 @@
-import { to } from 'await-to-js'
-import { getToken, removeToken, setToken } from '@/utils/auth'
-import { getInfo as getUserInfo, login as loginApi, logout as logoutApi } from '@/api/login'
-import { LoginData } from '@/api/types'
+import {to} from 'await-to-js'
+import {getToken, removeToken, setToken} from '@/utils/auth'
+import {getInfo as getUserInfo, login as loginApi, logout as logoutApi} from '@/api/login'
+import {LoginData} from '@/api/types'
 import defAva from '@/assets/images/profile.jpg'
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import {defineStore} from 'pinia'
+import {ref} from 'vue'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref(getToken())

@@ -1,20 +1,20 @@
-import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import { useUserStore } from '@/store/modules/user'
-import { getToken } from '@/utils/auth'
-import { blobValidate, tansParams } from '@/utils/d3code'
+import axios, {AxiosResponse, InternalAxiosRequestConfig} from 'axios'
+import {useUserStore} from '@/store/modules/user'
+import {getToken} from '@/utils/auth'
+import {blobValidate, tansParams} from '@/utils/d3code'
 import cache from '@/plugins/cache'
-import { HttpStatus } from '@/enums/RespEnum'
-import { errorCode } from '@/utils/errorCode'
+import {HttpStatus} from '@/enums/RespEnum'
+import {errorCode} from '@/utils/errorCode'
 import FileSaver from 'file-saver'
-import { getLanguage } from '@/lang'
-import { decryptBase64, decryptWithAes, encryptBase64, encryptWithAes, generateAesKey } from '@/utils/crypto'
-import { decrypt, encrypt } from '@/utils/jsencrypt'
+import {getLanguage} from '@/lang'
+import {decryptBase64, decryptWithAes, encryptBase64, encryptWithAes, generateAesKey} from '@/utils/crypto'
+import {decrypt, encrypt} from '@/utils/jsencrypt'
 import router from '@/router'
 
 const encryptHeader = 'encrypt-key'
 let downloadLoadingInstance: ReturnType<typeof ElLoading.service> | null = null
 // 是否显示重新登录
-export const isRelogin = { show: false }
+export const isRelogin = {show: false}
 export const globalHeaders = () => {
   return {
     Authorization: 'Bearer ' + getToken(),
@@ -147,20 +147,20 @@ service.interceptors.response.use(
       }
       return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
     } else if (code === HttpStatus.SERVER_ERROR) {
-      ElMessage({ message: msg, type: 'error' })
+      ElMessage({message: msg, type: 'error'})
       return Promise.reject(new Error(msg))
     } else if (code === HttpStatus.WARN) {
-      ElMessage({ message: msg, type: 'warning' })
+      ElMessage({message: msg, type: 'warning'})
       return Promise.reject(new Error(msg))
     } else if (code !== HttpStatus.SUCCESS) {
-      ElNotification.error({ title: msg })
+      ElNotification.error({title: msg})
       return Promise.reject('error')
     } else {
       return Promise.resolve(res.data)
     }
   },
   (error: any) => {
-    let { message } = error
+    let {message} = error
     if (message === 'Network Error') {
       message = '后端接口连接异常'
     } else if (message.includes('timeout')) {
@@ -168,14 +168,14 @@ service.interceptors.response.use(
     } else if (message.includes('Request failed with status code')) {
       message = '系统接口' + message.substr(message.length - 3) + '异常'
     }
-    ElMessage({ message: message, type: 'error', duration: 5 * 1000 })
+    ElMessage({message: message, type: 'error', duration: 5 * 1000})
     return Promise.reject(error)
   }
 )
 
 // 通用下载方法
 export function download(url: string, params: any, fileName: string) {
-  downloadLoadingInstance = ElLoading.service({ text: '正在下载数据，请稍候', background: 'rgba(0, 0, 0, 0.7)' })
+  downloadLoadingInstance = ElLoading.service({text: '正在下载数据，请稍候', background: 'rgba(0, 0, 0, 0.7)'})
   // prettier-ignore
   return service.post(url, params, {
     transformRequest: [

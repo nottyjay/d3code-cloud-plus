@@ -8,11 +8,9 @@ import com.alphay.boot.common.core.constant.CacheNames;
 import com.alphay.boot.common.core.constant.SystemConstants;
 import com.alphay.boot.common.core.exception.ServiceException;
 import com.alphay.boot.common.core.utils.*;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
-import com.alphay.boot.common.mybatis.utils.MybatisUtil;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.satoken.utils.LoginHelper;
-import com.alphay.boot.system.api.domain.param.SysUserQueryParam;
 import com.alphay.boot.system.domain.*;
 import com.alphay.boot.system.domain.bo.SysUserBo;
 import com.alphay.boot.system.domain.vo.SysPostVo;
@@ -27,10 +25,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import jakarta.annotation.Resource;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -40,76 +38,93 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 用户 业务层处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Slf4j
+@RequiredArgsConstructor
 @Service
-public class SysUserServiceImpl extends ServiceImplX<SysUserMapper, SysUser, SysUserVo>
-    implements ISysUserService {
+public class SysUserServiceImpl implements ISysUserService {
 
-  @Resource private SysDeptMapper deptMapper;
-  @Resource private SysRoleMapper roleMapper;
-  @Resource private SysPostMapper postMapper;
-  @Resource private SysUserRoleMapper userRoleMapper;
-  @Resource private SysUserPostMapper userPostMapper;
+  private final SysUserMapper baseMapper;
+  private final SysDeptMapper deptMapper;
+  private final SysRoleMapper roleMapper;
+  private final SysPostMapper postMapper;
+  private final SysUserRoleMapper userRoleMapper;
+  private final SysUserPostMapper userPostMapper;
 
   @Override
-  public PageResult<SysUserVo> queryPageList(SysUserQueryParam param) {
-    return listPageVo(param, this.buildQueryWrapper(param));
+  public TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery) {
+    Page<SysUserVo> page =
+        baseMapper.selectPageUserList(pageQuery.build(), this.buildQueryWrapper(user));
+    return TableDataInfo.build(page);
   }
 
   /**
    * 根据条件分页查询用户列表
    *
-   * @param param 用户信息
+   * @param user 用户信息
    * @return 用户信息集合信息
    */
   @Override
-  public List<SysUserExportVo> queryExportList(SysUserQueryParam param) {
-    QueryWrapper<SysUser> wrapper =
-        this.queryWrapper()
-            .eq("u.del_flag", SystemConstants.NORMAL)
-            .likeIfPresent("u.user_name", param.getUserName())
-            .likeIfPresent("u.nick_name", param.getNickName())
-            .eqIfPresent("u.status", param.getStatus())
-            .likeIfPresent("u.phonenumber", param.getPhonenumber())
-            .betweenIfPresent("u.create_time", param.getCreateTime())
-            .and(
-                ObjectUtil.isNotNull(param.getDeptId()),
-                w -> {
-                  List<SysDept> deptList = deptMapper.selectListByParentId(param.getDeptId());
-                  List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
-                  ids.add(param.getDeptId());
-                  w.in("u.dept_id", ids);
-                })
-            .orderByAsc("u.user_id");
+  public List<SysUserExportVo> selectUserExportList(SysUserBo user) {
+    Map<String, Object> params = user.getParams();
+    QueryWrapper<SysUser> wrapper = Wrappers.query();
+    wrapper
+        .eq("u.del_flag", SystemConstants.NORMAL)
+        .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
+        .like(StringUtils.isNotBlank(user.getNickName()), "u.nick_name", user.getNickName())
+        .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
+        .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
+        .between(
+            params.get("beginTime") != null && params.get("endTime") != null,
+            "u.create_time",
+            params.get("beginTime"),
+            params.get("endTime"))
+        .and(
+            ObjectUtil.isNotNull(user.getDeptId()),
+            w -> {
+              List<SysDept> deptList = deptMapper.selectListByParentId(user.getDeptId());
+              List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
+              ids.add(user.getDeptId());
+              w.in("u.dept_id", ids);
+            })
+        .orderByAsc("u.user_id");
     return baseMapper.selectUserExportList(wrapper);
   }
 
-  private Wrapper<SysUser> buildQueryWrapper(SysUserQueryParam param) {
-    LambdaQueryWrapper<SysUser> wrapper =
-        this.lambdaQueryWrapper()
-            .eq(SysUser::getDelFlag, SystemConstants.NORMAL)
-            .eqIfPresent(SysUser::getUserId, param.getUserId())
-            .inIfPresent(
-                SysUser::getUserId, StringUtils.splitTo(param.getUserIds(), Convert::toLong))
-            .likeIfPresent(SysUser::getUserName, param.getUserName())
-            .likeIfPresent(SysUser::getNickName, param.getNickName())
-            .eqIfPresent(SysUser::getStatus, param.getStatus())
-            .likeIfPresent(SysUser::getPhonenumber, param.getPhonenumber())
-            .betweenIfPresent(SysUser::getCreateTime, param.getCreateTime())
-            .and(
-                ObjectUtil.isNotNull(param.getDeptId()),
-                w -> {
-                  List<SysDept> deptList = deptMapper.selectListByParentId(param.getDeptId());
-                  List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
-                  ids.add(param.getDeptId());
-                  w.in(SysUser::getDeptId, ids);
-                })
-            .orderByAsc(SysUser::getUserId);
-    if (StringUtils.isNotBlank(param.getExcludeUserIds())) {
-      wrapper.notIn(SysUser::getUserId, StringUtils.splitList(param.getExcludeUserIds()));
+  private Wrapper<SysUser> buildQueryWrapper(SysUserBo user) {
+    Map<String, Object> params = user.getParams();
+    LambdaQueryWrapper<SysUser> wrapper = Wrappers.lambdaQuery();
+    wrapper
+        .eq(SysUser::getDelFlag, SystemConstants.NORMAL)
+        .eq(ObjectUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId())
+        .in(
+            StringUtils.isNotBlank(user.getUserIds()),
+            SysUser::getUserId,
+            StringUtils.splitTo(user.getUserIds(), Convert::toLong))
+        .like(StringUtils.isNotBlank(user.getUserName()), SysUser::getUserName, user.getUserName())
+        .like(StringUtils.isNotBlank(user.getNickName()), SysUser::getNickName, user.getNickName())
+        .eq(StringUtils.isNotBlank(user.getStatus()), SysUser::getStatus, user.getStatus())
+        .like(
+            StringUtils.isNotBlank(user.getPhonenumber()),
+            SysUser::getPhonenumber,
+            user.getPhonenumber())
+        .between(
+            params.get("beginTime") != null && params.get("endTime") != null,
+            SysUser::getCreateTime,
+            params.get("beginTime"),
+            params.get("endTime"))
+        .and(
+            ObjectUtil.isNotNull(user.getDeptId()),
+            w -> {
+              List<SysDept> deptList = deptMapper.selectListByParentId(user.getDeptId());
+              List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
+              ids.add(user.getDeptId());
+              w.in(SysUser::getDeptId, ids);
+            })
+        .orderByAsc(SysUser::getUserId);
+    if (StringUtils.isNotBlank(user.getExcludeUserIds())) {
+      wrapper.notIn(SysUser::getUserId, StringUtils.splitList(user.getExcludeUserIds()));
     }
     return wrapper;
   }
@@ -117,48 +132,42 @@ public class SysUserServiceImpl extends ServiceImplX<SysUserMapper, SysUser, Sys
   /**
    * 根据条件分页查询已分配用户角色列表
    *
-   * @param param 用户信息
+   * @param user 用户信息
    * @return 用户信息集合信息
    */
   @Override
-  public PageResult<SysUserVo> queryPageAllocatedList(SysUserQueryParam param) {
-    QueryWrapper<SysUser> wrapper =
-        this.queryWrapper()
-            .eq("u.del_flag", SystemConstants.NORMAL)
-            .eq(ObjectUtil.isNotNull(param.getRoleId()), "r.role_id", param.getRoleId())
-            .like(StringUtils.isNotBlank(param.getUserName()), "u.user_name", param.getUserName())
-            .eq(StringUtils.isNotBlank(param.getStatus()), "u.status", param.getStatus())
-            .like(
-                StringUtils.isNotBlank(param.getPhonenumber()),
-                "u.phonenumber",
-                param.getPhonenumber())
-            .orderByAsc("u.user_id");
-    Page<SysUserVo> page =
-        baseMapper.selectAllocatedList(MybatisUtil.buildPage(param, param.getSortOrder()), wrapper);
-    return PageResult.build(page);
+  public TableDataInfo<SysUserVo> selectAllocatedList(SysUserBo user, PageQuery pageQuery) {
+    QueryWrapper<SysUser> wrapper = Wrappers.query();
+    wrapper
+        .eq("u.del_flag", SystemConstants.NORMAL)
+        .eq(ObjectUtil.isNotNull(user.getRoleId()), "r.role_id", user.getRoleId())
+        .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
+        .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
+        .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
+        .orderByAsc("u.user_id");
+    Page<SysUserVo> page = baseMapper.selectAllocatedList(pageQuery.build(), wrapper);
+    return TableDataInfo.build(page);
   }
 
   /**
    * 根据条件分页查询未分配用户角色列表
    *
-   * @param param 用户信息
+   * @param user 用户信息
    * @return 用户信息集合信息
    */
   @Override
-  public PageResult<SysUserVo> queryPageUnallocatedList(SysUserQueryParam param) {
-    List<Long> userIds = userRoleMapper.selectUserIdsByRoleId(param.getRoleId());
-    QueryWrapper<SysUser> wrapper =
-        this.queryWrapper()
-            .eq("u.del_flag", SystemConstants.NORMAL)
-            .and(w -> w.ne("r.role_id", param.getRoleId()).or().isNull("r.role_id"))
-            .notInIfPresent("u.user_id", userIds)
-            .likeIfPresent("u.user_name", param.getUserName())
-            .likeIfPresent("u.phonenumber", param.getPhonenumber())
-            .orderByAsc("u.user_id");
-    Page<SysUserVo> page =
-        baseMapper.selectUnallocatedList(
-            MybatisUtil.buildPage(param, param.getSortOrder()), wrapper);
-    return PageResult.build(page);
+  public TableDataInfo<SysUserVo> selectUnallocatedList(SysUserBo user, PageQuery pageQuery) {
+    List<Long> userIds = userRoleMapper.selectUserIdsByRoleId(user.getRoleId());
+    QueryWrapper<SysUser> wrapper = Wrappers.query();
+    wrapper
+        .eq("u.del_flag", SystemConstants.NORMAL)
+        .and(w -> w.ne("r.role_id", user.getRoleId()).or().isNull("r.role_id"))
+        .notIn(CollUtil.isNotEmpty(userIds), "u.user_id", userIds)
+        .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
+        .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
+        .orderByAsc("u.user_id");
+    Page<SysUserVo> page = baseMapper.selectUnallocatedList(pageQuery.build(), wrapper);
+    return TableDataInfo.build(page);
   }
 
   /**
@@ -169,8 +178,8 @@ public class SysUserServiceImpl extends ServiceImplX<SysUserMapper, SysUser, Sys
    */
   @Override
   public SysUserVo selectUserByUserName(String userName) {
-    return baseMapper.selectOne(
-        this.lambdaQueryWrapper().eq(SysUser::getUserName, userName), getVoClass());
+    return baseMapper.selectVoOne(
+        new LambdaQueryWrapper<SysUser>().eq(SysUser::getUserName, userName));
   }
 
   /**
@@ -181,8 +190,8 @@ public class SysUserServiceImpl extends ServiceImplX<SysUserMapper, SysUser, Sys
    */
   @Override
   public SysUserVo selectUserByPhonenumber(String phonenumber) {
-    return baseMapper.selectOne(
-        new LambdaQueryWrapper<SysUser>().eq(SysUser::getPhonenumber, phonenumber), getVoClass());
+    return baseMapper.selectVoOne(
+        new LambdaQueryWrapper<SysUser>().eq(SysUser::getPhonenumber, phonenumber));
   }
 
   /**
@@ -192,8 +201,8 @@ public class SysUserServiceImpl extends ServiceImplX<SysUserMapper, SysUser, Sys
    * @return 用户对象信息
    */
   @Override
-  public SysUserVo getVoById(Serializable userId) {
-    SysUserVo user = super.getVoById(userId);
+  public SysUserVo selectUserById(Long userId) {
+    SysUserVo user = baseMapper.selectVoById(userId);
     if (ObjectUtil.isNull(user)) {
       return user;
     }
@@ -209,7 +218,7 @@ public class SysUserServiceImpl extends ServiceImplX<SysUserMapper, SysUser, Sys
    * @return 用户列表信息
    */
   @Override
-  public List<SysUserVo> queryListByIds(List<Long> userIds, Long deptId) {
+  public List<SysUserVo> selectUserByIds(List<Long> userIds, Long deptId) {
     return baseMapper.selectUserList(
         new LambdaQueryWrapper<SysUser>()
             .select(
@@ -256,55 +265,46 @@ public class SysUserServiceImpl extends ServiceImplX<SysUserMapper, SysUser, Sys
   /**
    * 校验用户名称是否唯一
    *
-   * @param param 用户信息
+   * @param user 用户信息
    * @return 结果
    */
   @Override
-  public boolean checkUserNameUnique(SysUserQueryParam param) {
+  public boolean checkUserNameUnique(SysUserBo user) {
     boolean exist =
         baseMapper.exists(
             new LambdaQueryWrapper<SysUser>()
-                .eq(SysUser::getUserName, param.getUserName())
-                .ne(
-                    ObjectUtil.isNotNull(param.getUserId()),
-                    SysUser::getUserId,
-                    param.getUserId()));
+                .eq(SysUser::getUserName, user.getUserName())
+                .ne(ObjectUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId()));
     return !exist;
   }
 
   /**
    * 校验手机号码是否唯一
    *
-   * @param param 用户信息
+   * @param user 用户信息
    */
   @Override
-  public boolean checkPhoneUnique(SysUserQueryParam param) {
+  public boolean checkPhoneUnique(SysUserBo user) {
     boolean exist =
         baseMapper.exists(
             new LambdaQueryWrapper<SysUser>()
-                .eq(SysUser::getPhonenumber, param.getPhonenumber())
-                .ne(
-                    ObjectUtil.isNotNull(param.getUserId()),
-                    SysUser::getUserId,
-                    param.getUserId()));
+                .eq(SysUser::getPhonenumber, user.getPhonenumber())
+                .ne(ObjectUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId()));
     return !exist;
   }
 
   /**
    * 校验email是否唯一
    *
-   * @param param 用户信息
+   * @param user 用户信息
    */
   @Override
-  public boolean checkEmailUnique(SysUserQueryParam param) {
+  public boolean checkEmailUnique(SysUserBo user) {
     boolean exist =
         baseMapper.exists(
             new LambdaQueryWrapper<SysUser>()
-                .eq(SysUser::getEmail, param.getEmail())
-                .ne(
-                    ObjectUtil.isNotNull(param.getUserId()),
-                    SysUser::getUserId,
-                    param.getUserId()));
+                .eq(SysUser::getEmail, user.getEmail())
+                .ne(ObjectUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId()));
     return !exist;
   }
 
@@ -610,7 +610,7 @@ public class SysUserServiceImpl extends ServiceImplX<SysUserMapper, SysUser, Sys
     LambdaQueryWrapper<SysUser> lqw = Wrappers.lambdaQuery();
     lqw.eq(SysUser::getDeptId, deptId);
     lqw.orderByAsc(SysUser::getUserId);
-    return baseMapper.selectList(lqw, getVoClass());
+    return baseMapper.selectVoList(lqw);
   }
 
   @Override
@@ -697,10 +697,5 @@ public class SysUserServiceImpl extends ServiceImplX<SysUserMapper, SysUser, Sys
                 .select(SysUser::getEmail)
                 .eq(SysUser::getUserId, userId));
     return ObjectUtils.notNullGetter(sysUser, SysUser::getEmail);
-  }
-
-  @Override
-  public SysUserVo selectUserByEmail(String email) {
-    return this.getOneVo(SysUser::getEmail, email);
   }
 }

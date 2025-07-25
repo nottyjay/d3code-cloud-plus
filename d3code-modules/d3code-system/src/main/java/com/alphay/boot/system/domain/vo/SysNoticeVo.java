@@ -12,8 +12,7 @@ import lombok.Data;
 /**
  * 通知公告视图对象 sys_notice
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @AutoMapper(target = SysNotice.class)

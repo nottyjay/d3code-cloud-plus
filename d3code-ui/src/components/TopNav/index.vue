@@ -2,7 +2,8 @@
   <el-menu :default-active="activeMenu" mode="horizontal" :ellipsis="false" @select="handleSelect">
     <template v-for="(item, index) in topMenus">
       <el-menu-item v-if="index < visibleNumber" :key="index" :style="{ '--theme': theme }" :index="item.path">
-        <svg-icon v-if="item.meta && item.meta.icon && item.meta.icon !== '#'" :icon-class="item.meta ? item.meta.icon : ''" />
+        <svg-icon v-if="item.meta && item.meta.icon && item.meta.icon !== '#'"
+                  :icon-class="item.meta ? item.meta.icon : ''"/>
         {{ item.meta?.title }}
       </el-menu-item>
     </template>
@@ -12,7 +13,7 @@
       <template #title>更多菜单</template>
       <template v-for="(item, index) in topMenus">
         <el-menu-item v-if="index >= visibleNumber" :key="index" :index="item.path">
-          <svg-icon :icon-class="item.meta ? item.meta.icon : ''" />
+          <svg-icon :icon-class="item.meta ? item.meta.icon : ''"/>
           {{ item.meta?.title }}
         </el-menu-item>
       </template>
@@ -21,12 +22,12 @@
 </template>
 
 <script setup lang="ts">
-import { constantRoutes } from '@/router'
-import { isHttp } from '@/utils/validate'
-import { useAppStore } from '@/store/modules/app'
-import { useSettingsStore } from '@/store/modules/settings'
-import { usePermissionStore } from '@/store/modules/permission'
-import { RouteRecordRaw } from 'vue-router'
+import {constantRoutes} from '@/router'
+import {isHttp} from '@/utils/validate'
+import {useAppStore} from '@/store/modules/app'
+import {useSettingsStore} from '@/store/modules/settings'
+import {usePermissionStore} from '@/store/modules/permission'
+import {RouteRecordRaw} from 'vue-router'
 
 // 顶部栏初始数
 const visibleNumber = ref<number>(-1)
@@ -120,9 +121,9 @@ const handleSelect = (key: string) => {
     const routeMenu = childrenMenus.value.find((item) => item.path === key)
     if (routeMenu && routeMenu.query) {
       const query = JSON.parse(routeMenu.query)
-      router.push({ path: key, query: query })
+      router.push({path: key, query: query})
     } else {
-      router.push({ path: key })
+      router.push({path: key})
     }
     appStore.toggleSideBarHide(true)
   } else {

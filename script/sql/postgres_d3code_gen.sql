@@ -3,80 +3,81 @@
 -- ----------------------------
 create table if not exists gen_table
 (
-    table_id
-    int8,
-    data_name
-    varchar
+  table_id
+  int8,
+  data_name
+  varchar
 (
-    200
+  200
 ) default '':: varchar,
-    table_name varchar
+  table_name varchar
 (
-    200
+  200
 ) default '':: varchar,
-    table_comment varchar
+  table_comment varchar
 (
-    500
+  500
 ) default '':: varchar,
-    sub_table_name varchar
+  sub_table_name varchar
 (
-    64
+  64
 ) default '':: varchar,
-    sub_table_fk_name varchar
+  sub_table_fk_name varchar
 (
-    64
+  64
 ) default '':: varchar,
-    class_name varchar
+  class_name varchar
 (
-    100
+  100
 ) default '':: varchar,
-    tpl_category varchar
+  tpl_category varchar
 (
-    200
+  200
 ) default 'crud':: varchar,
-    package_name varchar
+  package_name varchar
 (
-    100
+  100
 ) default null :: varchar,
-    module_name varchar
+  module_name varchar
 (
-    30
+  30
 ) default null :: varchar,
-    business_name varchar
+  business_name varchar
 (
-    30
+  30
 ) default null :: varchar,
-    function_name varchar
+  function_name varchar
 (
-    50
+  50
 ) default null :: varchar,
-    function_author varchar
+  function_author varchar
 (
-    50
+  50
 ) default null :: varchar,
-    gen_type char default '0'::bpchar not null,
-    gen_path varchar
+  gen_type char default '0'::bpchar not null,
+  tenant_flag char default '0'::bpchar not null,
+  gen_path varchar
 (
-    200
+  200
 ) default '/':: varchar,
-    options varchar
+  options varchar
 (
-    1000
+  1000
 ) default null :: varchar,
-    create_dept int8,
-    create_by int8,
-    create_time timestamp,
-    update_by int8,
-    update_time timestamp,
-    remark varchar
+  create_dept int8,
+  create_by int8,
+  create_time timestamp,
+  update_by int8,
+  update_time timestamp,
+  remark varchar
 (
-    500
+  500
 ) default null :: varchar,
-    constraint gen_table_pk primary key
+  constraint gen_table_pk primary key
 (
-    table_id
+  table_id
 )
-    );
+  );
 
 comment
 on table gen_table is '代码生成业务表';
@@ -130,61 +131,61 @@ on column gen_table.remark is '备注';
 -- ----------------------------
 create table if not exists gen_table_column
 (
-    column_id
-    int8,
-    table_id
-    int8,
-    column_name
-    varchar
+  column_id
+  int8,
+  table_id
+  int8,
+  column_name
+  varchar
 (
-    200
+  200
 ) default null :: varchar,
-    column_comment varchar
+  column_comment varchar
 (
-    500
+  500
 ) default null :: varchar,
-    column_type varchar
+  column_type varchar
 (
-    100
+  100
 ) default null :: varchar,
-    java_type varchar
+  java_type varchar
 (
-    500
+  500
 ) default null :: varchar,
-    java_field varchar
+  java_field varchar
 (
-    200
+  200
 ) default null :: varchar,
-    is_pk char default null ::bpchar,
-    is_increment char default null ::bpchar,
-    is_required char default null ::bpchar,
-    is_insert char default null ::bpchar,
-    is_edit char default null ::bpchar,
-    is_list char default null ::bpchar,
-    is_query char default null ::bpchar,
-    query_type varchar
+  is_pk char default null ::bpchar,
+  is_increment char default null ::bpchar,
+  is_required char default null ::bpchar,
+  is_insert char default null ::bpchar,
+  is_edit char default null ::bpchar,
+  is_list char default null ::bpchar,
+  is_query char default null ::bpchar,
+  query_type varchar
 (
-    200
+  200
 ) default 'EQ':: varchar,
-    html_type varchar
+  html_type varchar
 (
-    200
+  200
 ) default null :: varchar,
-    dict_type varchar
+  dict_type varchar
 (
-    200
+  200
 ) default '':: varchar,
-    sort int4,
-    create_dept int8,
-    create_by int8,
-    create_time timestamp,
-    update_by int8,
-    update_time timestamp,
-    constraint gen_table_column_pk primary key
+  sort int4,
+  create_dept int8,
+  create_by int8,
+  create_time timestamp,
+  update_by int8,
+  update_time timestamp,
+  constraint gen_table_column_pk primary key
 (
-    column_id
+  column_id
 )
-    );
+  );
 
 comment
 on table gen_table_column is '代码生成业务表字段';

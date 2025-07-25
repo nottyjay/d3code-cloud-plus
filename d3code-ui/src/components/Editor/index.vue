@@ -29,9 +29,9 @@
 <script setup lang="ts">
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
-import { Quill, QuillEditor } from '@vueup/vue-quill'
-import { propTypes } from '@/utils/propTypes'
-import { globalHeaders } from '@/utils/request'
+import {Quill, QuillEditor} from '@vueup/vue-quill'
+import {propTypes} from '@/utils/propTypes'
+import {globalHeaders} from '@/utils/request'
 
 defineEmits(['update:modelValue'])
 
@@ -50,7 +50,7 @@ const props = defineProps({
   type: propTypes.string.def('url'),
 })
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
 
 const upload = reactive<UploadOption>({
   headers: globalHeaders(),
@@ -69,12 +69,12 @@ const options = ref<any>({
       container: [
         ['bold', 'italic', 'underline', 'strike'], // 加粗 斜体 下划线 删除线
         ['blockquote', 'code-block'], // 引用  代码块
-        [{ list: 'ordered' }, { list: 'bullet' }], // 有序、无序列表
-        [{ indent: '-1' }, { indent: '+1' }], // 缩进
-        [{ size: ['small', false, 'large', 'huge'] }], // 字体大小
-        [{ header: [1, 2, 3, 4, 5, 6, false] }], // 标题
-        [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
-        [{ align: [] }], // 对齐方式
+        [{list: 'ordered'}, {list: 'bullet'}], // 有序、无序列表
+        [{indent: '-1'}, {indent: '+1'}], // 缩进
+        [{size: ['small', false, 'large', 'huge']}], // 字体大小
+        [{header: [1, 2, 3, 4, 5, 6, false]}], // 标题
+        [{color: []}, {background: []}], // 字体颜色、字体背景颜色
+        [{align: []}], // 对齐方式
         ['clean'], // 清除文本格式
         ['link', 'image', 'video'], // 链接、图片、视频
       ],
@@ -113,7 +113,7 @@ watch(
       content.value = v || '<p></p>'
     }
   },
-  { immediate: true }
+  {immediate: true}
 )
 
 // 图片上传成功返回图片地址

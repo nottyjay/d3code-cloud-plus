@@ -6,12 +6,12 @@
         <el-row :gutter="10">
           <el-col :span="2.5">
             <el-form-item label="用户昵称" prop="nickName">
-              <el-input v-model="form.nickName" disabled />
+              <el-input v-model="form.nickName" disabled/>
             </el-form-item>
           </el-col>
           <el-col :span="2.5">
             <el-form-item label="登录账号" prop="userName">
-              <el-input v-model="form.userName" disabled />
+              <el-input v-model="form.userName" disabled/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -34,17 +34,18 @@
               <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
             </template>
           </el-table-column>
-          <el-table-column type="selection" :reserve-selection="true" :selectable="checkSelectable" width="55"></el-table-column>
-          <el-table-column label="角色编号" align="center" prop="roleId" />
-          <el-table-column label="角色名称" align="center" prop="roleName" />
-          <el-table-column label="权限字符" align="center" prop="roleKey" />
+          <el-table-column type="selection" :reserve-selection="true" :selectable="checkSelectable"
+                           width="55"></el-table-column>
+          <el-table-column label="角色编号" align="center" prop="roleId"/>
+          <el-table-column label="角色名称" align="center" prop="roleName"/>
+          <el-table-column label="权限字符" align="center" prop="roleKey"/>
           <el-table-column label="创建时间" align="center" prop="createTime" width="180">
             <template #default="scope">
               <span>{{ proxy.parseTime(scope.row.createTime) }}</span>
             </template>
           </el-table-column>
         </el-table>
-        <pagination v-show="total > 0" v-model:page="pageNum" v-model:limit="pageSize" :total="total" />
+        <pagination v-show="total > 0" v-model:page="pageNum" v-model:limit="pageSize" :total="total"/>
         <div style="text-align: center; margin-left: -120px; margin-top: 30px">
           <el-button type="primary" @click="submitForm()">提交</el-button>
           <el-button @click="close()">返回</el-button>
@@ -56,13 +57,13 @@
 </template>
 
 <script setup name="AuthRole" lang="ts">
-import { RoleVO } from '@/api/system/role/types'
-import { getAuthRole, updateAuthRole } from '@/api/system/user'
-import { UserForm } from '@/api/system/user/types'
-import { RouteLocationNormalized } from 'vue-router'
+import {RoleVO} from '@/api/system/role/types'
+import {getAuthRole, updateAuthRole} from '@/api/system/user'
+import {UserForm} from '@/api/system/user/types'
+import {RouteLocationNormalized} from 'vue-router'
 
 const route = useRoute()
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
 
 const loading = ref(true)
 const total = ref(0)
@@ -116,7 +117,7 @@ const close = () => {
 const submitForm = async () => {
   const userId = form.value.userId
   const rIds = roleIds.value.join(',')
-  await updateAuthRole({ userId: userId as string, roleIds: rIds })
+  await updateAuthRole({userId: userId as string, roleIds: rIds})
   proxy?.$modal.msgSuccess('授权成功')
   close()
 }

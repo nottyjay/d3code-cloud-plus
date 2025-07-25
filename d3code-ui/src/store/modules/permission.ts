@@ -1,14 +1,14 @@
-import { defineStore } from 'pinia'
-import router, { constantRoutes, dynamicRoutes } from '@/router'
+import {defineStore} from 'pinia'
+import router, {constantRoutes, dynamicRoutes} from '@/router'
 import store from '@/store'
-import { getRouters } from '@/api/menu'
+import {getRouters} from '@/api/menu'
 import auth from '@/plugins/auth'
-import { RouteRecordRaw } from 'vue-router'
+import {RouteRecordRaw} from 'vue-router'
 import Layout from '@/layout/index.vue'
 import ParentView from '@/components/ParentView/index.vue'
 import InnerLink from '@/layout/components/InnerLink/index.vue'
-import { ref } from 'vue'
-import { createCustomNameComponent } from '@/utils/createCustomNameComponent'
+import {ref} from 'vue'
+import {createCustomNameComponent} from '@/utils/createCustomNameComponent'
 
 // 匹配views里面所有的.vue文件
 const modules = import.meta.glob('./../../views/**/*.vue')
@@ -47,7 +47,7 @@ export const usePermissionStore = defineStore('permission', () => {
   }
   const generateRoutes = async (): Promise<RouteRecordRaw[]> => {
     const res = await getRouters()
-    const { data } = res
+    const {data} = res
     const sdata = JSON.parse(JSON.stringify(data))
     const rdata = JSON.parse(JSON.stringify(data))
     const defaultData = JSON.parse(JSON.stringify(data))
@@ -150,7 +150,7 @@ export const loadView = (view: any, name: string) => {
     let dir = path.substring(viewsIndex + 7)
     dir = dir.substring(0, dir.lastIndexOf('.vue'))
     if (dir === view) {
-      res = createCustomNameComponent(modules[path], { name })
+      res = createCustomNameComponent(modules[path], {name})
       return res
     }
   }

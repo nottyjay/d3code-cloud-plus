@@ -2,9 +2,9 @@ import pluginVue from 'eslint-plugin-vue'
 import globals from 'globals'
 import prettier from 'eslint-plugin-prettier'
 import pluginPrettier from 'eslint-plugin-prettier'
-import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
+import {defineConfigWithVueTs, vueTsConfigs} from '@vue/eslint-config-typescript'
 import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
-import { readFileSync } from 'fs'
+import {readFileSync} from 'fs'
 import pluginImport from 'eslint-plugin-import'
 
 const autoImportGlobals = JSON.parse(readFileSync('./.eslintrc-auto-import.json', 'utf8'))
@@ -47,12 +47,12 @@ export default defineConfigWithVueTs(
         process: true,
       },
     },
-    plugins: { prettier },
+    plugins: {prettier},
     rules: {
       // 集成Prettier格式化规则，确保代码风格统一
       'prettier/prettier': 'error',
       // 强制使用2空格缩进
-      'indent': ['error', 2, { 'SwitchCase': 1 }],
+      'indent': ['error', 2, {'SwitchCase': 1}],
       // 禁用quotes规则，由prettier处理引号格式
       'quotes': 'off',
       // 禁止使用分号，保持代码简洁

@@ -1,4 +1,4 @@
-import { parseTime } from '@/utils/d3code'
+import {parseTime} from '@/utils/d3code'
 
 /**
  * 表格时间格式化

@@ -1,4 +1,4 @@
-import { LocationQuery, type RouteMeta as VRouteMeta } from 'vue-router'
+import {LocationQuery, type RouteMeta as VRouteMeta} from 'vue-router'
 
 declare module 'vue-router' {
   interface RouteMeta extends VRouteMeta {

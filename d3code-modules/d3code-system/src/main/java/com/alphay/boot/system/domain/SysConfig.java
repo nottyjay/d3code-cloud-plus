@@ -9,8 +9,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 参数配置表 sys_config
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

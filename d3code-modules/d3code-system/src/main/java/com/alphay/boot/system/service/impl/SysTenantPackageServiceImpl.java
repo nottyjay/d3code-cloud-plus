@@ -6,9 +6,8 @@ import com.alphay.boot.common.core.constant.SystemConstants;
 import com.alphay.boot.common.core.exception.ServiceException;
 import com.alphay.boot.common.core.utils.MapstructUtils;
 import com.alphay.boot.common.core.utils.StringUtils;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
-import com.alphay.boot.system.api.domain.param.SysTenantPackageQueryParam;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.SysTenant;
 import com.alphay.boot.system.domain.SysTenantPackage;
 import com.alphay.boot.system.domain.bo.SysTenantPackageBo;
@@ -17,50 +16,63 @@ import com.alphay.boot.system.mapper.SysTenantMapper;
 import com.alphay.boot.system.mapper.SysTenantPackageMapper;
 import com.alphay.boot.system.service.ISysTenantPackageService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import jakarta.annotation.Resource;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 租户套餐Service业务层处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
+@RequiredArgsConstructor
 @Service
-public class SysTenantPackageServiceImpl
-    extends ServiceImplX<SysTenantPackageMapper, SysTenantPackage, SysTenantPackageVo>
-    implements ISysTenantPackageService {
+public class SysTenantPackageServiceImpl implements ISysTenantPackageService {
 
-  @Resource private SysTenantMapper tenantMapper;
+  private final SysTenantPackageMapper baseMapper;
+  private final SysTenantMapper tenantMapper;
+
+  /** 查询租户套餐 */
+  @Override
+  public SysTenantPackageVo queryById(Long packageId) {
+    return baseMapper.selectVoById(packageId);
+  }
 
   /** 查询租户套餐列表 */
   @Override
-  public PageResult<SysTenantPackageVo> queryPageList(SysTenantPackageQueryParam param) {
-    return listPageVo(param, buildQueryWrapper(param));
+  public TableDataInfo<SysTenantPackageVo> queryPageList(
+      SysTenantPackageBo bo, PageQuery pageQuery) {
+    LambdaQueryWrapper<SysTenantPackage> lqw = buildQueryWrapper(bo);
+    Page<SysTenantPackageVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+    return TableDataInfo.build(result);
   }
 
   @Override
-  public List<SysTenantPackageVo> queryList() {
-    return listVo(
+  public List<SysTenantPackageVo> selectList() {
+    return baseMapper.selectVoList(
         new LambdaQueryWrapper<SysTenantPackage>()
             .eq(SysTenantPackage::getStatus, SystemConstants.NORMAL));
   }
 
   /** 查询租户套餐列表 */
   @Override
-  public List<SysTenantPackageVo> queryList(SysTenantPackageQueryParam param) {
-    return listVo(buildQueryWrapper(param));
+  public List<SysTenantPackageVo> queryList(SysTenantPackageBo bo) {
+    LambdaQueryWrapper<SysTenantPackage> lqw = buildQueryWrapper(bo);
+    return baseMapper.selectVoList(lqw);
   }
 
-  private LambdaQueryWrapper<SysTenantPackage> buildQueryWrapper(SysTenantPackageQueryParam param) {
-    LambdaQueryWrapper<SysTenantPackage> lqw =
-        this.lambdaQueryWrapper()
-            .likeIfPresent(SysTenantPackage::getPackageName, param.getPackageName())
-            .eqIfPresent(SysTenantPackage::getStatus, param.getStatus());
+  private LambdaQueryWrapper<SysTenantPackage> buildQueryWrapper(SysTenantPackageBo bo) {
+    LambdaQueryWrapper<SysTenantPackage> lqw = Wrappers.lambdaQuery();
+    lqw.like(
+        StringUtils.isNotBlank(bo.getPackageName()),
+        SysTenantPackage::getPackageName,
+        bo.getPackageName());
+    lqw.eq(StringUtils.isNotBlank(bo.getStatus()), SysTenantPackage::getStatus, bo.getStatus());
     lqw.orderByAsc(SysTenantPackage::getPackageId);
     return lqw;
   }
@@ -101,15 +113,15 @@ public class SysTenantPackageServiceImpl
 
   /** 校验套餐名称是否唯一 */
   @Override
-  public boolean checkPackageNameUnique(SysTenantPackageQueryParam param) {
+  public boolean checkPackageNameUnique(SysTenantPackageBo bo) {
     boolean exist =
         baseMapper.exists(
             new LambdaQueryWrapper<SysTenantPackage>()
-                .eq(SysTenantPackage::getPackageName, param.getPackageName())
+                .eq(SysTenantPackage::getPackageName, bo.getPackageName())
                 .ne(
-                    ObjectUtil.isNotNull(param.getPackageId()),
+                    ObjectUtil.isNotNull(bo.getPackageId()),
                     SysTenantPackage::getPackageId,
-                    param.getPackageId()));
+                    bo.getPackageId()));
     return !exist;
   }
 

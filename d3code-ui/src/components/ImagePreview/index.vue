@@ -1,9 +1,10 @@
 <template>
-  <el-image :src="`${realSrc}`" fit="cover" :style="`width:${realWidth};height:${realHeight};`" :preview-src-list="realSrcList" preview-teleported>
+  <el-image :src="`${realSrc}`" fit="cover" :style="`width:${realWidth};height:${realHeight};`"
+            :preview-src-list="realSrcList" preview-teleported>
     <template #error>
       <div class="image-slot">
         <el-icon>
-          <picture-filled />
+          <picture-filled/>
         </el-icon>
       </div>
     </template>
@@ -11,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { propTypes } from '@/utils/propTypes'
+import {propTypes} from '@/utils/propTypes'
 
 const props = defineProps({
   src: propTypes.string.def(''),

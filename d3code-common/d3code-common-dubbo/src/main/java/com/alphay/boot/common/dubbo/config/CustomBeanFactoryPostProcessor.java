@@ -4,8 +4,9 @@ import com.alphay.boot.common.core.utils.StringUtils;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Enumeration;
-import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -18,6 +19,7 @@ import org.springframework.core.Ordered;
  * @author Nottyjay
  * @since 1.0.0
  */
+@Slf4j
 public class CustomBeanFactoryPostProcessor implements BeanFactoryPostProcessor, Ordered {
 
   /**
@@ -45,22 +47,26 @@ public class CustomBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
     }
     String ip = "127.0.0.1";
     // 获取第一个非虚拟网卡地址
-    Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-    while (interfaces.hasMoreElements()) {
-      NetworkInterface ni = interfaces.nextElement();
-      // 排除回环、虚拟和禁用的接口
-      if (ni.isLoopback() || ni.isVirtual() || !ni.isUp()) continue;
+    try {
+      Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+      while (interfaces.hasMoreElements()) {
+        NetworkInterface ni = interfaces.nextElement();
+        // 排除回环、虚拟和禁用的接口
+        if (ni.isLoopback() || ni.isVirtual() || !ni.isUp()) continue;
 
-      // 排除 WSL 网卡（名称通常包含 "vEthernet" 或 "WSL"）
-      if (ni.getName().contains("vEthernet") || ni.getDisplayName().contains("WSL")) continue;
+        // 排除 WSL 网卡（名称通常包含 "vEthernet" 或 "WSL"）
+        if (ni.getName().contains("vEthernet") || ni.getDisplayName().contains("WSL")) continue;
 
-      Enumeration<InetAddress> addresses = ni.getInetAddresses();
-      while (addresses.hasMoreElements()) {
-        InetAddress addr = addresses.nextElement();
-        if (addr instanceof Inet4Address && !addr.isLinkLocalAddress()) {
-          ip = addr.getHostAddress();
+        Enumeration<InetAddress> addresses = ni.getInetAddresses();
+        while (addresses.hasMoreElements()) {
+          InetAddress addr = addresses.nextElement();
+          if (addr instanceof Inet4Address && !addr.isLinkLocalAddress()) {
+            ip = addr.getHostAddress();
+          }
         }
       }
+    } catch (SocketException e) {
+      log.error("网卡获取失败，{}。尝试使用 127.0.0.1进行注册。", e.getMessage());
     }
     // 设置系统属性 DUBBO_IP_TO_REGISTRY 为获取到的 IP 地址
     System.setProperty(CommonConstants.DubboProperty.DUBBO_IP_TO_REGISTRY, ip);

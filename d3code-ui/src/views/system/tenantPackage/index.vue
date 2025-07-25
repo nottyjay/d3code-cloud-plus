@@ -1,11 +1,13 @@
 <template>
   <div class="p-2">
-    <transition :enter-active-class="proxy?.animate.searchAnimate.enter" :leave-active-class="proxy?.animate.searchAnimate.leave">
+    <transition :enter-active-class="proxy?.animate.searchAnimate.enter"
+                :leave-active-class="proxy?.animate.searchAnimate.leave">
       <div v-show="showSearch" class="mb-[10px]">
         <el-card shadow="hover">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true">
             <el-form-item label="套餐名称" prop="packageName">
-              <el-input v-model="queryParams.packageName" placeholder="请输入套餐名称" clearable @keyup.enter="handleQuery" />
+              <el-input v-model="queryParams.packageName" placeholder="请输入套餐名称" clearable
+                        @keyup.enter="handleQuery"/>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -20,56 +22,70 @@
       <template #header>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:tenantPackage:add']" type="primary" plain icon="Plus" @click="handleAdd">新增</el-button>
+            <el-button v-hasPermi="['system:tenantPackage:add']" type="primary" plain icon="Plus" @click="handleAdd">
+              新增
+            </el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:tenantPackage:edit']" type="success" plain icon="Edit" :disabled="single" @click="handleUpdate()">修改</el-button>
+            <el-button v-hasPermi="['system:tenantPackage:edit']" type="success" plain icon="Edit" :disabled="single"
+                       @click="handleUpdate()">修改
+            </el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:tenantPackage:remove']" type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete()">删除</el-button>
+            <el-button v-hasPermi="['system:tenantPackage:remove']" type="danger" plain icon="Delete"
+                       :disabled="multiple" @click="handleDelete()">删除
+            </el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:tenantPackage:export']" type="warning" plain icon="Download" @click="handleExport">导出</el-button>
+            <el-button v-hasPermi="['system:tenantPackage:export']" type="warning" plain icon="Download"
+                       @click="handleExport">导出
+            </el-button>
           </el-col>
           <right-toolbar v-model:show-search="showSearch" @query-table="getList"></right-toolbar>
         </el-row>
       </template>
 
       <el-table v-loading="loading" border :data="tenantPackageList" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column v-if="false" label="租户套餐id" align="center" prop="packageId" />
-        <el-table-column label="套餐名称" align="center" prop="packageName" />
-        <el-table-column label="备注" align="center" prop="remark" />
+        <el-table-column type="selection" width="55" align="center"/>
+        <el-table-column v-if="false" label="租户套餐id" align="center" prop="packageId"/>
+        <el-table-column label="套餐名称" align="center" prop="packageName"/>
+        <el-table-column label="备注" align="center" prop="remark"/>
         <el-table-column label="状态" align="center" prop="status">
           <template #default="scope">
-            <el-switch v-model="scope.row.status" active-value="0" inactive-value="1" @click="handleStatusChange(scope.row)"></el-switch>
+            <el-switch v-model="scope.row.status" active-value="0" inactive-value="1"
+                       @click="handleStatusChange(scope.row)"></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="scope">
             <el-tooltip content="修改" placement="top">
-              <el-button v-hasPermi="['system:tenantPackage:edit']" link type="primary" icon="Edit" @click="handleUpdate(scope.row)"></el-button>
+              <el-button v-hasPermi="['system:tenantPackage:edit']" link type="primary" icon="Edit"
+                         @click="handleUpdate(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip content="删除" placement="top">
-              <el-button v-hasPermi="['system:tenantPackage:remove']" link type="primary" icon="Delete" @click="handleDelete(scope.row)"></el-button>
+              <el-button v-hasPermi="['system:tenantPackage:remove']" link type="primary" icon="Delete"
+                         @click="handleDelete(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
 
-      <pagination v-show="total > 0" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" :total="total" @pagination="getList" />
+      <pagination v-show="total > 0" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
+                  :total="total" @pagination="getList"/>
     </el-card>
 
     <!-- 添加或修改租户套餐对话框 -->
     <el-dialog v-model="dialog.visible" :title="dialog.title" width="500px" append-to-body>
       <el-form ref="tenantPackageFormRef" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="套餐名称" prop="packageName">
-          <el-input v-model="form.packageName" placeholder="请输入套餐名称" />
+          <el-input v-model="form.packageName" placeholder="请输入套餐名称"/>
         </el-form-item>
         <el-form-item label="关联菜单">
           <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
-          <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
-          <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动</el-checkbox>
+          <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选
+          </el-checkbox>
+          <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动
+          </el-checkbox>
           <el-tree
             ref="menuTreeRef"
             class="tree-border"
@@ -82,7 +98,7 @@
           ></el-tree>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注" />
+          <el-input v-model="form.remark" placeholder="请输入备注"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -96,13 +112,20 @@
 </template>
 
 <script setup name="TenantPackage" lang="ts">
-import { addTenantPackage, changePackageStatus, delTenantPackage, getTenantPackage, listTenantPackage, updateTenantPackage } from '@/api/system/tenantPackage'
-import { tenantPackageMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu'
-import { TenantPkgForm, TenantPkgQuery, TenantPkgVO } from '@/api/system/tenantPackage/types'
-import { MenuTreeOption } from '@/api/system/menu/types'
+import {
+  addTenantPackage,
+  changePackageStatus,
+  delTenantPackage,
+  getTenantPackage,
+  listTenantPackage,
+  updateTenantPackage
+} from '@/api/system/tenantPackage'
+import {tenantPackageMenuTreeselect, treeselect as menuTreeselect} from '@/api/system/menu'
+import {TenantPkgForm, TenantPkgQuery, TenantPkgVO} from '@/api/system/tenantPackage/types'
+import {MenuTreeOption} from '@/api/system/menu/types'
 import to from 'await-to-js'
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
 
 const tenantPackageList = ref<TenantPkgVO[]>([])
 const buttonLoading = ref(false)
@@ -133,23 +156,23 @@ const initFormData: TenantPkgForm = {
   menuCheckStrictly: true,
 }
 const data = reactive<PageData<TenantPkgForm, TenantPkgQuery>>({
-  form: { ...initFormData },
+  form: {...initFormData},
   queryParams: {
     pageNum: 1,
     pageSize: 10,
     packageName: '',
   },
   rules: {
-    packageId: [{ required: true, message: '租户套餐id不能为空', trigger: 'blur' }],
-    packageName: [{ required: true, message: '套餐名称不能为空', trigger: 'blur' }],
+    packageId: [{required: true, message: '租户套餐id不能为空', trigger: 'blur'}],
+    packageName: [{required: true, message: '套餐名称不能为空', trigger: 'blur'}],
   },
 })
 
-const { queryParams, form, rules } = toRefs(data)
+const {queryParams, form, rules} = toRefs(data)
 
 /** 查询菜单树结构 */
 const getMenuTreeselect = async () => {
-  const { data } = await menuTreeselect()
+  const {data} = await menuTreeselect()
   menuOptions.value = data
 }
 
@@ -204,7 +227,7 @@ const reset = () => {
   menuTreeRef.value?.setCheckedKeys([])
   menuExpand.value = false
   menuNodeAll.value = false
-  form.value = { ...initFormData }
+  form.value = {...initFormData}
   tenantPackageFormRef.value?.resetFields()
 }
 

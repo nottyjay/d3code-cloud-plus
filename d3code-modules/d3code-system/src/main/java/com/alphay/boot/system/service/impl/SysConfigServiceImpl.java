@@ -8,18 +8,21 @@ import com.alphay.boot.common.core.exception.ServiceException;
 import com.alphay.boot.common.core.utils.MapstructUtils;
 import com.alphay.boot.common.core.utils.ObjectUtils;
 import com.alphay.boot.common.core.utils.StringUtils;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.redis.utils.CacheUtils;
 import com.alphay.boot.common.tenant.helper.TenantHelper;
-import com.alphay.boot.system.api.domain.param.SysConfigQueryParam;
 import com.alphay.boot.system.domain.SysConfig;
 import com.alphay.boot.system.domain.bo.SysConfigBo;
 import com.alphay.boot.system.domain.vo.SysConfigVo;
 import com.alphay.boot.system.mapper.SysConfigMapper;
 import com.alphay.boot.system.service.ISysConfigService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -27,16 +30,30 @@ import org.springframework.stereotype.Service;
 /**
  * 参数配置 服务层实现
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
-public class SysConfigServiceImpl extends ServiceImplX<SysConfigMapper, SysConfig, SysConfigVo>
-    implements ISysConfigService {
+public class SysConfigServiceImpl implements ISysConfigService {
+
+  private final SysConfigMapper baseMapper;
 
   @Override
-  public PageResult<SysConfigVo> queryPageList(SysConfigQueryParam param) {
-    return listPageVo(param, buildQueryWrapper(param));
+  public TableDataInfo<SysConfigVo> selectPageConfigList(SysConfigBo config, PageQuery pageQuery) {
+    LambdaQueryWrapper<SysConfig> lqw = buildQueryWrapper(config);
+    Page<SysConfigVo> page = baseMapper.selectVoPage(pageQuery.build(), lqw);
+    return TableDataInfo.build(page);
+  }
+
+  /**
+   * 查询参数配置信息
+   *
+   * @param configId 参数配置ID
+   * @return 参数配置信息
+   */
+  @Override
+  public SysConfigVo selectConfigById(Long configId) {
+    return baseMapper.selectVoById(configId);
   }
 
   /**
@@ -48,7 +65,9 @@ public class SysConfigServiceImpl extends ServiceImplX<SysConfigMapper, SysConfi
   @Cacheable(cacheNames = CacheNames.SYS_CONFIG, key = "#configKey")
   @Override
   public String selectConfigByKey(String configKey) {
-    SysConfig retConfig = this.getOne(SysConfig::getConfigKey, configKey);
+    SysConfig retConfig =
+        baseMapper.selectOne(
+            new LambdaQueryWrapper<SysConfig>().eq(SysConfig::getConfigKey, configKey));
     return ObjectUtils.notNullGetter(retConfig, SysConfig::getConfigValue, StringUtils.EMPTY);
   }
 
@@ -68,21 +87,28 @@ public class SysConfigServiceImpl extends ServiceImplX<SysConfigMapper, SysConfi
   /**
    * 查询参数配置列表
    *
-   * @param param 参数配置信息
+   * @param config 参数配置信息
    * @return 参数配置集合
    */
   @Override
-  public List<SysConfigVo> queryList(SysConfigQueryParam param) {
-    return listVo(buildQueryWrapper(param));
+  public List<SysConfigVo> selectConfigList(SysConfigBo config) {
+    LambdaQueryWrapper<SysConfig> lqw = buildQueryWrapper(config);
+    return baseMapper.selectVoList(lqw);
   }
 
-  private LambdaQueryWrapper<SysConfig> buildQueryWrapper(SysConfigQueryParam param) {
-    LambdaQueryWrapper<SysConfig> lqw =
-        this.lambdaQueryWrapper()
-            .likeIfPresent(SysConfig::getConfigName, param.getConfigName())
-            .eqIfPresent(SysConfig::getConfigType, param.getConfigType())
-            .likeIfPresent(SysConfig::getConfigKey, param.getConfigKey())
-            .betweenIfPresent(SysConfig::getCreateTime, param.getCreateTime());
+  private LambdaQueryWrapper<SysConfig> buildQueryWrapper(SysConfigBo bo) {
+    Map<String, Object> params = bo.getParams();
+    LambdaQueryWrapper<SysConfig> lqw = Wrappers.lambdaQuery();
+    lqw.like(
+        StringUtils.isNotBlank(bo.getConfigName()), SysConfig::getConfigName, bo.getConfigName());
+    lqw.eq(
+        StringUtils.isNotBlank(bo.getConfigType()), SysConfig::getConfigType, bo.getConfigType());
+    lqw.like(StringUtils.isNotBlank(bo.getConfigKey()), SysConfig::getConfigKey, bo.getConfigKey());
+    lqw.between(
+        params.get("beginTime") != null && params.get("endTime") != null,
+        SysConfig::getCreateTime,
+        params.get("beginTime"),
+        params.get("endTime"));
     lqw.orderByAsc(SysConfig::getConfigId);
     return lqw;
   }

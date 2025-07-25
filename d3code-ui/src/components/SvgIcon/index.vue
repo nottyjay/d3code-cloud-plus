@@ -1,11 +1,11 @@
 <template>
   <svg :class="svgClass" aria-hidden="true">
-    <use :xlink:href="iconName" :fill="color" />
+    <use :xlink:href="iconName" :fill="color"/>
   </svg>
 </template>
 
 <script setup lang="ts">
-import { propTypes } from '@/utils/propTypes'
+import {propTypes} from '@/utils/propTypes'
 
 const props = defineProps({
   iconClass: propTypes.string.isRequired,

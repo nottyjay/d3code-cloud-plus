@@ -13,7 +13,7 @@
         </ul>
       </el-col>
       <el-col :span="12">
-        <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream." />
+        <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream."/>
       </el-col>
     </el-row>
   </div>
@@ -22,13 +22,13 @@
 <script setup lang="ts">
 import errImage from '@/assets/401_images/401.gif'
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
 
 const errGif = ref(errImage + '?' + +new Date())
 
 function back() {
   if (proxy?.$route.query.noGoBack) {
-    proxy.$router.push({ path: '/' })
+    proxy.$router.push({path: '/'})
   } else {
     proxy?.$router.go(-1)
   }

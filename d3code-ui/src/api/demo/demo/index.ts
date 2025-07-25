@@ -1,6 +1,6 @@
 import request from '@/utils/request'
-import { AxiosPromise } from 'axios'
-import { DemoForm, DemoQuery, DemoVO } from '@/api/demo/demo/types'
+import {AxiosPromise} from 'axios'
+import {DemoForm, DemoQuery, DemoVO} from '@/api/demo/demo/types'
 
 /**
  * 查询测试单列表

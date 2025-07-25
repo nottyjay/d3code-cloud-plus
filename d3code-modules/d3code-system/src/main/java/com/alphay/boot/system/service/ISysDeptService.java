@@ -1,10 +1,8 @@
 package com.alphay.boot.system.service;
 
 import cn.hutool.core.lang.tree.Tree;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.IServiceX;
-import com.alphay.boot.system.api.domain.param.SysDeptQueryParam;
-import com.alphay.boot.system.domain.SysDept;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.bo.SysDeptBo;
 import com.alphay.boot.system.domain.vo.SysDeptVo;
 import java.util.List;
@@ -12,34 +10,34 @@ import java.util.List;
 /**
  * 部门管理 服务层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface ISysDeptService extends IServiceX<SysDept, SysDeptVo> {
+public interface ISysDeptService {
 
   /**
    * 分页查询部门管理数据
    *
-   * @param param 部门信息
+   * @param dept 部门信息
+   * @param pageQuery 分页对象
    * @return 部门信息集合
    */
-  PageResult<SysDeptVo> queryPageList(SysDeptQueryParam param);
+  TableDataInfo<SysDeptVo> selectPageDeptList(SysDeptBo dept, PageQuery pageQuery);
 
   /**
    * 查询部门管理数据
    *
-   * @param param 部门信息
+   * @param dept 部门信息
    * @return 部门信息集合
    */
-  List<SysDeptVo> queryList(SysDeptQueryParam param);
+  List<SysDeptVo> selectDeptList(SysDeptBo dept);
 
   /**
    * 查询部门树结构信息
    *
-   * @param param 部门信息
+   * @param dept 部门信息
    * @return 部门树信息集合
    */
-  List<Tree<Long>> selectDeptTreeList(SysDeptQueryParam param);
+  List<Tree<Long>> selectDeptTreeList(SysDeptBo dept);
 
   /**
    * 构建前端所需要下拉树结构
@@ -56,6 +54,14 @@ public interface ISysDeptService extends IServiceX<SysDept, SysDeptVo> {
    * @return 选中部门列表
    */
   List<Long> selectDeptListByRoleId(Long roleId);
+
+  /**
+   * 根据部门ID查询信息
+   *
+   * @param deptId 部门ID
+   * @return 部门信息
+   */
+  SysDeptVo selectDeptById(Long deptId);
 
   /**
    * 通过部门ID串查询部门

@@ -8,8 +8,7 @@ import lombok.Data;
 /**
  * 路由显示信息
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author ruoyi
  */
 @Data
 public class MetaVo implements Serializable {

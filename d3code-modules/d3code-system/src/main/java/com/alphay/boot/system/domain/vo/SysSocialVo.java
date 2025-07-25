@@ -10,84 +10,133 @@ import lombok.Data;
 /**
  * 社会化关系视图对象 sys_social
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author thiszhc
  */
 @Data
 @AutoMapper(target = SysSocial.class)
 public class SysSocialVo implements Serializable {
 
-  @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-  /** 主键 */
-  private Long id;
+    /**
+     * 主键
+     */
+    private Long id;
 
-  /** 用户ID */
-  private Long userId;
+    /**
+     * 用户ID
+     */
+    private Long userId;
 
-  /** 租户ID */
-  private String tenantId;
+    /**
+     * 租户ID
+     */
+    private String tenantId;
 
-  /** 认证唯一ID */
-  private String authId;
+    /**
+     * 认证唯一ID
+     */
+    private String authId;
 
-  /** 用户来源 */
-  private String source;
+    /**
+     * 用户来源
+     */
+    private String source;
 
-  /** 用户的授权令牌 */
-  private String accessToken;
+    /**
+     * 用户的授权令牌
+     */
+    private String accessToken;
 
-  /** 用户的授权令牌的有效期，部分平台可能没有 */
-  private int expireIn;
+    /**
+     * 用户的授权令牌的有效期，部分平台可能没有
+     */
+    private int expireIn;
 
-  /** 刷新令牌，部分平台可能没有 */
-  private String refreshToken;
+    /**
+     * 刷新令牌，部分平台可能没有
+     */
+    private String refreshToken;
 
-  /** 用户的 open id */
-  private String openId;
+    /**
+     * 用户的 open id
+     */
+    private String openId;
 
-  /** 授权的第三方账号 */
-  private String userName;
+    /**
+     * 授权的第三方账号
+     */
+    private String userName;
 
-  /** 授权的第三方昵称 */
-  private String nickName;
+    /**
+     * 授权的第三方昵称
+     */
+    private String nickName;
 
-  /** 授权的第三方邮箱 */
-  private String email;
+    /**
+     * 授权的第三方邮箱
+     */
+    private String email;
 
-  /** 授权的第三方头像地址 */
-  private String avatar;
+    /**
+     * 授权的第三方头像地址
+     */
+    private String avatar;
 
-  /** 平台的授权信息，部分平台可能没有 */
-  private String accessCode;
 
-  /** 用户的 unionid */
-  private String unionId;
+    /**
+     * 平台的授权信息，部分平台可能没有
+     */
+    private String accessCode;
 
-  /** 授予的权限，部分平台可能没有 */
-  private String scope;
+    /**
+     * 用户的 unionid
+     */
+    private String unionId;
 
-  /** 个别平台的授权信息，部分平台可能没有 */
-  private String tokenType;
+    /**
+     * 授予的权限，部分平台可能没有
+     */
+    private String scope;
 
-  /** id token，部分平台可能没有 */
-  private String idToken;
+    /**
+     * 个别平台的授权信息，部分平台可能没有
+     */
+    private String tokenType;
 
-  /** 小米平台用户的附带属性，部分平台可能没有 */
-  private String macAlgorithm;
+    /**
+     * id token，部分平台可能没有
+     */
+    private String idToken;
 
-  /** 小米平台用户的附带属性，部分平台可能没有 */
-  private String macKey;
+    /**
+     * 小米平台用户的附带属性，部分平台可能没有
+     */
+    private String macAlgorithm;
 
-  /** 用户的授权code，部分平台可能没有 */
-  private String code;
+    /**
+     * 小米平台用户的附带属性，部分平台可能没有
+     */
+    private String macKey;
 
-  /** Twitter平台用户的附带属性，部分平台可能没有 */
-  private String oauthToken;
+    /**
+     * 用户的授权code，部分平台可能没有
+     */
+    private String code;
 
-  /** Twitter平台用户的附带属性，部分平台可能没有 */
-  private String oauthTokenSecret;
+    /**
+     * Twitter平台用户的附带属性，部分平台可能没有
+     */
+    private String oauthToken;
 
-  /** 显示绑定时间 */
-  private Date createTime;
+    /**
+     * Twitter平台用户的附带属性，部分平台可能没有
+     */
+    private String oauthTokenSecret;
+
+    /**
+     * 显示绑定时间
+     */
+    private Date createTime;
 }

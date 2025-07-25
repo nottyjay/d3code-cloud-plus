@@ -19,44 +19,44 @@
 -- the table to store GlobalSession data
 CREATE TABLE IF NOT EXISTS public.global_table
 (
-    xid
-    VARCHAR
+  xid
+  VARCHAR
 (
-    128
+  128
 ) NOT NULL,
-    transaction_id BIGINT,
-    status SMALLINT NOT NULL,
-    application_id VARCHAR
+  transaction_id BIGINT,
+  status SMALLINT NOT NULL,
+  application_id VARCHAR
 (
-    32
+  32
 ),
-    transaction_service_group VARCHAR
+  transaction_service_group VARCHAR
 (
-    32
+  32
 ),
-    transaction_name VARCHAR
+  transaction_name VARCHAR
 (
-    128
+  128
 ),
-    timeout INT,
-    begin_time BIGINT,
-    application_data VARCHAR
+  timeout INT,
+  begin_time BIGINT,
+  application_data VARCHAR
 (
-    2000
+  2000
 ),
-    gmt_create TIMESTAMP
+  gmt_create TIMESTAMP
 (
-    0
+  0
 ),
-    gmt_modified TIMESTAMP
+  gmt_modified TIMESTAMP
 (
-    0
+  0
 ),
-    CONSTRAINT pk_global_table PRIMARY KEY
+  CONSTRAINT pk_global_table PRIMARY KEY
 (
-    xid
+  xid
 )
-    );
+  );
 
 CREATE INDEX idx_global_table_status_gmt_modified ON public.global_table (status, gmt_modified);
 CREATE INDEX idx_global_table_transaction_id ON public.global_table (transaction_id);
@@ -64,93 +64,93 @@ CREATE INDEX idx_global_table_transaction_id ON public.global_table (transaction
 -- the table to store BranchSession data
 CREATE TABLE IF NOT EXISTS public.branch_table
 (
-    branch_id
-    BIGINT
-    NOT
-    NULL,
-    xid
-    VARCHAR
+  branch_id
+  BIGINT
+  NOT
+  NULL,
+  xid
+  VARCHAR
 (
-    128
+  128
 ) NOT NULL,
-    transaction_id BIGINT,
-    resource_group_id VARCHAR
+  transaction_id BIGINT,
+  resource_group_id VARCHAR
 (
-    32
+  32
 ),
-    resource_id VARCHAR
+  resource_id VARCHAR
 (
-    256
+  256
 ),
-    branch_type VARCHAR
+  branch_type VARCHAR
 (
-    8
+  8
 ),
-    status SMALLINT,
-    client_id VARCHAR
+  status SMALLINT,
+  client_id VARCHAR
 (
-    64
+  64
 ),
-    application_data VARCHAR
+  application_data VARCHAR
 (
-    2000
+  2000
 ),
-    gmt_create TIMESTAMP
+  gmt_create TIMESTAMP
 (
-    6
+  6
 ),
-    gmt_modified TIMESTAMP
+  gmt_modified TIMESTAMP
 (
-    6
+  6
 ),
-    CONSTRAINT pk_branch_table PRIMARY KEY
+  CONSTRAINT pk_branch_table PRIMARY KEY
 (
-    branch_id
+  branch_id
 )
-    );
+  );
 
 CREATE INDEX idx_branch_table_xid ON public.branch_table (xid);
 
 -- the table to store lock data
 CREATE TABLE IF NOT EXISTS public.lock_table
 (
-    row_key
-    VARCHAR
+  row_key
+  VARCHAR
 (
-    128
+  128
 ) NOT NULL,
-    xid VARCHAR
+  xid VARCHAR
 (
-    128
+  128
 ),
-    transaction_id BIGINT,
-    branch_id BIGINT NOT NULL,
-    resource_id VARCHAR
+  transaction_id BIGINT,
+  branch_id BIGINT NOT NULL,
+  resource_id VARCHAR
 (
-    256
+  256
 ),
-    table_name VARCHAR
+  table_name VARCHAR
 (
-    32
+  32
 ),
-    pk VARCHAR
+  pk VARCHAR
 (
-    36
+  36
 ),
-    status SMALLINT NOT NULL DEFAULT 0,
-    gmt_create TIMESTAMP
+  status SMALLINT NOT NULL DEFAULT 0,
+  gmt_create TIMESTAMP
 (
-    0
+  0
 ),
-    gmt_modified TIMESTAMP
+  gmt_modified TIMESTAMP
 (
-    0
+  0
 ),
-    CONSTRAINT pk_lock_table PRIMARY KEY
+  CONSTRAINT pk_lock_table PRIMARY KEY
 (
-    row_key
+  row_key
 )
-    );
+  );
 
 comment
 on column public.lock_table.status is '0:locked ,1:rollbacking';
@@ -160,10 +160,10 @@ CREATE INDEX idx_lock_table_status ON public.lock_table (status);
 
 CREATE TABLE distributed_lock
 (
-    lock_key   VARCHAR(20) NOT NULL,
-    lock_value VARCHAR(20) NOT NULL,
-    expire     BIGINT      NOT NULL,
-    CONSTRAINT pk_distributed_lock_table PRIMARY KEY (lock_key)
+  lock_key   VARCHAR(20) NOT NULL,
+  lock_value VARCHAR(20) NOT NULL,
+  expire     BIGINT      NOT NULL,
+  CONSTRAINT pk_distributed_lock_table PRIMARY KEY (lock_key)
 );
 
 INSERT INTO distributed_lock (lock_key, lock_value, expire)
@@ -177,21 +177,21 @@ VALUES ('TxTimeoutCheck', ' ', 0);
 
 CREATE TABLE IF NOT EXISTS vgroup_table
 (
-    vGroup
-    VARCHAR
+  vGroup
+  VARCHAR
 (
-    255
+  255
 ),
-    namespace VARCHAR
+  namespace VARCHAR
 (
-    255
+  255
 ),
-    cluster VARCHAR
+  cluster VARCHAR
 (
-    255
+  255
 ),
-    PRIMARY KEY
+  PRIMARY KEY
 (
-    vGroup
+  vGroup
 )
-    );
+  );

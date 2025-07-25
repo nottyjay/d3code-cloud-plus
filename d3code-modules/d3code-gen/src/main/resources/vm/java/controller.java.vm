@@ -35,7 +35,20 @@ import jakarta.annotation.Resource;
  */
 @Validated
 @RestController
+## 处理开头的斜杠，去除后再判断
+#if($moduleName.startsWith("/"))
+#set($processedModule = $moduleName.substring(1))
+#else
+#set($processedModule = $moduleName)
+#end
+#if($processedModule.contains("/"))
+## 包含斜杠，提取第一个/后的内容
+#set($subModuleName = $processedModule.substring($processedModule.indexOf("/") + 1))
+@RequestMapping("/${subModuleName}/${businessName}")
+#else
+## 不包含斜杠（包括原字符串以/开头但后面无斜杠的情况）
 @RequestMapping("/${businessName}")
+#end
 public class ${ClassName}Controller extends BaseController {
 
   @Resource private I${ClassName}Service ${className}Service;

@@ -11,8 +11,8 @@ import com.alphay.boot.system.domain.SysRoleDept;
 import com.alphay.boot.system.mapper.SysDeptMapper;
 import com.alphay.boot.system.mapper.SysRoleDeptMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import jakarta.annotation.Resource;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -23,15 +23,15 @@ import org.springframework.stereotype.Service;
  * <p>注意: 此Service内不允许调用标注`数据权限`注解的方法 例如: deptMapper.selectList 此 selectList 方法标注了`数据权限`注解
  * 会出现循环解析的问题
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteDataScopeServiceImpl implements RemoteDataScopeService {
 
-  @Resource private SysRoleDeptMapper roleDeptMapper;
-  @Resource private SysDeptMapper deptMapper;
+  private final SysRoleDeptMapper roleDeptMapper;
+  private final SysDeptMapper deptMapper;
 
   /**
    * 获取角色自定义权限语句

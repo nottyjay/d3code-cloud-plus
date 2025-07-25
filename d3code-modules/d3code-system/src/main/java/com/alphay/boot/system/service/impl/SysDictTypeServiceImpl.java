@@ -5,10 +5,10 @@ import cn.hutool.core.util.ObjectUtil;
 import com.alphay.boot.common.core.constant.CacheNames;
 import com.alphay.boot.common.core.exception.ServiceException;
 import com.alphay.boot.common.core.utils.MapstructUtils;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
+import com.alphay.boot.common.core.utils.StringUtils;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.redis.utils.CacheUtils;
-import com.alphay.boot.system.api.domain.param.SysDictTypeQueryParam;
 import com.alphay.boot.system.domain.SysDictData;
 import com.alphay.boot.system.domain.SysDictType;
 import com.alphay.boot.system.domain.bo.SysDictTypeBo;
@@ -18,11 +18,13 @@ import com.alphay.boot.system.mapper.SysDictDataMapper;
 import com.alphay.boot.system.mapper.SysDictTypeMapper;
 import com.alphay.boot.system.service.ISysDictTypeService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import jakarta.annotation.Resource;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -31,38 +33,45 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 字典 业务层处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
-public class SysDictTypeServiceImpl
-    extends ServiceImplX<SysDictTypeMapper, SysDictType, SysDictTypeVo>
-    implements ISysDictTypeService {
+public class SysDictTypeServiceImpl implements ISysDictTypeService {
 
-  @Resource private SysDictDataMapper dictDataMapper;
+  private final SysDictTypeMapper baseMapper;
+  private final SysDictDataMapper dictDataMapper;
 
   @Override
-  public PageResult<SysDictTypeVo> queryPageList(SysDictTypeQueryParam param) {
-    return listPageVo(param, buildQueryWrapper(param));
+  public TableDataInfo<SysDictTypeVo> selectPageDictTypeList(
+      SysDictTypeBo dictType, PageQuery pageQuery) {
+    LambdaQueryWrapper<SysDictType> lqw = buildQueryWrapper(dictType);
+    Page<SysDictTypeVo> page = baseMapper.selectVoPage(pageQuery.build(), lqw);
+    return TableDataInfo.build(page);
   }
 
   /**
    * 根据条件分页查询字典类型
    *
-   * @param param 字典类型信息
+   * @param dictType 字典类型信息
    * @return 字典类型集合信息
    */
   @Override
-  public List<SysDictTypeVo> queryList(SysDictTypeQueryParam param) {
-    return listVo(buildQueryWrapper(param));
+  public List<SysDictTypeVo> selectDictTypeList(SysDictTypeBo dictType) {
+    LambdaQueryWrapper<SysDictType> lqw = buildQueryWrapper(dictType);
+    return baseMapper.selectVoList(lqw);
   }
 
-  private LambdaQueryWrapper<SysDictType> buildQueryWrapper(SysDictTypeQueryParam param) {
-    LambdaQueryWrapper<SysDictType> lqw =
-        this.lambdaQueryWrapper()
-            .likeIfPresent(SysDictType::getDictName, param.getDictName())
-            .likeIfPresent(SysDictType::getDictType, param.getDictType())
-            .betweenIfPresent(SysDictType::getCreateTime, param.getCreateTime());
+  private LambdaQueryWrapper<SysDictType> buildQueryWrapper(SysDictTypeBo bo) {
+    Map<String, Object> params = bo.getParams();
+    LambdaQueryWrapper<SysDictType> lqw = Wrappers.lambdaQuery();
+    lqw.like(StringUtils.isNotBlank(bo.getDictName()), SysDictType::getDictName, bo.getDictName());
+    lqw.like(StringUtils.isNotBlank(bo.getDictType()), SysDictType::getDictType, bo.getDictType());
+    lqw.between(
+        params.get("beginTime") != null && params.get("endTime") != null,
+        SysDictType::getCreateTime,
+        params.get("beginTime"),
+        params.get("endTime"));
     lqw.orderByAsc(SysDictType::getDictId);
     return lqw;
   }
@@ -74,7 +83,7 @@ public class SysDictTypeServiceImpl
    */
   @Override
   public List<SysDictTypeVo> selectDictTypeAll() {
-    return listVo(new QueryWrapper<>());
+    return baseMapper.selectVoList();
   }
 
   /**
@@ -91,6 +100,17 @@ public class SysDictTypeServiceImpl
   }
 
   /**
+   * 根据字典类型ID查询信息
+   *
+   * @param dictId 字典类型ID
+   * @return 字典类型
+   */
+  @Override
+  public SysDictTypeVo selectDictTypeById(Long dictId) {
+    return baseMapper.selectVoById(dictId);
+  }
+
+  /**
    * 根据字典类型查询信息
    *
    * @param dictType 字典类型
@@ -99,7 +119,8 @@ public class SysDictTypeServiceImpl
   @Cacheable(cacheNames = CacheNames.SYS_DICT_TYPE, key = "#dictType")
   @Override
   public SysDictTypeVo selectDictTypeByType(String dictType) {
-    return getOneVo(SysDictType::getDictType, dictType);
+    return baseMapper.selectVoOne(
+        new LambdaQueryWrapper<SysDictType>().eq(SysDictType::getDictType, dictType));
   }
 
   /**

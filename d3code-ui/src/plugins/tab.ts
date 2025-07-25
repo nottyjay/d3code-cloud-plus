@@ -1,6 +1,6 @@
 import router from '@/router'
-import { RouteLocationMatched, RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
-import { useTagsViewStore } from '@/store/modules/tagsView'
+import {RouteLocationMatched, RouteLocationNormalized, RouteLocationRaw} from 'vue-router'
+import {useTagsViewStore} from '@/store/modules/tagsView'
 
 export default {
   /**
@@ -8,7 +8,7 @@ export default {
    * @param obj 标签对象
    */
   async refreshPage(obj?: RouteLocationNormalized): Promise<void> {
-    const { path, query, matched } = router.currentRoute.value
+    const {path, query, matched} = router.currentRoute.value
     if (obj === undefined) {
       matched.forEach((m: RouteLocationMatched) => {
         if (m.components && m.components.default && m.components.default.name) {
@@ -50,9 +50,9 @@ export default {
   // 关闭指定tab页签
   async closePage(obj?: RouteLocationNormalized): Promise<
     | {
-        visitedViews: RouteLocationNormalized[]
-        cachedViews: string[]
-      }
+    visitedViews: RouteLocationNormalized[]
+    cachedViews: string[]
+  }
     | any
   > {
     if (obj === undefined) {
@@ -89,7 +89,7 @@ export default {
    * @param query 参数
    */
   openPage(url: string, title?: string, query?: any) {
-    const obj = { path: url, query: { ...query, title } }
+    const obj = {path: url, query: {...query, title}}
     return router.push(obj)
   },
   /**

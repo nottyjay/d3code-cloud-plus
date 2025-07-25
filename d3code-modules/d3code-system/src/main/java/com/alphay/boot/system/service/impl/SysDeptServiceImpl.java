@@ -8,12 +8,11 @@ import com.alphay.boot.common.core.constant.CacheNames;
 import com.alphay.boot.common.core.constant.SystemConstants;
 import com.alphay.boot.common.core.exception.ServiceException;
 import com.alphay.boot.common.core.utils.*;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.mybatis.helper.DataBaseHelper;
 import com.alphay.boot.common.redis.utils.CacheUtils;
 import com.alphay.boot.common.satoken.utils.LoginHelper;
-import com.alphay.boot.system.api.domain.param.SysDeptQueryParam;
 import com.alphay.boot.system.domain.SysDept;
 import com.alphay.boot.system.domain.SysRole;
 import com.alphay.boot.system.domain.SysUser;
@@ -25,12 +24,13 @@ import com.alphay.boot.system.mapper.SysUserMapper;
 import com.alphay.boot.system.service.ISysDeptService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import jakarta.annotation.Resource;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -40,70 +40,81 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 部门管理 服务实现
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
-public class SysDeptServiceImpl extends ServiceImplX<SysDeptMapper, SysDept, SysDeptVo>
-    implements ISysDeptService {
+public class SysDeptServiceImpl implements ISysDeptService {
 
-  @Resource private SysRoleMapper roleMapper;
-  @Resource private SysUserMapper userMapper;
+  private final SysDeptMapper baseMapper;
+  private final SysRoleMapper roleMapper;
+  private final SysUserMapper userMapper;
 
   /**
    * 分页查询部门管理数据
    *
-   * @param param 部门信息
+   * @param dept 部门信息
+   * @param pageQuery 分页对象
    * @return 部门信息集合
    */
   @Override
-  public PageResult<SysDeptVo> queryPageList(SysDeptQueryParam param) {
-    return listPageVo(param, buildQueryWrapper(param));
+  public TableDataInfo<SysDeptVo> selectPageDeptList(SysDeptBo dept, PageQuery pageQuery) {
+    Page<SysDeptVo> page =
+        baseMapper.selectPageDeptList(pageQuery.build(), buildQueryWrapper(dept));
+    return TableDataInfo.build(page);
   }
 
   /**
    * 查询部门管理数据
    *
-   * @param param 部门信息
+   * @param dept 部门信息
    * @return 部门信息集合
    */
   @Override
-  public List<SysDeptVo> queryList(SysDeptQueryParam param) {
-    return listVo(buildQueryWrapper(param));
+  public List<SysDeptVo> selectDeptList(SysDeptBo dept) {
+    LambdaQueryWrapper<SysDept> lqw = buildQueryWrapper(dept);
+    return baseMapper.selectDeptList(lqw);
   }
 
   /**
    * 查询部门树结构信息
    *
-   * @param param 部门信息
+   * @param bo 部门信息
    * @return 部门树信息集合
    */
   @Override
-  public List<Tree<Long>> selectDeptTreeList(SysDeptQueryParam param) {
-    LambdaQueryWrapper<SysDept> lqw = buildQueryWrapper(param);
+  public List<Tree<Long>> selectDeptTreeList(SysDeptBo bo) {
+    LambdaQueryWrapper<SysDept> lqw = buildQueryWrapper(bo);
     List<SysDeptVo> depts = baseMapper.selectDeptList(lqw);
     return buildDeptTreeSelect(depts);
   }
 
-  private LambdaQueryWrapper<SysDept> buildQueryWrapper(SysDeptQueryParam param) {
-    LambdaQueryWrapper<SysDept> lqw =
-        this.lambdaQueryWrapper()
-            .eqIfPresent(SysDept::getDelFlag, SystemConstants.NORMAL)
-            .eqIfPresent(SysDept::getDeptId, param.getDeptId())
-            .eqIfPresent(SysDept::getParentId, param.getParentId())
-            .likeIfPresent(SysDept::getDeptName, param.getDeptName())
-            .likeIfPresent(SysDept::getDeptCategory, param.getDeptCategory())
-            .eqIfPresent(SysDept::getStatus, param.getStatus())
-            .betweenIfPresent(SysDept::getCreateTime, param.getCreateTime());
+  private LambdaQueryWrapper<SysDept> buildQueryWrapper(SysDeptBo bo) {
+    Map<String, Object> params = bo.getParams();
+    LambdaQueryWrapper<SysDept> lqw = Wrappers.lambdaQuery();
+    lqw.eq(SysDept::getDelFlag, SystemConstants.NORMAL);
+    lqw.eq(ObjectUtil.isNotNull(bo.getDeptId()), SysDept::getDeptId, bo.getDeptId());
+    lqw.eq(ObjectUtil.isNotNull(bo.getParentId()), SysDept::getParentId, bo.getParentId());
+    lqw.like(StringUtils.isNotBlank(bo.getDeptName()), SysDept::getDeptName, bo.getDeptName());
+    lqw.like(
+        StringUtils.isNotBlank(bo.getDeptCategory()),
+        SysDept::getDeptCategory,
+        bo.getDeptCategory());
+    lqw.eq(StringUtils.isNotBlank(bo.getStatus()), SysDept::getStatus, bo.getStatus());
+    lqw.between(
+        params.get("beginTime") != null && params.get("endTime") != null,
+        SysDept::getCreateTime,
+        params.get("beginTime"),
+        params.get("endTime"));
     lqw.orderByAsc(SysDept::getAncestors);
     lqw.orderByAsc(SysDept::getParentId);
     lqw.orderByAsc(SysDept::getOrderNum);
     lqw.orderByAsc(SysDept::getDeptId);
-    if (ObjectUtil.isNotNull(param.getBelongDeptId())) {
+    if (ObjectUtil.isNotNull(bo.getBelongDeptId())) {
       // 部门树搜索
       lqw.and(
           x -> {
-            Long parentId = param.getBelongDeptId();
+            Long parentId = bo.getBelongDeptId();
             List<SysDept> deptList = baseMapper.selectListByParentId(parentId);
             List<Long> deptIds = StreamUtils.toList(deptList, SysDept::getDeptId);
             deptIds.add(parentId);
@@ -157,13 +168,13 @@ public class SysDeptServiceImpl extends ServiceImplX<SysDeptMapper, SysDept, Sys
    */
   @Cacheable(cacheNames = CacheNames.SYS_DEPT, key = "#deptId")
   @Override
-  public SysDeptVo getVoById(Serializable deptId) {
-    SysDeptVo dept = super.getVoById(deptId);
+  public SysDeptVo selectDeptById(Long deptId) {
+    SysDeptVo dept = baseMapper.selectVoById(deptId);
     if (ObjectUtil.isNull(dept)) {
       return null;
     }
     SysDeptVo parentDept =
-        this.getOneVo(
+        baseMapper.selectVoOne(
             new LambdaQueryWrapper<SysDept>()
                 .select(SysDept::getDeptName)
                 .eq(SysDept::getDeptId, dept.getParentId()));
@@ -196,7 +207,7 @@ public class SysDeptServiceImpl extends ServiceImplX<SysDeptMapper, SysDept, Sys
   public String selectDeptNameByIds(String deptIds) {
     List<String> list = new ArrayList<>();
     for (Long id : StringUtils.splitTo(deptIds, Convert::toLong)) {
-      SysDeptVo vo = SpringUtils.getAopProxy(this).getVoById(id);
+      SysDeptVo vo = SpringUtils.getAopProxy(this).selectDeptById(id);
       if (ObjectUtil.isNotNull(vo)) {
         list.add(vo.getDeptName());
       }
@@ -361,23 +372,16 @@ public class SysDeptServiceImpl extends ServiceImplX<SysDeptMapper, SysDept, Sys
     List<SysDept> children =
         baseMapper.selectList(
             new LambdaQueryWrapper<SysDept>().apply(DataBaseHelper.findInSet(deptId, "ancestors")));
-    List<Long> deptIds = new ArrayList<>();
-    StringBuilder sql = new StringBuilder("case dept_id");
+    List<SysDept> list = new ArrayList<>();
     for (SysDept child : children) {
-      sql.append(" when ")
-          .append(child.getDeptId())
-          .append(" then '")
-          .append(child.getAncestors().replaceFirst(oldAncestors, newAncestors))
-          .append("'");
-      deptIds.add(child.getDeptId());
+      SysDept dept = new SysDept();
+      dept.setDeptId(child.getDeptId());
+      dept.setAncestors(child.getAncestors().replaceFirst(oldAncestors, newAncestors));
+      list.add(dept);
     }
-    sql.append("end");
-    UpdateWrapper<SysDept> updateWrapper = new UpdateWrapper<>();
-
-    updateWrapper.setSql("ancestors= " + sql.toString());
-    if (CollUtil.isNotEmpty(deptIds)) {
-      if (baseMapper.update(updateWrapper) > 0) {
-        deptIds.forEach(id -> CacheUtils.evict(CacheNames.SYS_DEPT, id));
+    if (CollUtil.isNotEmpty(list)) {
+      if (baseMapper.updateBatchById(list)) {
+        list.forEach(dept -> CacheUtils.evict(CacheNames.SYS_DEPT, dept.getDeptId()));
       }
     }
   }

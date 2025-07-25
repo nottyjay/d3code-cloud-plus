@@ -3,19 +3,19 @@
  * 感谢 @fourteendp
  * 详见 https://github.com/vbenjs/vue-vben-admin/issues/3927
  */
-import { Component, defineComponent, h } from 'vue'
+import {Component, defineComponent, h} from 'vue'
 
 interface Options {
   name?: string
 }
 
 export function createCustomNameComponent(loader: () => Promise<any>, options: Options = {}): () => Promise<Component> {
-  const { name } = options
+  const {name} = options
   let component: Component | null = null
 
   const load = async () => {
     try {
-      const { default: loadedComponent } = await loader()
+      const {default: loadedComponent} = await loader()
       component = loadedComponent
     } catch (error) {
       console.error(`Cannot resolve component ${name}, error:`, error)

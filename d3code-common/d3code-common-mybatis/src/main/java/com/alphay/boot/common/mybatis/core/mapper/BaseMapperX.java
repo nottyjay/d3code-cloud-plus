@@ -6,8 +6,9 @@ import com.alphay.boot.common.core.utils.StreamUtils;
 import com.alphay.boot.common.mybatis.core.page.PageResult;
 import com.alphay.boot.common.mybatis.utils.MybatisUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.yulichang.base.MPJBaseMapper;
+import com.github.yulichang.interfaces.MPJBaseJoin;
 import java.util.List;
 import java.util.function.Function;
 import org.apache.ibatis.annotations.Param;
@@ -22,7 +23,7 @@ import org.apache.ibatis.logging.LogFactory;
  * @since 1.0.0
  */
 @SuppressWarnings("unchecked")
-public interface BaseMapperX<T> extends BaseMapper<T> {
+public interface BaseMapperX<T> extends MPJBaseMapper<T> {
 
   Log log = LogFactory.getLog(BaseMapperX.class);
 
@@ -45,6 +46,20 @@ public interface BaseMapperX<T> extends BaseMapper<T> {
     PageResult<T> pageResult = selectPage(pageReqParam, queryWrapper);
     return new PageResult<V>(
         MapstructUtils.convert(pageResult.getRows(), voClass), pageResult.getTotal());
+  }
+
+  default <V> PageResult<V> selectJoinPage(
+      PageReqParam pageReqParam, MPJBaseJoin<T> joinWrapper, Class<V> voClass) {
+    // 特殊：不分页，直接查询全部
+    if (PageReqParam.PAGE_SIZE_NONE.equals(pageReqParam.getPageSize())) {
+      List<V> list = selectJoinList(voClass, joinWrapper);
+      return new PageResult<>(list, (long) list.size());
+    }
+
+    // 使用Mybatis-Plus查询
+    IPage<V> page = MybatisUtil.buildPage(pageReqParam, pageReqParam.getSortOrder());
+    selectJoinPage(page, voClass, joinWrapper);
+    return new PageResult<>(page.getRecords(), page.getTotal());
   }
 
   default <V> List<V> selectList(@Param("ew") Wrapper<T> queryWrapper, Class<V> voClass) {

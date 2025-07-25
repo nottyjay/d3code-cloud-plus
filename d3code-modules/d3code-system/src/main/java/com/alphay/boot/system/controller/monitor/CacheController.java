@@ -3,8 +3,8 @@ package com.alphay.boot.system.controller.monitor;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.alphay.boot.common.core.domain.R;
 import com.alphay.boot.common.core.utils.StringUtils;
-import jakarta.annotation.Resource;
 import java.util.*;
+import lombok.RequiredArgsConstructor;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisConnectionUtils;
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 缓存监控
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/cache")
 public class CacheController {
 
-  @Resource private RedissonConnectionFactory connectionFactory;
+  private final RedissonConnectionFactory connectionFactory;
 
   /** 获取缓存监控列表 */
   @SaCheckPermission("monitor:cache:list")

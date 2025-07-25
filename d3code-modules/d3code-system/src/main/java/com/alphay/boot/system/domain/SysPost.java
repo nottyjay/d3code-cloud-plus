@@ -9,8 +9,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 岗位表 sys_post
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

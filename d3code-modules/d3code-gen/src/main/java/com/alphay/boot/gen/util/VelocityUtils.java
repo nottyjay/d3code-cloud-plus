@@ -6,7 +6,6 @@ import cn.hutool.core.lang.Dict;
 import com.alphay.boot.common.core.utils.DateUtils;
 import com.alphay.boot.common.core.utils.StringUtils;
 import com.alphay.boot.common.json.utils.JsonUtils;
-import com.alphay.boot.common.mybatis.helper.DataBaseHelper;
 import com.alphay.boot.gen.constant.GenConstants;
 import com.alphay.boot.gen.domain.GenTable;
 import com.alphay.boot.gen.domain.GenTableColumn;
@@ -115,13 +114,7 @@ public class VelocityUtils {
     templates.add("vm/java/serviceImpl.java.vm");
     templates.add("vm/java/controller.java.vm");
     templates.add("vm/xml/mapper.xml.vm");
-    if (DataBaseHelper.isOracle()) {
-      templates.add("vm/sql/oracle/sql.vm");
-    } else if (DataBaseHelper.isPostgerSql()) {
-      templates.add("vm/sql/postgres/sql.vm");
-    } else {
-      templates.add("vm/sql/sql.vm");
-    }
+    templates.add("vm/sql/sql.vm");
     templates.add("vm/ts/api.ts.vm");
     templates.add("vm/ts/types.ts.vm");
     if (GenConstants.TPL_CRUD.equals(tplCategory)) {
@@ -154,7 +147,7 @@ public class VelocityUtils {
     } else if (template.contains("vo.java.vm")) {
       fileName = StringUtils.format("{}/domain/vo/{}Vo.java", javaPath, className);
     } else if (template.contains("param.java.vm")) {
-      fileName = StringUtils.format("{}/domain/param/{}Param.java", javaPath, className);
+      fileName = StringUtils.format("{}/domain/param/{}QueryParam.java", javaPath, className);
     } else if (template.contains("bo.java.vm")) {
       fileName = StringUtils.format("{}/domain/bo/{}Bo.java", javaPath, className);
     } else if (template.contains("mapper.java.vm")) {
@@ -170,13 +163,15 @@ public class VelocityUtils {
     } else if (template.contains("sql.vm")) {
       fileName = businessName + "Menu.sql";
     } else if (template.contains("api.ts.vm")) {
-      fileName = StringUtils.format("{}/api/{}/{}/index.ts", vuePath, moduleName, businessName);
+      fileName = StringUtils.format("{}/src/api/{}/{}/index.ts", vuePath, moduleName, businessName);
     } else if (template.contains("types.ts.vm")) {
-      fileName = StringUtils.format("{}/api/{}/{}/types.ts", vuePath, moduleName, businessName);
+      fileName = StringUtils.format("{}/src/api/{}/{}/types.ts", vuePath, moduleName, businessName);
     } else if (template.contains("index.vue.vm")) {
-      fileName = StringUtils.format("{}/views/{}/{}/index.vue", vuePath, moduleName, businessName);
+      fileName =
+          StringUtils.format("{}/src/views/{}/{}/index.vue", vuePath, moduleName, businessName);
     } else if (template.contains("index-tree.vue.vm")) {
-      fileName = StringUtils.format("{}/views/{}/{}/index.vue", vuePath, moduleName, businessName);
+      fileName =
+          StringUtils.format("{}/src/views/{}/{}/index.vue", vuePath, moduleName, businessName);
     }
     return fileName;
   }
@@ -258,7 +253,10 @@ public class VelocityUtils {
    * @return 返回权限前缀
    */
   public static String getPermissionPrefix(String moduleName, String businessName) {
-    return StringUtils.format("{}:{}", moduleName, businessName);
+    if (moduleName.startsWith("/")) {
+      moduleName = moduleName.substring(1);
+    }
+    return StringUtils.format("{}:{}", moduleName.replace("/", ":"), businessName);
   }
 
   /**

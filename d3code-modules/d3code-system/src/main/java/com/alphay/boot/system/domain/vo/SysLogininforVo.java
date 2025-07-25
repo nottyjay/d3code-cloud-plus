@@ -14,8 +14,7 @@ import lombok.Data;
 /**
  * 系统访问记录视图对象 sys_logininfor
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  * @date 2023-02-07
  */
 @Data

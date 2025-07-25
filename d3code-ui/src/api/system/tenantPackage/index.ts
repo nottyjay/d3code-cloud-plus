@@ -1,6 +1,6 @@
 import request from '@/utils/request'
-import { TenantPkgForm, TenantPkgQuery, TenantPkgVO } from './types'
-import { AxiosPromise } from 'axios'
+import {TenantPkgForm, TenantPkgQuery, TenantPkgVO} from './types'
+import {AxiosPromise} from 'axios'
 
 // 查询租户套餐列表
 export function listTenantPackage(query?: TenantPkgQuery): AxiosPromise<TenantPkgVO[]> {

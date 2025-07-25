@@ -3,8 +3,6 @@ package com.alphay.boot.system.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.alphay.boot.common.core.utils.MapstructUtils;
 import com.alphay.boot.common.core.utils.StringUtils;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
-import com.alphay.boot.system.api.domain.param.SysSocialQueryParam;
 import com.alphay.boot.system.domain.SysSocial;
 import com.alphay.boot.system.domain.bo.SysSocialBo;
 import com.alphay.boot.system.domain.vo.SysSocialVo;
@@ -12,33 +10,46 @@ import com.alphay.boot.system.mapper.SysSocialMapper;
 import com.alphay.boot.system.service.ISysSocialService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
  * 社会化关系Service业务层处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author thiszhc
  * @date 2023-06-12
  */
+@RequiredArgsConstructor
 @Service
-public class SysSocialServiceImpl extends ServiceImplX<SysSocialMapper, SysSocial, SysSocialVo>
-    implements ISysSocialService {
+public class SysSocialServiceImpl implements ISysSocialService {
+
+  private final SysSocialMapper baseMapper;
+
+  /**
+   * 根据ID查询社会化关系
+   *
+   * @param id 社会化关系的唯一标识符
+   * @return 返回与给定ID对应的SysSocialVo对象，如果未找到则返回null
+   */
+  @Override
+  public SysSocialVo queryById(String id) {
+    return baseMapper.selectVoById(id);
+  }
 
   /**
    * 查询社会化关系列表
    *
-   * @param param 用于过滤查询条件的SysSocialBo对象
+   * @param bo 用于过滤查询条件的SysSocialBo对象
    * @return 返回符合条件的SysSocialVo对象列表
    */
   @Override
-  public List<SysSocialVo> queryList(SysSocialQueryParam param) {
+  public List<SysSocialVo> queryList(SysSocialBo bo) {
     LambdaQueryWrapper<SysSocial> lqw =
         new LambdaQueryWrapper<SysSocial>()
-            .eq(ObjectUtil.isNotNull(param.getUserId()), SysSocial::getUserId, param.getUserId())
-            .eq(StringUtils.isNotBlank(param.getAuthId()), SysSocial::getAuthId, param.getAuthId())
-            .eq(StringUtils.isNotBlank(param.getSource()), SysSocial::getSource, param.getSource());
-    return listVo(lqw);
+            .eq(ObjectUtil.isNotNull(bo.getUserId()), SysSocial::getUserId, bo.getUserId())
+            .eq(StringUtils.isNotBlank(bo.getAuthId()), SysSocial::getAuthId, bo.getAuthId())
+            .eq(StringUtils.isNotBlank(bo.getSource()), SysSocial::getSource, bo.getSource());
+    return baseMapper.selectVoList(lqw);
   }
 
   /**
@@ -49,7 +60,8 @@ public class SysSocialServiceImpl extends ServiceImplX<SysSocialMapper, SysSocia
    */
   @Override
   public List<SysSocialVo> queryListByUserId(Long userId) {
-    return listVo(new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getUserId, userId));
+    return baseMapper.selectVoList(
+        new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getUserId, userId));
   }
 
   /**
@@ -110,6 +122,7 @@ public class SysSocialServiceImpl extends ServiceImplX<SysSocialMapper, SysSocia
    */
   @Override
   public List<SysSocialVo> selectByAuthId(String authId) {
-    return listVo(new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getAuthId, authId));
+    return baseMapper.selectVoList(
+        new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getAuthId, authId));
   }
 }

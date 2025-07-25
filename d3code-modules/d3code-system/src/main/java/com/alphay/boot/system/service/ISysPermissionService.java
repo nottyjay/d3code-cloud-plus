@@ -5,8 +5,7 @@ import java.util.Set;
 /**
  * 用户权限处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 public interface ISysPermissionService {
 

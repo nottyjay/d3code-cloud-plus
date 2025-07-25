@@ -1,9 +1,7 @@
 package com.alphay.boot.system.service;
 
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.IServiceX;
-import com.alphay.boot.system.api.domain.param.SysPostQueryParam;
-import com.alphay.boot.system.domain.SysPost;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.bo.SysPostBo;
 import com.alphay.boot.system.domain.vo.SysPostVo;
 import java.util.List;
@@ -11,20 +9,19 @@ import java.util.List;
 /**
  * 岗位信息 服务层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface ISysPostService extends IServiceX<SysPost, SysPostVo> {
+public interface ISysPostService {
 
-  PageResult<SysPostVo> queryPageList(SysPostQueryParam param);
+  TableDataInfo<SysPostVo> selectPagePostList(SysPostBo post, PageQuery pageQuery);
 
   /**
    * 查询岗位信息集合
    *
-   * @param param 岗位信息
+   * @param post 岗位信息
    * @return 岗位列表
    */
-  List<SysPostVo> queryList(SysPostQueryParam param);
+  List<SysPostVo> selectPostList(SysPostBo post);
 
   /**
    * 查询用户所属岗位组
@@ -32,7 +29,22 @@ public interface ISysPostService extends IServiceX<SysPost, SysPostVo> {
    * @param userId 用户ID
    * @return 岗位ID
    */
-  List<SysPostVo> queryListByUserId(Long userId);
+  List<SysPostVo> selectPostsByUserId(Long userId);
+
+  /**
+   * 查询所有岗位
+   *
+   * @return 岗位列表
+   */
+  List<SysPostVo> selectPostAll();
+
+  /**
+   * 通过岗位ID查询岗位信息
+   *
+   * @param postId 岗位ID
+   * @return 角色对象信息
+   */
+  SysPostVo selectPostById(Long postId);
 
   /**
    * 根据用户ID获取岗位选择框列表

@@ -26,8 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 系统用户自定义导入
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Slf4j
 public class SysUserImportListener extends AnalysisEventListener<SysUserImportVo>
@@ -40,10 +39,11 @@ public class SysUserImportListener extends AnalysisEventListener<SysUserImportVo
   private final Boolean isUpdateSupport;
 
   private final Long operUserId;
-  private final StringBuilder successMsg = new StringBuilder();
-  private final StringBuilder failureMsg = new StringBuilder();
+
   private int successNum = 0;
   private int failureNum = 0;
+  private final StringBuilder successMsg = new StringBuilder();
+  private final StringBuilder failureMsg = new StringBuilder();
 
   public SysUserImportListener(Boolean isUpdateSupport) {
     String initPassword =

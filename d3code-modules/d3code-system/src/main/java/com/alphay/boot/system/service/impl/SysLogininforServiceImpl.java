@@ -2,45 +2,63 @@ package com.alphay.boot.system.service.impl;
 
 import com.alphay.boot.common.core.utils.MapstructUtils;
 import com.alphay.boot.common.core.utils.StringUtils;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
-import com.alphay.boot.system.api.domain.param.SysLogininforQueryParam;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.SysLogininfor;
 import com.alphay.boot.system.domain.bo.SysLogininforBo;
 import com.alphay.boot.system.domain.vo.SysLogininforVo;
 import com.alphay.boot.system.mapper.SysLogininforMapper;
 import com.alphay.boot.system.service.ISysLogininforService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
  * 系统访问日志情况信息 服务层处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Slf4j
 @Service
-public class SysLogininforServiceImpl
-    extends ServiceImplX<SysLogininforMapper, SysLogininfor, SysLogininforVo>
-    implements ISysLogininforService {
+public class SysLogininforServiceImpl implements ISysLogininforService {
+
+  private final SysLogininforMapper baseMapper;
 
   @Override
-  public PageResult<SysLogininforVo> queryPageList(SysLogininforQueryParam param) {
+  public TableDataInfo<SysLogininforVo> selectPageLogininforList(
+      SysLogininforBo logininfor, PageQuery pageQuery) {
+    Map<String, Object> params = logininfor.getParams();
     LambdaQueryWrapper<SysLogininfor> lqw =
-        this.lambdaQueryWrapper()
-            .likeIfPresent(SysLogininfor::getIpaddr, param.getIpaddr())
-            .eqIfPresent(SysLogininfor::getStatus, param.getStatus())
-            .likeIfPresent(SysLogininfor::getUserName, param.getUserName())
-            .betweenIfPresent(SysLogininfor::getLoginTime, param.getLoginTime());
-    if (StringUtils.isBlank(param.getOrderByColumn())) {
+        new LambdaQueryWrapper<SysLogininfor>()
+            .like(
+                StringUtils.isNotBlank(logininfor.getIpaddr()),
+                SysLogininfor::getIpaddr,
+                logininfor.getIpaddr())
+            .eq(
+                StringUtils.isNotBlank(logininfor.getStatus()),
+                SysLogininfor::getStatus,
+                logininfor.getStatus())
+            .like(
+                StringUtils.isNotBlank(logininfor.getUserName()),
+                SysLogininfor::getUserName,
+                logininfor.getUserName())
+            .between(
+                params.get("beginTime") != null && params.get("endTime") != null,
+                SysLogininfor::getLoginTime,
+                params.get("beginTime"),
+                params.get("endTime"));
+    if (StringUtils.isBlank(pageQuery.getOrderByColumn())) {
       lqw.orderByDesc(SysLogininfor::getInfoId);
     }
-    return listPageVo(param, lqw);
+    Page<SysLogininforVo> page = baseMapper.selectVoPage(pageQuery.build(), lqw);
+    return TableDataInfo.build(page);
   }
 
   /**
@@ -58,17 +76,31 @@ public class SysLogininforServiceImpl
   /**
    * 查询系统登录日志集合
    *
-   * @param param 访问日志对象
+   * @param logininfor 访问日志对象
    * @return 登录记录集合
    */
   @Override
-  public List<SysLogininforVo> queryList(SysLogininforQueryParam param) {
-    return listVo(
-        this.lambdaQueryWrapper()
-            .likeIfPresent(SysLogininfor::getIpaddr, param.getIpaddr())
-            .eqIfPresent(SysLogininfor::getStatus, param.getStatus())
-            .likeIfPresent(SysLogininfor::getUserName, param.getUserName())
-            .betweenIfPresent(SysLogininfor::getLoginTime, param.getLoginTime())
+  public List<SysLogininforVo> selectLogininforList(SysLogininforBo logininfor) {
+    Map<String, Object> params = logininfor.getParams();
+    return baseMapper.selectVoList(
+        new LambdaQueryWrapper<SysLogininfor>()
+            .like(
+                StringUtils.isNotBlank(logininfor.getIpaddr()),
+                SysLogininfor::getIpaddr,
+                logininfor.getIpaddr())
+            .eq(
+                StringUtils.isNotBlank(logininfor.getStatus()),
+                SysLogininfor::getStatus,
+                logininfor.getStatus())
+            .like(
+                StringUtils.isNotBlank(logininfor.getUserName()),
+                SysLogininfor::getUserName,
+                logininfor.getUserName())
+            .between(
+                params.get("beginTime") != null && params.get("endTime") != null,
+                SysLogininfor::getLoginTime,
+                params.get("beginTime"),
+                params.get("endTime"))
             .orderByDesc(SysLogininfor::getInfoId));
   }
 

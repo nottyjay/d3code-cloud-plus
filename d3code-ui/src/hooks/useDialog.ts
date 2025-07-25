@@ -1,4 +1,4 @@
-import { Ref } from 'vue'
+import {Ref} from 'vue'
 
 interface Options {
   title?: string

@@ -1,8 +1,8 @@
 import en from 'element-plus/dist/locale/en.mjs'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
-import { defineStore } from 'pinia'
-import { useStorage } from '@vueuse/core'
-import { computed, reactive, ref } from 'vue'
+import {defineStore} from 'pinia'
+import {useStorage} from '@vueuse/core'
+import {computed, reactive, ref} from 'vue'
 
 export const useAppStore = defineStore('app', () => {
   const sidebarStatus = useStorage('sidebarStatus', '1')
@@ -38,7 +38,7 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  const closeSideBar = ({ withoutAnimation }: any): void => {
+  const closeSideBar = ({withoutAnimation}: any): void => {
     sidebarStatus.value = '0'
     sidebar.opened = false
     sidebar.withoutAnimation = withoutAnimation

@@ -3,13 +3,13 @@
     <el-table :data="devices" border style="width: 100%; height: 100%; font-size: 14px">
       <el-table-column label="设备类型" align="center">
         <template #default="scope">
-          <dict-tag :options="sys_device_type" :value="scope.row.deviceType" />
+          <dict-tag :options="sys_device_type" :value="scope.row.deviceType"/>
         </template>
       </el-table-column>
-      <el-table-column label="主机" align="center" prop="ipaddr" :show-overflow-tooltip="true" />
-      <el-table-column label="登录地点" align="center" prop="loginLocation" :show-overflow-tooltip="true" />
-      <el-table-column label="操作系统" align="center" prop="os" :show-overflow-tooltip="true" />
-      <el-table-column label="浏览器" align="center" prop="browser" :show-overflow-tooltip="true" />
+      <el-table-column label="主机" align="center" prop="ipaddr" :show-overflow-tooltip="true"/>
+      <el-table-column label="登录地点" align="center" prop="loginLocation" :show-overflow-tooltip="true"/>
+      <el-table-column label="操作系统" align="center" prop="os" :show-overflow-tooltip="true"/>
+      <el-table-column label="浏览器" align="center" prop="browser" :show-overflow-tooltip="true"/>
       <el-table-column label="登录时间" align="center" prop="loginTime" width="180">
         <template #default="scope">
           <span>{{ proxy.parseTime(scope.row.loginTime) }}</span>
@@ -27,11 +27,11 @@
 </template>
 
 <script setup name="Online" lang="ts">
-import { delOnline } from '@/api/monitor/online'
-import { propTypes } from '@/utils/propTypes'
+import {delOnline} from '@/api/monitor/online'
+import {propTypes} from '@/utils/propTypes'
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
-const { sys_device_type } = toRefs<any>(proxy?.useDict('sys_device_type'))
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
+const {sys_device_type} = toRefs<any>(proxy?.useDict('sys_device_type'))
 
 const props = defineProps({
   devices: propTypes.any.isRequired,
@@ -52,6 +52,7 @@ const handldDelOnline = (row: any) => {
         proxy?.$modal.msgError(res.msg)
       }
     })
-    .catch(() => {})
+    .catch(() => {
+    })
 }
 </script>

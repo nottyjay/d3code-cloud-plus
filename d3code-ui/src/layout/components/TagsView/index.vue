@@ -12,36 +12,36 @@
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
         @contextmenu.prevent="openMenu(tag, $event)"
       >
-        <svg-icon v-if="tagsIcon && tag.meta && tag.meta.icon && tag.meta.icon !== '#'" :icon-class="tag.meta.icon" />
+        <svg-icon v-if="tagsIcon && tag.meta && tag.meta.icon && tag.meta.icon !== '#'" :icon-class="tag.meta.icon"/>
         {{ tag.title }}
         <span v-if="!isAffix(tag)" @click.prevent.stop="closeSelectedTag(tag)">
-          <close class="el-icon-close" style="width: 1em; height: 1em; vertical-align: middle" />
+          <close class="el-icon-close" style="width: 1em; height: 1em; vertical-align: middle"/>
         </span>
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">
-        <refresh-right style="width: 1em; height: 1em" />
+        <refresh-right style="width: 1em; height: 1em"/>
         刷新页面
       </li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        <close style="width: 1em; height: 1em" />
+        <close style="width: 1em; height: 1em"/>
         关闭当前
       </li>
       <li @click="closeOthersTags">
-        <circle-close style="width: 1em; height: 1em" />
+        <circle-close style="width: 1em; height: 1em"/>
         关闭其他
       </li>
       <li v-if="!isFirstView()" @click="closeLeftTags">
-        <back style="width: 1em; height: 1em" />
+        <back style="width: 1em; height: 1em"/>
         关闭左侧
       </li>
       <li v-if="!isLastView()" @click="closeRightTags">
-        <right style="width: 1em; height: 1em" />
+        <right style="width: 1em; height: 1em"/>
         关闭右侧
       </li>
       <li @click="closeAllTags(selectedTag)">
-        <circle-close style="width: 1em; height: 1em" />
+        <circle-close style="width: 1em; height: 1em"/>
         全部关闭
       </li>
     </ul>
@@ -50,11 +50,11 @@
 
 <script setup lang="ts">
 import ScrollPane from './ScrollPane.vue'
-import { getNormalPath } from '@/utils/d3code'
-import { useSettingsStore } from '@/store/modules/settings'
-import { usePermissionStore } from '@/store/modules/permission'
-import { useTagsViewStore } from '@/store/modules/tagsView'
-import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
+import {getNormalPath} from '@/utils/d3code'
+import {useSettingsStore} from '@/store/modules/settings'
+import {usePermissionStore} from '@/store/modules/permission'
+import {useTagsViewStore} from '@/store/modules/tagsView'
+import {RouteLocationNormalized, RouteRecordRaw} from 'vue-router'
 
 const visible = ref(false)
 const top = ref(0)
@@ -63,7 +63,7 @@ const selectedTag = ref<RouteLocationNormalized>()
 const affixTags = ref<RouteLocationNormalized[]>([])
 const scrollPaneRef = ref<InstanceType<typeof ScrollPane>>()
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
 const route = useRoute()
 const router = useRouter()
 
@@ -126,7 +126,7 @@ const filterAffixTags = (routes: RouteRecordRaw[], basePath = '') => {
         fullPath: tagPath,
         path: tagPath,
         name: route.name as string,
-        meta: { ...route.meta },
+        meta: {...route.meta},
       })
     }
     if (route.children) {
@@ -149,7 +149,7 @@ const initTags = () => {
   }
 }
 const addTags = () => {
-  const { name } = route
+  const {name} = route
   if (route.query.title) {
     route.meta.title = route.query.title as string
   }
@@ -177,7 +177,7 @@ const refreshSelectedTag = (view: RouteLocationNormalized) => {
   }
 }
 const closeSelectedTag = (view: RouteLocationNormalized) => {
-  proxy?.$tab.closePage(view).then(({ visitedViews }: any) => {
+  proxy?.$tab.closePage(view).then(({visitedViews}: any) => {
     if (isActive(view)) {
       toLastView(visitedViews, view)
     }
@@ -198,13 +198,14 @@ const closeLeftTags = () => {
   })
 }
 const closeOthersTags = () => {
-  router.push(selectedTag.value).catch(() => {})
+  router.push(selectedTag.value).catch(() => {
+  })
   proxy?.$tab.closeOtherPage(selectedTag.value).then(() => {
     moveToCurrentTag()
   })
 }
 const closeAllTags = (view: RouteLocationNormalized) => {
-  proxy?.$tab.closeAllPage().then(({ visitedViews }) => {
+  proxy?.$tab.closeAllPage().then(({visitedViews}) => {
     if (affixTags.value.some((tag) => tag.path === route.path)) {
       return
     }
@@ -220,7 +221,7 @@ const toLastView = (visitedViews: RouteLocationNormalized[], view?: RouteLocatio
     // you can adjust it according to your needs.
     if (view?.name === 'Dashboard') {
       // to reload home page
-      router.replace({ path: '/redirect' + view?.fullPath })
+      router.replace({path: '/redirect' + view?.fullPath})
     } else {
       router.push('/')
     }
@@ -262,9 +263,8 @@ onMounted(() => {
   width: 100%;
   background-color: var(--el-bg-color);
   border: 1px solid var(--el-border-color-light);
-  box-shadow:
-    0 1px 3px 0 rgba(0, 0, 0, 0.12),
-    0 0 3px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12),
+  0 0 3px 0 rgba(0, 0, 0, 0.04);
 
   .tags-view-wrapper {
     .tags-view-item {

@@ -47,9 +47,9 @@
 </template>
 
 <script setup lang="ts">
-import { propTypes } from '@/utils/propTypes'
-import { delOss, listByIds } from '@/api/system/oss'
-import { globalHeaders } from '@/utils/request'
+import {propTypes} from '@/utils/propTypes'
+import {delOss, listByIds} from '@/api/system/oss'
+import {globalHeaders} from '@/utils/request'
 
 const props = defineProps({
   modelValue: {
@@ -68,7 +68,7 @@ const props = defineProps({
   disabled: propTypes.bool.def(false),
 })
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
 const emit = defineEmits(['update:modelValue'])
 const number = ref(0)
 const uploadList = ref<any[]>([])
@@ -106,7 +106,7 @@ watch(
       }
       // 然后将数组转为对象数组
       fileList.value = list.map((item) => {
-        item = { name: item.name, url: item.url, ossId: item.ossId }
+        item = {name: item.name, url: item.url, ossId: item.ossId}
         item.uid = item.uid || new Date().getTime() + temp++
         return item
       })
@@ -115,7 +115,7 @@ watch(
       return []
     }
   },
-  { deep: true, immediate: true }
+  {deep: true, immediate: true}
 )
 
 // 上传前校检格式和大小

@@ -14,8 +14,7 @@ import lombok.Data;
 /**
  * 租户视图对象 sys_tenant
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @ExcelIgnoreUnannotated

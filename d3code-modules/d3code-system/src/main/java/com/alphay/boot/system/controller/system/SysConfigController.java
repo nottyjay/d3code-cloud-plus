@@ -5,45 +5,45 @@ import com.alphay.boot.common.core.domain.R;
 import com.alphay.boot.common.excel.utils.ExcelUtil;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.web.core.BaseController;
-import com.alphay.boot.system.api.domain.param.SysConfigQueryParam;
 import com.alphay.boot.system.domain.bo.SysConfigBo;
 import com.alphay.boot.system.domain.vo.SysConfigVo;
 import com.alphay.boot.system.service.ISysConfigService;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 参数配置 信息操作处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/config")
 public class SysConfigController extends BaseController {
 
-  @Resource private ISysConfigService configService;
+  private final ISysConfigService configService;
 
   /** 获取参数配置列表 */
   @SaCheckPermission("system:config:list")
   @GetMapping("/list")
-  public PageResult<SysConfigVo> list(SysConfigQueryParam param) {
-    return configService.queryPageList(param);
+  public TableDataInfo<SysConfigVo> list(SysConfigBo config, PageQuery pageQuery) {
+    return configService.selectPageConfigList(config, pageQuery);
   }
 
   /** 导出参数配置列表 */
   @Log(title = "参数管理", businessType = BusinessType.EXPORT)
   @SaCheckPermission("system:config:export")
   @PostMapping("/export")
-  public void export(SysConfigQueryParam param, HttpServletResponse response) {
-    List<SysConfigVo> list = configService.queryList(param);
+  public void export(SysConfigBo config, HttpServletResponse response) {
+    List<SysConfigVo> list = configService.selectConfigList(config);
     ExcelUtil.exportExcel(list, "参数数据", SysConfigVo.class, response);
   }
 
@@ -55,7 +55,7 @@ public class SysConfigController extends BaseController {
   @SaCheckPermission("system:config:query")
   @GetMapping(value = "/{configId}")
   public R<SysConfigVo> getInfo(@PathVariable Long configId) {
-    return R.ok(configService.getVoById(configId));
+    return R.ok(configService.selectConfigById(configId));
   }
 
   /**

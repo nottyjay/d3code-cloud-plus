@@ -3,24 +3,24 @@
     <router-view v-slot="{ Component, route }">
       <transition v-if="!route.meta.noCache" :enter-active-class="animate" mode="out-in">
         <keep-alive v-if="!route.meta.noCache" :include="tagsViewStore.cachedViews">
-          <component :is="Component" v-if="!route.meta.link" :key="route.path" />
+          <component :is="Component" v-if="!route.meta.link" :key="route.path"/>
         </keep-alive>
       </transition>
       <transition v-if="route.meta.noCache" :enter-active-class="animate" mode="out-in">
-        <component :is="Component" v-if="!route.meta.link && route.meta.noCache" :key="route.path" />
+        <component :is="Component" v-if="!route.meta.link && route.meta.noCache" :key="route.path"/>
       </transition>
     </router-view>
-    <iframe-toggle />
+    <iframe-toggle/>
   </section>
 </template>
 
 <script setup name="AppMain" lang="ts">
-import { useSettingsStore } from '@/store/modules/settings'
-import { useTagsViewStore } from '@/store/modules/tagsView'
+import {useSettingsStore} from '@/store/modules/settings'
+import {useTagsViewStore} from '@/store/modules/tagsView'
 
 import IframeToggle from './IframeToggle/index.vue'
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
 const route = useRoute()
 const tagsViewStore = useTagsViewStore()
 
@@ -37,7 +37,7 @@ watch(
       animate.value = proxy?.animate.defaultAnimate as string
     }
   },
-  { immediate: true }
+  {immediate: true}
 )
 
 onMounted(() => {

@@ -11,8 +11,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 参数配置业务对象 sys_config
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

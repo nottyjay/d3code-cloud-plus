@@ -4,10 +4,10 @@
       <el-card shadow="hover">
         <el-form ref="queryFormRef" :model="queryParams" :inline="true">
           <el-form-item label="登录地址" prop="ipaddr">
-            <el-input v-model="queryParams.ipaddr" placeholder="请输入登录地址" clearable @keyup.enter="handleQuery" />
+            <el-input v-model="queryParams.ipaddr" placeholder="请输入登录地址" clearable @keyup.enter="handleQuery"/>
           </el-form-item>
           <el-form-item label="用户名称" prop="userName">
-            <el-input v-model="queryParams.userName" placeholder="请输入用户名称" clearable @keyup.enter="handleQuery" />
+            <el-input v-model="queryParams.userName" placeholder="请输入用户名称" clearable @keyup.enter="handleQuery"/>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -28,19 +28,19 @@
             <span>{{ (queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="会话编号" align="center" prop="tokenId" :show-overflow-tooltip="true" />
-        <el-table-column label="登录名称" align="center" prop="userName" :show-overflow-tooltip="true" />
-        <el-table-column label="客户端" align="center" prop="clientKey" :show-overflow-tooltip="true" />
+        <el-table-column label="会话编号" align="center" prop="tokenId" :show-overflow-tooltip="true"/>
+        <el-table-column label="登录名称" align="center" prop="userName" :show-overflow-tooltip="true"/>
+        <el-table-column label="客户端" align="center" prop="clientKey" :show-overflow-tooltip="true"/>
         <el-table-column label="设备类型" align="center">
           <template #default="scope">
-            <dict-tag :options="sys_device_type" :value="scope.row.deviceType" />
+            <dict-tag :options="sys_device_type" :value="scope.row.deviceType"/>
           </template>
         </el-table-column>
-        <el-table-column label="所属部门" align="center" prop="deptName" :show-overflow-tooltip="true" />
-        <el-table-column label="主机" align="center" prop="ipaddr" :show-overflow-tooltip="true" />
-        <el-table-column label="登录地点" align="center" prop="loginLocation" :show-overflow-tooltip="true" />
-        <el-table-column label="操作系统" align="center" prop="os" :show-overflow-tooltip="true" />
-        <el-table-column label="浏览器" align="center" prop="browser" :show-overflow-tooltip="true" />
+        <el-table-column label="所属部门" align="center" prop="deptName" :show-overflow-tooltip="true"/>
+        <el-table-column label="主机" align="center" prop="ipaddr" :show-overflow-tooltip="true"/>
+        <el-table-column label="登录地点" align="center" prop="loginLocation" :show-overflow-tooltip="true"/>
+        <el-table-column label="操作系统" align="center" prop="os" :show-overflow-tooltip="true"/>
+        <el-table-column label="浏览器" align="center" prop="browser" :show-overflow-tooltip="true"/>
         <el-table-column label="登录时间" align="center" prop="loginTime" width="180">
           <template #default="scope">
             <span>{{ proxy.parseTime(scope.row.loginTime) }}</span>
@@ -49,24 +49,26 @@
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="scope">
             <el-tooltip content="强退" placement="top">
-              <el-button v-hasPermi="['monitor:online:forceLogout']" link type="primary" icon="Delete" @click="handleForceLogout(scope.row)"></el-button>
+              <el-button v-hasPermi="['monitor:online:forceLogout']" link type="primary" icon="Delete"
+                         @click="handleForceLogout(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
 
-      <pagination v-show="total > 0" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" :total="total" />
+      <pagination v-show="total > 0" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
+                  :total="total"/>
     </el-card>
   </div>
 </template>
 
 <script setup name="Online" lang="ts">
-import { forceLogout, list as initData } from '@/api/monitor/online'
-import { OnlineQuery, OnlineVO } from '@/api/monitor/online/types'
-import { to } from 'await-to-js'
+import {forceLogout, list as initData} from '@/api/monitor/online'
+import {OnlineQuery, OnlineVO} from '@/api/monitor/online/types'
+import {to} from 'await-to-js'
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
-const { sys_device_type } = toRefs<any>(proxy?.useDict('sys_device_type'))
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
+const {sys_device_type} = toRefs<any>(proxy?.useDict('sys_device_type'))
 
 const onlineList = ref<OnlineVO[]>([])
 const loading = ref(true)

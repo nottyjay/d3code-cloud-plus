@@ -53,7 +53,7 @@ public class ${ClassName}ServiceImpl extends ServiceImplX<${ClassName}Mapper, ${
    */
   @Override
   public List<${ClassName}Vo> queryList(${ClassName}QueryParam queryParam) {
-    return listVo(buildQueryWrapper(queryParam))
+    return listVo(buildQueryWrapper(queryParam));
   }
 
   private LambdaQueryWrapper<${ClassName}> buildQueryWrapper(${ClassName}QueryParam queryParam) {

@@ -2,22 +2,22 @@ package com.alphay.boot.system.mapper;
 
 import com.alphay.boot.common.mybatis.annotation.DataColumn;
 import com.alphay.boot.common.mybatis.annotation.DataPermission;
-import com.alphay.boot.common.mybatis.core.mapper.BaseMapperX;
+import com.alphay.boot.common.mybatis.core.mapper.BaseMapperPlus;
 import com.alphay.boot.common.mybatis.helper.DataBaseHelper;
 import com.alphay.boot.system.domain.SysDept;
 import com.alphay.boot.system.domain.vo.SysDeptVo;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 /**
  * 部门管理 数据层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface SysDeptMapper extends BaseMapperX<SysDept> {
+public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
 
   /**
    * 查询部门管理数据
@@ -27,7 +27,21 @@ public interface SysDeptMapper extends BaseMapperX<SysDept> {
    */
   @DataPermission({@DataColumn(key = "deptName", value = "dept_id")})
   default List<SysDeptVo> selectDeptList(Wrapper<SysDept> queryWrapper) {
-    return this.selectList(queryWrapper, SysDeptVo.class);
+    return this.selectVoList(queryWrapper);
+  }
+
+  /**
+   * 分页查询部门管理数据
+   *
+   * @param page 分页参数
+   * @param queryWrapper 查询条件
+   * @return 部门信息集合
+   */
+  @DataPermission({
+    @DataColumn(key = "deptName", value = "dept_id"),
+  })
+  default Page<SysDeptVo> selectPageDeptList(Page<SysDept> page, Wrapper<SysDept> queryWrapper) {
+    return this.selectVoPage(page, queryWrapper);
   }
 
   /**

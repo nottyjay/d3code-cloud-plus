@@ -1,5 +1,5 @@
-import { CSSProperties } from 'vue'
-import VueTypes, { createTypes, toValidableType, VueTypesInterface, VueTypeValidableDef } from 'vue-types'
+import {CSSProperties} from 'vue'
+import VueTypes, {createTypes, toValidableType, VueTypesInterface, VueTypeValidableDef} from 'vue-types'
 
 type PropTypes = VueTypesInterface & {
   readonly style: VueTypeValidableDef<CSSProperties>
@@ -23,4 +23,4 @@ export default class ProjectTypes extends VueTypes {
     })
   }
 }
-export { propTypes }
+export {propTypes}

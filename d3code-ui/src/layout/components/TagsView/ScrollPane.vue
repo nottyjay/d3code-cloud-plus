@@ -1,12 +1,12 @@
 <template>
   <el-scrollbar ref="scrollContainerRef" :vertical="false" class="scroll-container" @wheel.prevent="handleScroll">
-    <slot />
+    <slot/>
   </el-scrollbar>
 </template>
 
 <script setup lang="ts">
-import { RouteLocationNormalized } from 'vue-router'
-import { useTagsViewStore } from '@/store/modules/tagsView'
+import {RouteLocationNormalized} from 'vue-router'
+import {useTagsViewStore} from '@/store/modules/tagsView'
 
 const tagAndTagSpacing = ref(4)
 

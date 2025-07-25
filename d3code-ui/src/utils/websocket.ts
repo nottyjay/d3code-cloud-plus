@@ -1,6 +1,6 @@
-import { getToken } from '@/utils/auth'
-import { ElNotification } from 'element-plus'
-import { useNoticeStore } from '@/store/modules/notice'
+import {getToken} from '@/utils/auth'
+import {ElNotification} from 'element-plus'
+import {useNoticeStore} from '@/store/modules/notice'
 
 // 初始化socket
 export const initWebSocket = (url: any) => {
@@ -19,7 +19,7 @@ export const initWebSocket = (url: any) => {
       },
     },
     heartbeat: {
-      message: JSON.stringify({ type: 'ping' }),
+      message: JSON.stringify({type: 'ping'}),
       // 发送心跳的间隔
       interval: 10000,
       // 接收到心跳response的超时时间

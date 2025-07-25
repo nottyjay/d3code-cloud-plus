@@ -11,8 +11,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 字典数据业务对象 sys_dict_data
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

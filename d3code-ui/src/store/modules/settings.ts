@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 import defaultSettings from '@/settings'
-import { useDynamicTitle } from '@/utils/dynamicTitle'
-import { useStorage } from '@vueuse/core'
-import { ref } from 'vue'
+import {useDynamicTitle} from '@/utils/dynamicTitle'
+import {useStorage} from '@vueuse/core'
+import {ref} from 'vue'
 
 export const useSettingsStore = defineStore('setting', () => {
   const storageSetting = useStorage<LayoutSetting>('layout-setting', {

@@ -13,8 +13,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 部门业务对象 sys_dept
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

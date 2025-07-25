@@ -93,7 +93,7 @@ spring:
 
     bus:
       id: ${spring.application.name}
-      base-packages: org.dromara.**.event
+      base-packages: com.alphay.boot.**.event
   # 消息总线 也可以使用 kafka 参考 spring-cloud-bus 用法
   rabbitmq:
     host: localhost

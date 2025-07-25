@@ -10,36 +10,39 @@
           </template>
           <div>
             <div class="text-center">
-              <userAvatar />
+              <userAvatar/>
             </div>
             <ul class="list-group list-group-striped">
               <li class="list-group-item">
-                <svg-icon icon-class="user" />
+                <svg-icon icon-class="user"/>
                 用户名称
                 <div class="pull-right">{{ state.user.userName }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="phone" />
+                <svg-icon icon-class="phone"/>
                 手机号码
                 <div class="pull-right">{{ state.user.phonenumber }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="email" />
+                <svg-icon icon-class="email"/>
                 用户邮箱
                 <div class="pull-right">{{ state.user.email }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="tree" />
+                <svg-icon icon-class="tree"/>
                 所属部门
-                <div v-if="state.user.deptName" class="pull-right">{{ state.user.deptName }} / {{ state.postGroup }}</div>
+                <div v-if="state.user.deptName" class="pull-right">{{ state.user.deptName }} / {{
+                    state.postGroup
+                  }}
+                </div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="peoples" />
+                <svg-icon icon-class="peoples"/>
                 所属角色
                 <div class="pull-right">{{ state.roleGroup }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="date" />
+                <svg-icon icon-class="date"/>
                 创建日期
                 <div class="pull-right">{{ state.user.createTime }}</div>
               </li>
@@ -56,13 +59,13 @@
           </template>
           <el-tabs v-model="activeTab">
             <el-tab-pane label="基本资料" name="userinfo">
-              <userInfo :user="userForm" />
+              <userInfo :user="userForm"/>
             </el-tab-pane>
             <el-tab-pane label="修改密码" name="resetPwd">
-              <resetPwd />
+              <resetPwd/>
             </el-tab-pane>
             <el-tab-pane label="在线设备" name="onlineDevice">
-              <onlineDevice :devices="state.devices" />
+              <onlineDevice :devices="state.devices"/>
             </el-tab-pane>
           </el-tabs>
         </el-card>
@@ -76,9 +79,9 @@ import UserAvatar from './userAvatar.vue'
 import UserInfo from './userInfo.vue'
 import ResetPwd from './resetPwd.vue'
 import OnlineDevice from './onlineDevice.vue'
-import { getUserProfile } from '@/api/system/user'
-import { getOnline } from '@/api/monitor/online'
-import { UserVO } from '@/api/system/user/types'
+import {getUserProfile} from '@/api/system/user'
+import {getOnline} from '@/api/monitor/online'
+import {UserVO} from '@/api/system/user/types'
 
 const activeTab = ref('userinfo')
 
@@ -103,7 +106,7 @@ const userForm = ref({})
 const getUser = async () => {
   const res = await getUserProfile()
   state.value.user = res.data.user
-  userForm.value = { ...res.data.user }
+  userForm.value = {...res.data.user}
   state.value.roleGroup = res.data.roleGroup
   state.value.postGroup = res.data.postGroup
 }

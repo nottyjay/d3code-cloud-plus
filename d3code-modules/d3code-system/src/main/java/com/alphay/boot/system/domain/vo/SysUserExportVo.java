@@ -12,8 +12,7 @@ import lombok.NoArgsConstructor;
 /**
  * 用户对象导出VO
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Data
 @NoArgsConstructor

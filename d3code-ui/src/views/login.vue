@@ -3,41 +3,49 @@
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
       <div class="title-box">
         <h3 class="title">{{ title }}</h3>
-        <lang-select />
+        <lang-select/>
       </div>
       <el-form-item v-if="tenantEnabled" prop="tenantId">
-        <el-select v-model="loginForm.tenantId" filterable :placeholder="proxy.$t('login.selectPlaceholder')" style="width: 100%">
-          <el-option v-for="item in tenantList" :key="item.tenantId" :label="item.companyName" :value="item.tenantId"></el-option>
+        <el-select v-model="loginForm.tenantId" filterable :placeholder="proxy.$t('login.selectPlaceholder')"
+                   style="width: 100%">
+          <el-option v-for="item in tenantList" :key="item.tenantId" :label="item.companyName"
+                     :value="item.tenantId"></el-option>
           <template #prefix>
-            <svg-icon icon-class="company" class="el-input__icon input-icon" />
+            <svg-icon icon-class="company" class="el-input__icon input-icon"/>
           </template>
         </el-select>
       </el-form-item>
       <el-form-item prop="username">
-        <el-input v-model="loginForm.username" type="text" size="large" auto-complete="off" :placeholder="proxy.$t('login.username')">
+        <el-input v-model="loginForm.username" type="text" size="large" auto-complete="off"
+                  :placeholder="proxy.$t('login.username')">
           <template #prefix>
-            <svg-icon icon-class="user" class="el-input__icon input-icon" />
+            <svg-icon icon-class="user" class="el-input__icon input-icon"/>
           </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="loginForm.password" type="password" size="large" auto-complete="off" :placeholder="proxy.$t('login.password')" @keyup.enter="handleLogin">
+        <el-input v-model="loginForm.password" type="password" size="large" auto-complete="off"
+                  :placeholder="proxy.$t('login.password')" @keyup.enter="handleLogin">
           <template #prefix>
-            <svg-icon icon-class="password" class="el-input__icon input-icon" />
+            <svg-icon icon-class="password" class="el-input__icon input-icon"/>
           </template>
         </el-input>
       </el-form-item>
       <el-form-item v-if="captchaEnabled" prop="code">
-        <el-input v-model="loginForm.code" size="large" auto-complete="off" :placeholder="proxy.$t('login.code')" style="width: 63%" @keyup.enter="handleLogin">
+        <el-input v-model="loginForm.code" size="large" auto-complete="off" :placeholder="proxy.$t('login.code')"
+                  style="width: 63%" @keyup.enter="handleLogin">
           <template #prefix>
-            <svg-icon icon-class="validCode" class="el-input__icon input-icon" />
+            <svg-icon icon-class="validCode" class="el-input__icon input-icon"/>
           </template>
         </el-input>
         <div class="login-code">
-          <img :src="codeUrl" class="login-code-img" @click="getCode" />
+          <img :src="codeUrl" class="login-code-img" @click="getCode"/>
         </div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin: 0 0 25px 0">{{ proxy.$t('login.rememberPassword') }}</el-checkbox>
+      <el-checkbox v-model="loginForm.rememberMe" style="margin: 0 0 25px 0">{{
+          proxy.$t('login.rememberPassword')
+        }}
+      </el-checkbox>
       <el-form-item style="width: 100%">
         <el-button :loading="loading" size="large" type="primary" style="width: 100%" @click.prevent="handleLogin">
           <span v-if="!loading">{{ proxy.$t('login.login') }}</span>
@@ -56,18 +64,18 @@
 </template>
 
 <script setup lang="ts">
-import { getCodeImg, getTenantList } from '@/api/login'
-import { useUserStore } from '@/store/modules/user'
-import { LoginData, TenantVO } from '@/api/types'
-import { to } from 'await-to-js'
-import { useI18n } from 'vue-i18n'
+import {getCodeImg, getTenantList} from '@/api/login'
+import {useUserStore} from '@/store/modules/user'
+import {LoginData, TenantVO} from '@/api/types'
+import {to} from 'await-to-js'
+import {useI18n} from 'vue-i18n'
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
 
 const title = import.meta.env.VITE_APP_TITLE
 const userStore = useUserStore()
 const router = useRouter()
-const { t } = useI18n()
+const {t} = useI18n()
 
 const loginForm = ref<LoginData>({
   tenantId: '000000',
@@ -79,10 +87,10 @@ const loginForm = ref<LoginData>({
 } as LoginData)
 
 const loginRules: ElFormRules = {
-  tenantId: [{ required: true, trigger: 'blur', message: t('login.rule.tenantId.required') }],
-  username: [{ required: true, trigger: 'blur', message: t('login.rule.username.required') }],
-  password: [{ required: true, trigger: 'blur', message: t('login.rule.password.required') }],
-  code: [{ required: true, trigger: 'change', message: t('login.rule.code.required') }],
+  tenantId: [{required: true, trigger: 'blur', message: t('login.rule.tenantId.required')}],
+  username: [{required: true, trigger: 'blur', message: t('login.rule.username.required')}],
+  password: [{required: true, trigger: 'blur', message: t('login.rule.password.required')}],
+  code: [{required: true, trigger: 'change', message: t('login.rule.code.required')}],
 }
 
 const codeUrl = ref('')
@@ -104,7 +112,7 @@ watch(
   (newRoute: any) => {
     redirect.value = newRoute.query && newRoute.query.redirect && decodeURIComponent(newRoute.query.redirect)
   },
-  { immediate: true }
+  {immediate: true}
 )
 
 const handleLogin = () => {
@@ -148,7 +156,7 @@ const handleLogin = () => {
  */
 const getCode = async () => {
   const res = await getCodeImg()
-  const { data } = res
+  const {data} = res
   captchaEnabled.value = data.captchaEnabled === undefined ? true : data.captchaEnabled
   if (captchaEnabled.value) {
     codeUrl.value = 'data:image/gif;base64,' + data.img
@@ -173,7 +181,7 @@ const getLoginData = () => {
  * 获取租户列表
  */
 const initTenantList = async () => {
-  const { data } = await getTenantList(false)
+  const {data} = await getTenantList(false)
   tenantEnabled.value = data.tenantEnabled === undefined ? true : data.tenantEnabled
   if (tenantEnabled.value) {
     tenantList.value = data.voList

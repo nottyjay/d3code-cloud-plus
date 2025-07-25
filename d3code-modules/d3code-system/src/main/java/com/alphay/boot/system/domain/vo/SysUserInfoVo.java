@@ -8,8 +8,7 @@ import lombok.Data;
 /**
  * 用户信息
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 public class SysUserInfoVo implements Serializable {

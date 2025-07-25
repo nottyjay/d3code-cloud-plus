@@ -89,16 +89,16 @@
             </el-tooltip>
           </template>
           <el-tree-select
-              v-model="infoForm.parentMenuId"
-              :data="menuOptions"
-              :props="{ value: 'menuId', label: 'menuName', children: 'children' } as any"
-              value-key="menuId"
-              node-key="menuId"
-              placeholder="选择上级菜单"
-              check-strictly
-              filterable
-              clearable
-              highlight-current
+            v-model="infoForm.parentMenuId"
+            :data="menuOptions"
+            :props="{ value: 'menuId', label: 'menuName', children: 'children' } as any"
+            value-key="menuId"
+            node-key="menuId"
+            placeholder="选择上级菜单"
+            check-strictly
+            filterable
+            clearable
+            highlight-current
           />
         </el-form-item>
       </el-col>
@@ -303,10 +303,10 @@ const getMenuTreeselect = async () => {
 }
 
 watch(
-    () => props.info.subTableName,
-    (val) => {
-      setSubTableColumns(val)
-    }
+  () => props.info.subTableName,
+  (val) => {
+    setSubTableColumns(val)
+  }
 )
 
 onMounted(() => {

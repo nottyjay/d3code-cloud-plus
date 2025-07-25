@@ -11,8 +11,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 授权管理对象 sys_client
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  * @date 2023-05-15
  */
 @Data

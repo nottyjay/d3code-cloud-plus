@@ -1,4 +1,4 @@
-import { LanguageEnum } from '@/enums/LanguageEnum'
+import {LanguageEnum} from '@/enums/LanguageEnum'
 
 const setting: DefaultSettings = {
   /**

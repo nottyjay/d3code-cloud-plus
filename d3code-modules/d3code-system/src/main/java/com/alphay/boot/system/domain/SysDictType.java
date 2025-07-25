@@ -9,8 +9,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 字典类型表 sys_dict_type
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -1,7 +1,6 @@
 package com.alphay.boot.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -15,24 +14,24 @@ import com.alphay.boot.common.excel.core.ExcelResult;
 import com.alphay.boot.common.excel.utils.ExcelUtil;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.satoken.utils.LoginHelper;
 import com.alphay.boot.common.tenant.helper.TenantHelper;
 import com.alphay.boot.common.web.core.BaseController;
-import com.alphay.boot.system.api.domain.param.SysDeptQueryParam;
-import com.alphay.boot.system.api.domain.param.SysPostQueryParam;
-import com.alphay.boot.system.api.domain.param.SysRoleQueryParam;
-import com.alphay.boot.system.api.domain.param.SysUserQueryParam;
 import com.alphay.boot.system.api.model.LoginUser;
+import com.alphay.boot.system.domain.bo.SysDeptBo;
+import com.alphay.boot.system.domain.bo.SysPostBo;
+import com.alphay.boot.system.domain.bo.SysRoleBo;
 import com.alphay.boot.system.domain.bo.SysUserBo;
 import com.alphay.boot.system.domain.vo.*;
 import com.alphay.boot.system.listener.SysUserImportListener;
 import com.alphay.boot.system.service.*;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -41,33 +40,33 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 用户信息
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/user")
 public class SysUserController extends BaseController {
 
-  @Resource private ISysUserService userService;
-  @Resource private ISysRoleService roleService;
-  @Resource private ISysPostService postService;
-  @Resource private ISysDeptService deptService;
-  @Resource private ISysTenantService tenantService;
+  private final ISysUserService userService;
+  private final ISysRoleService roleService;
+  private final ISysPostService postService;
+  private final ISysDeptService deptService;
+  private final ISysTenantService tenantService;
 
   /** 获取用户列表 */
   @SaCheckPermission("system:user:list")
   @GetMapping("/list")
-  public PageResult<SysUserVo> list(SysUserQueryParam param) {
-    return userService.queryPageList(param);
+  public TableDataInfo<SysUserVo> list(SysUserBo user, PageQuery pageQuery) {
+    return userService.selectPageUserList(user, pageQuery);
   }
 
   /** 导出用户列表 */
   @Log(title = "用户管理", businessType = BusinessType.EXPORT)
   @SaCheckPermission("system:user:export")
   @PostMapping("/export")
-  public void export(SysUserQueryParam param, HttpServletResponse response) {
-    List<SysUserExportVo> list = userService.queryExportList(param);
+  public void export(SysUserBo user, HttpServletResponse response) {
+    List<SysUserExportVo> list = userService.selectUserExportList(user);
     ExcelUtil.exportExcel(list, "用户数据", SysUserExportVo.class, response);
   }
 
@@ -107,11 +106,11 @@ public class SysUserController extends BaseController {
       // 超级管理员 如果重新加载用户信息需清除动态租户
       TenantHelper.clearDynamic();
     }
-    SysUserVo user = userService.getVoById(loginUser.getUserId());
+    SysUserVo user = userService.selectUserById(loginUser.getUserId());
     if (ObjectUtil.isNull(user)) {
       return R.fail("没有权限访问用户数据!");
     }
-    user.setRoles(roleService.queryListByUserId(user.getUserId()));
+    user.setRoles(roleService.selectRolesByUserId(user.getUserId()));
     userInfoVo.setUser(user);
     userInfoVo.setPermissions(loginUser.getMenuPermission());
     userInfoVo.setRoles(loginUser.getRolePermission());
@@ -129,20 +128,20 @@ public class SysUserController extends BaseController {
     SysUserInfoVo userInfoVo = new SysUserInfoVo();
     if (ObjectUtil.isNotNull(userId)) {
       userService.checkUserDataScope(userId);
-      SysUserVo sysUser = userService.getVoById(userId);
+      SysUserVo sysUser = userService.selectUserById(userId);
       userInfoVo.setUser(sysUser);
-      userInfoVo.setRoleIds(roleService.fetchListByUserId(userId));
+      userInfoVo.setRoleIds(roleService.selectRoleListByUserId(userId));
       Long deptId = sysUser.getDeptId();
       if (ObjectUtil.isNotNull(deptId)) {
-        SysPostQueryParam param = new SysPostQueryParam();
-        param.setDeptId(deptId);
-        userInfoVo.setPosts(postService.queryList(param));
+        SysPostBo postBo = new SysPostBo();
+        postBo.setDeptId(deptId);
+        userInfoVo.setPosts(postService.selectPostList(postBo));
         userInfoVo.setPostIds(postService.selectPostListByUserId(userId));
       }
     }
-    SysRoleQueryParam roleQueryParam = new SysRoleQueryParam();
-    roleQueryParam.setStatus(SystemConstants.NORMAL);
-    List<SysRoleVo> roles = roleService.queryList(roleQueryParam);
+    SysRoleBo roleBo = new SysRoleBo();
+    roleBo.setStatus(SystemConstants.NORMAL);
+    List<SysRoleVo> roles = roleService.selectRoleList(roleBo);
     userInfoVo.setRoles(
         LoginHelper.isSuperAdmin(userId)
             ? roles
@@ -156,14 +155,12 @@ public class SysUserController extends BaseController {
   @PostMapping
   public R<Void> add(@Validated @RequestBody SysUserBo user) {
     deptService.checkDeptDataScope(user.getDeptId());
-    SysUserQueryParam queryParam = BeanUtil.toBean(user, SysUserQueryParam.class);
-    if (!userService.checkUserNameUnique(queryParam)) {
+    if (!userService.checkUserNameUnique(user)) {
       return R.fail("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
     } else if (StringUtils.isNotEmpty(user.getPhonenumber())
-        && !userService.checkPhoneUnique(queryParam)) {
+        && !userService.checkPhoneUnique(user)) {
       return R.fail("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
-    } else if (StringUtils.isNotEmpty(user.getEmail())
-        && !userService.checkEmailUnique(queryParam)) {
+    } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
       return R.fail("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
     }
     if (TenantHelper.isEnable()) {
@@ -183,15 +180,12 @@ public class SysUserController extends BaseController {
     userService.checkUserAllowed(user.getUserId());
     userService.checkUserDataScope(user.getUserId());
     deptService.checkDeptDataScope(user.getDeptId());
-    SysUserQueryParam queryParam = BeanUtil.toBean(user, SysUserQueryParam.class);
-
-    if (!userService.checkUserNameUnique(queryParam)) {
+    if (!userService.checkUserNameUnique(user)) {
       return R.fail("修改用户'" + user.getUserName() + "'失败，登录账号已存在");
     } else if (StringUtils.isNotEmpty(user.getPhonenumber())
-        && !userService.checkPhoneUnique(queryParam)) {
+        && !userService.checkPhoneUnique(user)) {
       return R.fail("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
-    } else if (StringUtils.isNotEmpty(user.getEmail())
-        && !userService.checkEmailUnique(queryParam)) {
+    } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
       return R.fail("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
     }
     return toAjax(userService.updateUser(user));
@@ -223,7 +217,7 @@ public class SysUserController extends BaseController {
   public R<List<SysUserVo>> optionselect(
       @RequestParam(required = false) Long[] userIds, @RequestParam(required = false) Long deptId) {
     return R.ok(
-        userService.queryListByIds(ArrayUtil.isEmpty(userIds) ? null : List.of(userIds), deptId));
+        userService.selectUserByIds(ArrayUtil.isEmpty(userIds) ? null : List.of(userIds), deptId));
   }
 
   /** 重置密码 */
@@ -257,8 +251,8 @@ public class SysUserController extends BaseController {
   @GetMapping("/authRole/{userId}")
   public R<SysUserInfoVo> authRole(@PathVariable Long userId) {
     userService.checkUserDataScope(userId);
-    SysUserVo user = userService.getVoById(userId);
-    List<SysRoleVo> roles = roleService.queryListByUserId(userId);
+    SysUserVo user = userService.selectUserById(userId);
+    List<SysRoleVo> roles = roleService.selectRolesAuthByUserId(userId);
     SysUserInfoVo userInfoVo = new SysUserInfoVo();
     userInfoVo.setUser(user);
     userInfoVo.setRoles(
@@ -286,8 +280,8 @@ public class SysUserController extends BaseController {
   /** 获取部门树列表 */
   @SaCheckPermission("system:user:list")
   @GetMapping("/deptTree")
-  public R<List<Tree<Long>>> deptTree(SysDeptQueryParam param) {
-    return R.ok(deptService.selectDeptTreeList(param));
+  public R<List<Tree<Long>>> deptTree(SysDeptBo dept) {
+    return R.ok(deptService.selectDeptTreeList(dept));
   }
 
   /** 获取部门下的所有用户信息 */

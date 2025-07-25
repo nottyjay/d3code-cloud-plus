@@ -3,27 +3,26 @@ package com.alphay.boot.system.dubbo;
 import com.alphay.boot.common.core.utils.MapstructUtils;
 import com.alphay.boot.system.api.RemoteSocialService;
 import com.alphay.boot.system.api.domain.bo.RemoteSocialBo;
-import com.alphay.boot.system.api.domain.param.SysSocialQueryParam;
 import com.alphay.boot.system.api.domain.vo.RemoteSocialVo;
 import com.alphay.boot.system.domain.bo.SysSocialBo;
 import com.alphay.boot.system.domain.vo.SysSocialVo;
 import com.alphay.boot.system.service.ISysSocialService;
-import jakarta.annotation.Resource;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
 /**
  * 社会化关系服务
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
+@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteSocialServiceImpl implements RemoteSocialService {
 
-  @Resource private ISysSocialService sysSocialService;
+  private final ISysSocialService sysSocialService;
 
   /**
    * 根据 authId 查询用户授权信息
@@ -44,7 +43,7 @@ public class RemoteSocialServiceImpl implements RemoteSocialService {
    */
   @Override
   public List<RemoteSocialVo> queryList(RemoteSocialBo bo) {
-    SysSocialQueryParam params = MapstructUtils.convert(bo, SysSocialQueryParam.class);
+    SysSocialBo params = MapstructUtils.convert(bo, SysSocialBo.class);
     List<SysSocialVo> list = sysSocialService.queryList(params);
     return MapstructUtils.convert(list, RemoteSocialVo.class);
   }

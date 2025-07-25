@@ -10,7 +10,7 @@ import com.alphay.boot.common.core.utils.StreamUtils;
 import com.alphay.boot.common.core.utils.StringUtils;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.redis.utils.RedisUtils;
 import com.alphay.boot.common.web.core.BaseController;
 import com.alphay.boot.system.api.domain.SysUserOnline;
@@ -19,14 +19,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 在线用户监控
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/online")
 public class SysUserOnlineController extends BaseController {
@@ -39,7 +40,7 @@ public class SysUserOnlineController extends BaseController {
    */
   @SaCheckPermission("monitor:online:list")
   @GetMapping("/list")
-  public PageResult<SysUserOnline> list(String ipaddr, String userName) {
+  public TableDataInfo<SysUserOnline> list(String ipaddr, String userName) {
     // 获取所有未过期的 token
     Collection<String> keys = RedisUtils.keys(CacheConstants.ONLINE_TOKEN_KEY + "*");
     List<SysUserOnline> userOnlineDTOList = new ArrayList<>();
@@ -72,7 +73,7 @@ public class SysUserOnlineController extends BaseController {
     userOnlineDTOList.removeAll(Collections.singleton(null));
     List<SysUserOnline> userOnlineList =
         BeanUtil.copyToList(userOnlineDTOList, SysUserOnline.class);
-    return PageResult.build(userOnlineList);
+    return TableDataInfo.build(userOnlineList);
   }
 
   /**
@@ -93,7 +94,7 @@ public class SysUserOnlineController extends BaseController {
 
   /** 获取当前用户登录在线设备 */
   @GetMapping()
-  public PageResult<SysUserOnline> getInfo() {
+  public TableDataInfo<SysUserOnline> getInfo() {
     // 获取指定账号 id 的 token 集合
     List<String> tokenIds = StpUtil.getTokenValueListByLoginId(StpUtil.getLoginIdAsString());
     List<SysUserOnline> userOnlineDTOList =
@@ -109,7 +110,7 @@ public class SysUserOnlineController extends BaseController {
     userOnlineDTOList.removeAll(Collections.singleton(null));
     List<SysUserOnline> userOnlineList =
         BeanUtil.copyToList(userOnlineDTOList, SysUserOnline.class);
-    return PageResult.build(userOnlineList);
+    return TableDataInfo.build(userOnlineList);
   }
 
   /**

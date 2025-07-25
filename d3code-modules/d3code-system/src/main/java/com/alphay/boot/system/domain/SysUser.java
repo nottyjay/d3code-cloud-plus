@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 /**
  * 用户对象 sys_user
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Data
 @NoArgsConstructor

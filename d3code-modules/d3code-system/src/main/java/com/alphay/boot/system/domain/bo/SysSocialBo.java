@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 /**
  * 社会化关系业务对象 sys_social
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Data
 @NoArgsConstructor

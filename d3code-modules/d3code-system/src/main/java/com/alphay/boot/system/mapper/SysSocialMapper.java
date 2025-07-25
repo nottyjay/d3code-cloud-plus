@@ -1,12 +1,12 @@
 package com.alphay.boot.system.mapper;
 
-import com.alphay.boot.common.mybatis.core.mapper.BaseMapperX;
+import com.alphay.boot.common.mybatis.core.mapper.BaseMapperPlus;
 import com.alphay.boot.system.domain.SysSocial;
+import com.alphay.boot.system.domain.vo.SysSocialVo;
 
 /**
  * 社会化关系Mapper接口
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author thiszhc
  */
-public interface SysSocialMapper extends BaseMapperX<SysSocial> {}
+public interface SysSocialMapper extends BaseMapperPlus<SysSocial, SysSocialVo> {}

@@ -6,48 +6,48 @@ import com.alphay.boot.common.core.domain.R;
 import com.alphay.boot.common.excel.utils.ExcelUtil;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.web.core.BaseController;
-import com.alphay.boot.system.api.domain.param.SysDictDataQueryParam;
 import com.alphay.boot.system.domain.bo.SysDictDataBo;
 import com.alphay.boot.system.domain.vo.SysDictDataVo;
 import com.alphay.boot.system.service.ISysDictDataService;
 import com.alphay.boot.system.service.ISysDictTypeService;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 数据字典信息
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/dict/data")
 public class SysDictDataController extends BaseController {
 
-  @Resource private ISysDictDataService dictDataService;
-  @Resource private ISysDictTypeService dictTypeService;
+  private final ISysDictDataService dictDataService;
+  private final ISysDictTypeService dictTypeService;
 
   /** 查询字典数据列表 */
   @SaCheckPermission("system:dict:list")
   @GetMapping("/list")
-  public PageResult<SysDictDataVo> list(SysDictDataQueryParam param) {
-    return dictDataService.queryPageDictDataList(param);
+  public TableDataInfo<SysDictDataVo> list(SysDictDataBo dictData, PageQuery pageQuery) {
+    return dictDataService.selectPageDictDataList(dictData, pageQuery);
   }
 
   /** 导出字典数据列表 */
   @Log(title = "字典数据", businessType = BusinessType.EXPORT)
   @SaCheckPermission("system:dict:export")
   @PostMapping("/export")
-  public void export(SysDictDataQueryParam param, HttpServletResponse response) {
-    List<SysDictDataVo> list = dictDataService.queryList(param);
+  public void export(SysDictDataBo dictData, HttpServletResponse response) {
+    List<SysDictDataVo> list = dictDataService.selectDictDataList(dictData);
     ExcelUtil.exportExcel(list, "字典数据", SysDictDataVo.class, response);
   }
 
@@ -59,7 +59,7 @@ public class SysDictDataController extends BaseController {
   @SaCheckPermission("system:dict:query")
   @GetMapping(value = "/{dictCode}")
   public R<SysDictDataVo> getInfo(@PathVariable Long dictCode) {
-    return R.ok(dictDataService.getVoById(dictCode));
+    return R.ok(dictDataService.selectDictDataById(dictCode));
   }
 
   /**

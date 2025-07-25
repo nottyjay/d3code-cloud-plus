@@ -1,6 +1,6 @@
 <template>
   <div class="user-info-head" @click="editCropper()">
-    <img :src="options.img" title="点击上传头像" class="img-circle img-lg" />
+    <img :src="options.img" title="点击上传头像" class="img-circle img-lg"/>
     <el-dialog v-model="open" :title="title" width="800px" append-to-body @opened="modalOpened" @close="closeDialog">
       <el-row>
         <el-col :xs="24" :md="12" :style="{ height: '350px' }">
@@ -19,18 +19,18 @@
         </el-col>
         <el-col :xs="24" :md="12" :style="{ height: '350px' }">
           <div class="avatar-upload-preview">
-            <img :src="options.previews.url" :style="options.previews.img" />
+            <img :src="options.previews.url" :style="options.previews.img"/>
           </div>
         </el-col>
       </el-row>
-      <br />
+      <br/>
       <el-row>
         <el-col :lg="2" :md="2">
           <el-upload action="#" :http-request="requestUpload" :show-file-list="false" :before-upload="beforeUpload">
             <el-button>
               选择
               <el-icon class="el-icon--right">
-                <Upload />
+                <Upload/>
               </el-icon>
             </el-button>
           </el-upload>
@@ -57,10 +57,10 @@
 
 <script setup lang="ts">
 import 'vue-cropper/dist/index.css'
-import { VueCropper } from 'vue-cropper'
-import { uploadAvatar } from '@/api/system/user'
-import { useUserStore } from '@/store/modules/user'
-import { UploadRawFile } from 'element-plus'
+import {VueCropper} from 'vue-cropper'
+import {uploadAvatar} from '@/api/system/user'
+import {useUserStore} from '@/store/modules/user'
+import {UploadRawFile} from 'element-plus'
 
 interface Options {
   img: string | any // 裁剪图片的地址
@@ -75,7 +75,7 @@ interface Options {
 }
 
 const userStore = useUserStore()
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
 
 const open = ref(false)
 const visible = ref(false)
@@ -104,7 +104,8 @@ const modalOpened = () => {
   visible.value = true
 }
 /** 覆盖默认上传行为 */
-const requestUpload = (): any => {}
+const requestUpload = (): any => {
+}
 /** 向左旋转 */
 const rotateLeft = () => {
   cropper.value.rotateLeft()

@@ -14,8 +14,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 租户业务对象 sys_tenant
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

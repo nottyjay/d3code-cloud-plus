@@ -1,9 +1,7 @@
 package com.alphay.boot.system.service;
 
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.IServiceX;
-import com.alphay.boot.system.api.domain.param.SysTenantPackageQueryParam;
-import com.alphay.boot.system.domain.SysTenantPackage;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.bo.SysTenantPackageBo;
 import com.alphay.boot.system.domain.vo.SysTenantPackageVo;
 import java.util.Collection;
@@ -12,19 +10,21 @@ import java.util.List;
 /**
  * 租户套餐Service接口
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
-public interface ISysTenantPackageService extends IServiceX<SysTenantPackage, SysTenantPackageVo> {
+public interface ISysTenantPackageService {
+
+  /** 查询租户套餐 */
+  SysTenantPackageVo queryById(Long packageId);
 
   /** 查询租户套餐列表 */
-  PageResult<SysTenantPackageVo> queryPageList(SysTenantPackageQueryParam param);
+  TableDataInfo<SysTenantPackageVo> queryPageList(SysTenantPackageBo bo, PageQuery pageQuery);
 
   /** 查询租户套餐已启用列表 */
-  List<SysTenantPackageVo> queryList();
+  List<SysTenantPackageVo> selectList();
 
   /** 查询租户套餐列表 */
-  List<SysTenantPackageVo> queryList(SysTenantPackageQueryParam param);
+  List<SysTenantPackageVo> queryList(SysTenantPackageBo bo);
 
   /** 新增租户套餐 */
   Boolean insertByBo(SysTenantPackageBo bo);
@@ -33,7 +33,7 @@ public interface ISysTenantPackageService extends IServiceX<SysTenantPackage, Sy
   Boolean updateByBo(SysTenantPackageBo bo);
 
   /** 校验套餐名称是否唯一 */
-  boolean checkPackageNameUnique(SysTenantPackageQueryParam param);
+  boolean checkPackageNameUnique(SysTenantPackageBo bo);
 
   /** 修改套餐状态 */
   int updatePackageStatus(SysTenantPackageBo bo);

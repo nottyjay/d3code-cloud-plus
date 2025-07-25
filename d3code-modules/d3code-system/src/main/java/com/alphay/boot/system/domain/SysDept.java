@@ -14,8 +14,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 部门表 sys_dept
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

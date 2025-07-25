@@ -5,43 +5,44 @@ import com.alphay.boot.common.core.domain.R;
 import com.alphay.boot.common.excel.utils.ExcelUtil;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.web.core.BaseController;
-import com.alphay.boot.system.api.domain.param.SysOperLogQueryParam;
+import com.alphay.boot.system.domain.bo.SysOperLogBo;
 import com.alphay.boot.system.domain.vo.SysOperLogVo;
 import com.alphay.boot.system.service.ISysOperLogService;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 操作日志记录
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/operlog")
 public class SysOperlogController extends BaseController {
 
-  @Resource private ISysOperLogService operLogService;
+  private final ISysOperLogService operLogService;
 
   /** 获取操作日志记录列表 */
   @SaCheckPermission("monitor:operlog:list")
   @GetMapping("/list")
-  public PageResult<SysOperLogVo> list(SysOperLogQueryParam param) {
-    return operLogService.queryPageList(param);
+  public TableDataInfo<SysOperLogVo> list(SysOperLogBo operLog, PageQuery pageQuery) {
+    return operLogService.selectPageOperLogList(operLog, pageQuery);
   }
 
   /** 导出操作日志记录列表 */
   @Log(title = "操作日志", businessType = BusinessType.EXPORT)
   @SaCheckPermission("monitor:operlog:export")
   @PostMapping("/export")
-  public void export(SysOperLogQueryParam param, HttpServletResponse response) {
-    List<SysOperLogVo> list = operLogService.queryList(param);
+  public void export(SysOperLogBo operLog, HttpServletResponse response) {
+    List<SysOperLogVo> list = operLogService.selectOperLogList(operLog);
     ExcelUtil.exportExcel(list, "操作日志", SysOperLogVo.class, response);
   }
 

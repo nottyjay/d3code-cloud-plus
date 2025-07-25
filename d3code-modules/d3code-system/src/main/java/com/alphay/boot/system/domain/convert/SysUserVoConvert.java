@@ -9,11 +9,9 @@ import org.mapstruct.ReportingPolicy;
 
 /**
  * 租户转换器
- *
- * @author Nottyjay
- * @since 1.0.0
+ * @author zhujie
  */
-@Mapper(
-    componentModel = MappingConstants.ComponentModel.SPRING,
-    unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface SysUserVoConvert extends BaseMapper<SysUserVo, RemoteUserVo> {}
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface SysUserVoConvert extends BaseMapper<SysUserVo, RemoteUserVo> {
+
+}

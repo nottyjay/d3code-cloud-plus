@@ -1,60 +1,57 @@
 package com.alphay.boot.system.controller.system;
 
-import static net.sf.jsqlparser.util.validation.metadata.NamedObject.role;
-
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.tree.Tree;
 import com.alphay.boot.common.core.domain.R;
 import com.alphay.boot.common.excel.utils.ExcelUtil;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.web.core.BaseController;
-import com.alphay.boot.system.api.domain.param.SysDeptQueryParam;
-import com.alphay.boot.system.api.domain.param.SysRoleQueryParam;
-import com.alphay.boot.system.api.domain.param.SysUserQueryParam;
 import com.alphay.boot.system.domain.SysUserRole;
+import com.alphay.boot.system.domain.bo.SysDeptBo;
 import com.alphay.boot.system.domain.bo.SysRoleBo;
+import com.alphay.boot.system.domain.bo.SysUserBo;
 import com.alphay.boot.system.domain.vo.SysRoleVo;
 import com.alphay.boot.system.domain.vo.SysUserVo;
 import com.alphay.boot.system.service.ISysDeptService;
 import com.alphay.boot.system.service.ISysRoleService;
 import com.alphay.boot.system.service.ISysUserService;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 角色信息
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/role")
 public class SysRoleController extends BaseController {
 
-  @Resource private ISysRoleService roleService;
-  @Resource private ISysUserService userService;
-  @Resource private ISysDeptService deptService;
+  private final ISysRoleService roleService;
+  private final ISysUserService userService;
+  private final ISysDeptService deptService;
 
   /** 获取角色信息列表 */
   @SaCheckPermission("system:role:list")
   @GetMapping("/list")
-  public PageResult<SysRoleVo> list(SysRoleQueryParam param) {
-    return roleService.queryPageList(param);
+  public TableDataInfo<SysRoleVo> list(SysRoleBo role, PageQuery pageQuery) {
+    return roleService.selectPageRoleList(role, pageQuery);
   }
 
   /** 导出角色信息列表 */
   @Log(title = "角色管理", businessType = BusinessType.EXPORT)
   @SaCheckPermission("system:role:export")
   @PostMapping("/export")
-  public void export(SysRoleQueryParam param, HttpServletResponse response) {
-    List<SysRoleVo> list = roleService.queryList(param);
+  public void export(SysRoleBo role, HttpServletResponse response) {
+    List<SysRoleVo> list = roleService.selectRoleList(role);
     ExcelUtil.exportExcel(list, "角色数据", SysRoleVo.class, response);
   }
 
@@ -67,7 +64,7 @@ public class SysRoleController extends BaseController {
   @GetMapping(value = "/{roleId}")
   public R<SysRoleVo> getInfo(@PathVariable Long roleId) {
     roleService.checkRoleDataScope(roleId);
-    return R.ok(roleService.getVoById(roleId));
+    return R.ok(roleService.selectRoleById(roleId));
   }
 
   /** 新增角色 */
@@ -75,11 +72,10 @@ public class SysRoleController extends BaseController {
   @Log(title = "角色管理", businessType = BusinessType.INSERT)
   @PostMapping
   public R<Void> add(@Validated @RequestBody SysRoleBo role) {
-    SysRoleQueryParam param = BeanUtil.toBean(role, SysRoleQueryParam.class);
-    roleService.checkRoleAllowed(param);
-    if (!roleService.checkRoleNameUnique(param)) {
+    roleService.checkRoleAllowed(role);
+    if (!roleService.checkRoleNameUnique(role)) {
       return R.fail("新增角色'" + role.getRoleName() + "'失败，角色名称已存在");
-    } else if (!roleService.checkRoleKeyUnique(param)) {
+    } else if (!roleService.checkRoleKeyUnique(role)) {
       return R.fail("新增角色'" + role.getRoleName() + "'失败，角色权限已存在");
     }
     return toAjax(roleService.insertRole(role));
@@ -90,12 +86,11 @@ public class SysRoleController extends BaseController {
   @Log(title = "角色管理", businessType = BusinessType.UPDATE)
   @PutMapping
   public R<Void> edit(@Validated @RequestBody SysRoleBo role) {
-    SysRoleQueryParam param = BeanUtil.toBean(role, SysRoleQueryParam.class);
-    roleService.checkRoleAllowed(param);
+    roleService.checkRoleAllowed(role);
     roleService.checkRoleDataScope(role.getRoleId());
-    if (!roleService.checkRoleNameUnique(param)) {
+    if (!roleService.checkRoleNameUnique(role)) {
       return R.fail("修改角色'" + role.getRoleName() + "'失败，角色名称已存在");
-    } else if (!roleService.checkRoleKeyUnique(param)) {
+    } else if (!roleService.checkRoleKeyUnique(role)) {
       return R.fail("修改角色'" + role.getRoleName() + "'失败，角色权限已存在");
     }
 
@@ -111,8 +106,7 @@ public class SysRoleController extends BaseController {
   @Log(title = "角色管理", businessType = BusinessType.UPDATE)
   @PutMapping("/dataScope")
   public R<Void> dataScope(@RequestBody SysRoleBo role) {
-    SysRoleQueryParam param = BeanUtil.toBean(role, SysRoleQueryParam.class);
-    roleService.checkRoleAllowed(param);
+    roleService.checkRoleAllowed(role);
     roleService.checkRoleDataScope(role.getRoleId());
     return toAjax(roleService.authDataScope(role));
   }
@@ -122,9 +116,7 @@ public class SysRoleController extends BaseController {
   @Log(title = "角色管理", businessType = BusinessType.UPDATE)
   @PutMapping("/changeStatus")
   public R<Void> changeStatus(@RequestBody SysRoleBo role) {
-    SysRoleQueryParam param = BeanUtil.toBean(role, SysRoleQueryParam.class);
-
-    roleService.checkRoleAllowed(param);
+    roleService.checkRoleAllowed(role);
     roleService.checkRoleDataScope(role.getRoleId());
     return toAjax(roleService.updateRoleStatus(role.getRoleId(), role.getStatus()));
   }
@@ -149,21 +141,21 @@ public class SysRoleController extends BaseController {
   @SaCheckPermission("system:role:query")
   @GetMapping("/optionselect")
   public R<List<SysRoleVo>> optionselect(@RequestParam(required = false) Long[] roleIds) {
-    return R.ok(roleService.queryListByIds(roleIds == null ? null : List.of(roleIds)));
+    return R.ok(roleService.selectRoleByIds(roleIds == null ? null : List.of(roleIds)));
   }
 
   /** 查询已分配用户角色列表 */
   @SaCheckPermission("system:role:list")
   @GetMapping("/authUser/allocatedList")
-  public PageResult<SysUserVo> allocatedList(SysUserQueryParam param) {
-    return userService.queryPageAllocatedList(param);
+  public TableDataInfo<SysUserVo> allocatedList(SysUserBo user, PageQuery pageQuery) {
+    return userService.selectAllocatedList(user, pageQuery);
   }
 
   /** 查询未分配用户角色列表 */
   @SaCheckPermission("system:role:list")
   @GetMapping("/authUser/unallocatedList")
-  public PageResult<SysUserVo> unallocatedList(SysUserQueryParam param) {
-    return userService.queryPageUnallocatedList(param);
+  public TableDataInfo<SysUserVo> unallocatedList(SysUserBo user, PageQuery pageQuery) {
+    return userService.selectUnallocatedList(user, pageQuery);
   }
 
   /** 取消授权用户 */
@@ -212,7 +204,7 @@ public class SysRoleController extends BaseController {
     DeptTreeSelectVo selectVo =
         new DeptTreeSelectVo(
             deptService.selectDeptListByRoleId(roleId),
-            deptService.selectDeptTreeList(new SysDeptQueryParam()));
+            deptService.selectDeptTreeList(new SysDeptBo()));
     return R.ok(selectVo);
   }
 

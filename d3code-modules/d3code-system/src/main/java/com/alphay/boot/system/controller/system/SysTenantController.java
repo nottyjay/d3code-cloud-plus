@@ -11,21 +11,21 @@ import com.alphay.boot.common.excel.utils.ExcelUtil;
 import com.alphay.boot.common.idempotent.annotation.RepeatSubmit;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.tenant.helper.TenantHelper;
 import com.alphay.boot.common.web.core.BaseController;
-import com.alphay.boot.system.api.domain.param.SysTenantQueryParam;
 import com.alphay.boot.system.domain.bo.SysTenantBo;
 import com.alphay.boot.system.domain.vo.SysTenantVo;
 import com.alphay.boot.system.service.ISysTenantService;
 import com.baomidou.lock.annotation.Lock4j;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,23 +33,23 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 租户管理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/tenant")
 @ConditionalOnProperty(value = "tenant.enable", havingValue = "true")
 public class SysTenantController extends BaseController {
 
-  @Resource private ISysTenantService tenantService;
+  private final ISysTenantService tenantService;
 
   /** 查询租户列表 */
   @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
   @SaCheckPermission("system:tenant:list")
   @GetMapping("/list")
-  public PageResult<SysTenantVo> list(SysTenantQueryParam param) {
-    return tenantService.queryPageList(param);
+  public TableDataInfo<SysTenantVo> list(SysTenantBo bo, PageQuery pageQuery) {
+    return tenantService.queryPageList(bo, pageQuery);
   }
 
   /** 导出租户列表 */
@@ -57,8 +57,8 @@ public class SysTenantController extends BaseController {
   @SaCheckPermission("system:tenant:export")
   @Log(title = "租户管理", businessType = BusinessType.EXPORT)
   @PostMapping("/export")
-  public void export(SysTenantQueryParam param, HttpServletResponse response) {
-    List<SysTenantVo> list = tenantService.queryList(param);
+  public void export(SysTenantBo bo, HttpServletResponse response) {
+    List<SysTenantVo> list = tenantService.queryList(bo);
     ExcelUtil.exportExcel(list, "租户", SysTenantVo.class, response);
   }
 
@@ -71,7 +71,7 @@ public class SysTenantController extends BaseController {
   @SaCheckPermission("system:tenant:query")
   @GetMapping("/{id}")
   public R<SysTenantVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-    return R.ok(tenantService.getVoById(id));
+    return R.ok(tenantService.queryById(id));
   }
 
   /** 新增租户 */

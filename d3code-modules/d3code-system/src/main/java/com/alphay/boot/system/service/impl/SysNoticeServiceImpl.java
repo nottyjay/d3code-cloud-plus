@@ -3,9 +3,8 @@ package com.alphay.boot.system.service.impl;
 import com.alphay.boot.common.core.utils.MapstructUtils;
 import com.alphay.boot.common.core.utils.ObjectUtils;
 import com.alphay.boot.common.core.utils.StringUtils;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
-import com.alphay.boot.system.api.domain.param.SysNoticeQueryParam;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.SysNotice;
 import com.alphay.boot.system.domain.SysUser;
 import com.alphay.boot.system.domain.bo.SysNoticeBo;
@@ -15,49 +14,67 @@ import com.alphay.boot.system.mapper.SysNoticeMapper;
 import com.alphay.boot.system.mapper.SysUserMapper;
 import com.alphay.boot.system.service.ISysNoticeService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import jakarta.annotation.Resource;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Arrays;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
  * 公告 服务层实现
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
-public class SysNoticeServiceImpl extends ServiceImplX<SysNoticeMapper, SysNotice, SysNoticeVo>
-    implements ISysNoticeService {
+public class SysNoticeServiceImpl implements ISysNoticeService {
 
-  @Resource private SysUserMapper userMapper;
+  private final SysNoticeMapper baseMapper;
+  private final SysUserMapper userMapper;
 
   @Override
-  public PageResult<SysNoticeVo> queryPageList(SysNoticeQueryParam param) {
-    return listPageVo(param, buildQueryWrapper(param));
+  public TableDataInfo<SysNoticeVo> selectPageNoticeList(SysNoticeBo notice, PageQuery pageQuery) {
+    LambdaQueryWrapper<SysNotice> lqw = buildQueryWrapper(notice);
+    Page<SysNoticeVo> page = baseMapper.selectVoPage(pageQuery.build(), lqw);
+    return TableDataInfo.build(page);
+  }
+
+  /**
+   * 查询公告信息
+   *
+   * @param noticeId 公告ID
+   * @return 公告信息
+   */
+  @Override
+  public SysNoticeVo selectNoticeById(Long noticeId) {
+    return baseMapper.selectVoById(noticeId);
   }
 
   /**
    * 查询公告列表
    *
-   * @param param 公告信息
+   * @param notice 公告信息
    * @return 公告集合
    */
   @Override
-  public List<SysNoticeVo> queryList(SysNoticeQueryParam param) {
-    return listVo(buildQueryWrapper(param));
+  public List<SysNoticeVo> selectNoticeList(SysNoticeBo notice) {
+    LambdaQueryWrapper<SysNotice> lqw = buildQueryWrapper(notice);
+    return baseMapper.selectVoList(lqw);
   }
 
-  private LambdaQueryWrapper<SysNotice> buildQueryWrapper(SysNoticeQueryParam param) {
-    LambdaQueryWrapper<SysNotice> lqw =
-        this.lambdaQueryWrapper()
-            .likeIfPresent(SysNotice::getNoticeTitle, param.getNoticeTitle())
-            .eqIfPresent(SysNotice::getNoticeType, param.getNoticeType());
-    if (StringUtils.isNotBlank(param.getCreateByName())) {
+  private LambdaQueryWrapper<SysNotice> buildQueryWrapper(SysNoticeBo bo) {
+    LambdaQueryWrapper<SysNotice> lqw = Wrappers.lambdaQuery();
+    lqw.like(
+        StringUtils.isNotBlank(bo.getNoticeTitle()),
+        SysNotice::getNoticeTitle,
+        bo.getNoticeTitle());
+    lqw.eq(
+        StringUtils.isNotBlank(bo.getNoticeType()), SysNotice::getNoticeType, bo.getNoticeType());
+    if (StringUtils.isNotBlank(bo.getCreateByName())) {
       SysUserVo sysUser =
-          userMapper.selectOne(
-              new LambdaQueryWrapper<SysUser>().eq(SysUser::getUserName, param.getCreateByName()),
-              SysUserVo.class);
+          userMapper.selectVoOne(
+              new LambdaQueryWrapper<SysUser>().eq(SysUser::getUserName, bo.getCreateByName()));
       lqw.eq(SysNotice::getCreateBy, ObjectUtils.notNullGetter(sysUser, SysUserVo::getUserId));
     }
     lqw.orderByAsc(SysNotice::getNoticeId);

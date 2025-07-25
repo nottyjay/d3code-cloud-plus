@@ -2,7 +2,7 @@ package com.alphay.boot.system.mapper;
 
 import com.alphay.boot.common.mybatis.annotation.DataColumn;
 import com.alphay.boot.common.mybatis.annotation.DataPermission;
-import com.alphay.boot.common.mybatis.core.mapper.BaseMapperX;
+import com.alphay.boot.common.mybatis.core.mapper.BaseMapperPlus;
 import com.alphay.boot.system.domain.SysRole;
 import com.alphay.boot.system.domain.vo.SysRoleVo;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
@@ -14,10 +14,9 @@ import org.apache.ibatis.annotations.Param;
 /**
  * 角色表 数据层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface SysRoleMapper extends BaseMapperX<SysRole> {
+public interface SysRoleMapper extends BaseMapperPlus<SysRole, SysRoleVo> {
 
   @DataPermission({
     @DataColumn(key = "deptName", value = "d.dept_id"),

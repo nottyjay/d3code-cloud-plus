@@ -1,6 +1,6 @@
-import { getToken } from '@/utils/auth'
-import { ElNotification } from 'element-plus'
-import { useNoticeStore } from '@/store/modules/notice'
+import {getToken} from '@/utils/auth'
+import {ElNotification} from 'element-plus'
+import {useNoticeStore} from '@/store/modules/notice'
 
 // 初始化
 export const initSSE = (url: any) => {
@@ -9,7 +9,7 @@ export const initSSE = (url: any) => {
   }
 
   url = url + '?Authorization=Bearer ' + getToken() + '&clientid=' + import.meta.env.VITE_APP_CLIENT_ID
-  const { data, error } = useEventSource(url, [], {
+  const {data, error} = useEventSource(url, [], {
     autoReconnect: {
       retries: 10,
       delay: 3000,

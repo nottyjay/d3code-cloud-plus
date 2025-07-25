@@ -1,9 +1,7 @@
 package com.alphay.boot.system.service;
 
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.IServiceX;
-import com.alphay.boot.system.api.domain.param.SysConfigQueryParam;
-import com.alphay.boot.system.domain.SysConfig;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.bo.SysConfigBo;
 import com.alphay.boot.system.domain.vo.SysConfigVo;
 import java.util.List;
@@ -11,12 +9,19 @@ import java.util.List;
 /**
  * 参数配置 服务层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface ISysConfigService extends IServiceX<SysConfig, SysConfigVo> {
+public interface ISysConfigService {
 
-  PageResult<SysConfigVo> queryPageList(SysConfigQueryParam param);
+  TableDataInfo<SysConfigVo> selectPageConfigList(SysConfigBo config, PageQuery pageQuery);
+
+  /**
+   * 查询参数配置信息
+   *
+   * @param configId 参数配置ID
+   * @return 参数配置信息
+   */
+  SysConfigVo selectConfigById(Long configId);
 
   /**
    * 根据键名查询参数配置信息
@@ -37,10 +42,10 @@ public interface ISysConfigService extends IServiceX<SysConfig, SysConfigVo> {
   /**
    * 查询参数配置列表
    *
-   * @param param 参数配置信息
+   * @param config 参数配置信息
    * @return 参数配置集合
    */
-  List<SysConfigVo> queryList(SysConfigQueryParam param);
+  List<SysConfigVo> selectConfigList(SysConfigBo config);
 
   /**
    * 新增参数配置

@@ -30,30 +30,34 @@ import com.alphay.boot.system.domain.vo.SysUserVo;
 import com.alphay.boot.system.mapper.*;
 import com.alphay.boot.system.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
 /**
  * 用户服务
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
 @DubboService
 public class RemoteUserServiceImpl implements RemoteUserService {
 
-  @Resource private ISysUserService userService;
-  @Resource private ISysPermissionService permissionService;
-  @Resource private ISysConfigService configService;
-  @Resource private ISysRoleService roleService;
-  @Resource private ISysDeptService deptService;
-  @Resource private ISysPostService postService;
-  @Resource private SysUserPostMapper userPostMapper;
-  @Resource private SysUserRoleMapper userRoleMapper;
+  private final ISysUserService userService;
+  private final ISysPermissionService permissionService;
+  private final ISysConfigService configService;
+  private final ISysRoleService roleService;
+  private final ISysDeptService deptService;
+  private final ISysPostService postService;
+  private final SysUserMapper userMapper;
+  private final SysRoleMapper roleMapper;
+  private final SysDeptMapper deptMapper;
+  private final SysPostMapper postMapper;
+  private final SysUserRoleMapper userRoleMapper;
+  private final SysUserPostMapper userPostMapper;
 
   /**
    * 通过用户名查询用户信息
@@ -67,7 +71,9 @@ public class RemoteUserServiceImpl implements RemoteUserService {
     return TenantHelper.dynamic(
         tenantId,
         () -> {
-          SysUserVo sysUser = userService.selectUserByUserName(username);
+          SysUserVo sysUser =
+              userMapper.selectVoOne(
+                  new LambdaQueryWrapper<SysUser>().eq(SysUser::getUserName, username));
           if (ObjectUtil.isNull(sysUser)) {
             throw new UserException("user.not.exists", username);
           }
@@ -92,7 +98,7 @@ public class RemoteUserServiceImpl implements RemoteUserService {
     return TenantHelper.dynamic(
         tenantId,
         () -> {
-          SysUserVo sysUser = userService.getVoById(userId);
+          SysUserVo sysUser = userMapper.selectVoById(userId);
           if (ObjectUtil.isNull(sysUser)) {
             throw new UserException("user.not.exists", "");
           }
@@ -118,7 +124,9 @@ public class RemoteUserServiceImpl implements RemoteUserService {
     return TenantHelper.dynamic(
         tenantId,
         () -> {
-          SysUserVo sysUser = userService.selectUserByPhonenumber(phonenumber);
+          SysUserVo sysUser =
+              userMapper.selectVoOne(
+                  new LambdaQueryWrapper<SysUser>().eq(SysUser::getPhonenumber, phonenumber));
           if (ObjectUtil.isNull(sysUser)) {
             throw new UserException("user.not.exists", phonenumber);
           }
@@ -143,7 +151,9 @@ public class RemoteUserServiceImpl implements RemoteUserService {
     return TenantHelper.dynamic(
         tenantId,
         () -> {
-          SysUserVo user = userService.selectUserByEmail(email);
+          SysUserVo user =
+              userMapper.selectVoOne(
+                  new LambdaQueryWrapper<SysUser>().eq(SysUser::getEmail, email));
           if (ObjectUtil.isNull(user)) {
             throw new UserException("user.not.exists", email);
           }
@@ -201,7 +211,7 @@ public class RemoteUserServiceImpl implements RemoteUserService {
               if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser")))) {
                 throw new ServiceException("当前系统没有开启注册功能");
               }
-              return userService.exists(
+              return userMapper.exists(
                   new LambdaQueryWrapper<SysUser>()
                       .eq(SysUser::getUserName, sysUserBo.getUserName()));
             });
@@ -280,12 +290,12 @@ public class RemoteUserServiceImpl implements RemoteUserService {
     loginUser.setMenuPermission(permissionService.getMenuPermission(userId));
     loginUser.setRolePermission(permissionService.getRolePermission(userId));
     if (ObjectUtil.isNotNull(userVo.getDeptId())) {
-      Opt<SysDeptVo> deptOpt = Opt.of(userVo.getDeptId()).map(deptService::getVoById);
+      Opt<SysDeptVo> deptOpt = Opt.of(userVo.getDeptId()).map(deptService::selectDeptById);
       loginUser.setDeptName(deptOpt.map(SysDeptVo::getDeptName).orElse(StringUtils.EMPTY));
       loginUser.setDeptCategory(deptOpt.map(SysDeptVo::getDeptCategory).orElse(StringUtils.EMPTY));
     }
-    List<SysRoleVo> roles = roleService.queryListByUserId(userId);
-    List<SysPostVo> posts = postService.queryListByUserId(userId);
+    List<SysRoleVo> roles = roleService.selectRolesByUserId(userId);
+    List<SysPostVo> posts = postService.selectPostsByUserId(userId);
     loginUser.setRoles(BeanUtil.copyToList(roles, RoleDTO.class));
     loginUser.setPosts(BeanUtil.copyToList(posts, PostDTO.class));
     return loginUser;
@@ -304,7 +314,7 @@ public class RemoteUserServiceImpl implements RemoteUserService {
     sysUser.setLoginIp(ip);
     sysUser.setLoginDate(DateUtils.getNowDate());
     sysUser.setUpdateBy(userId);
-    DataPermissionHelper.ignore(() -> userService.updateById(sysUser));
+    DataPermissionHelper.ignore(() -> userMapper.updateById(sysUser));
   }
 
   /**
@@ -319,7 +329,7 @@ public class RemoteUserServiceImpl implements RemoteUserService {
       return new ArrayList<>();
     }
     List<SysUserVo> list =
-        userService.listVo(
+        userMapper.selectVoList(
             new LambdaQueryWrapper<SysUser>()
                 .select(
                     SysUser::getUserId,
@@ -386,7 +396,7 @@ public class RemoteUserServiceImpl implements RemoteUserService {
       return List.of();
     }
     List<SysUserVo> list =
-        userService.listVo(
+        userMapper.selectVoList(
             new LambdaQueryWrapper<SysUser>()
                 .select(
                     SysUser::getUserId,
@@ -433,8 +443,8 @@ public class RemoteUserServiceImpl implements RemoteUserService {
     if (CollUtil.isEmpty(userIds)) {
       return Collections.emptyMap();
     }
-    return userService
-        .list(
+    return userMapper
+        .selectList(
             new LambdaQueryWrapper<SysUser>()
                 .select(SysUser::getUserId, SysUser::getNickName)
                 .in(SysUser::getUserId, userIds))
@@ -453,8 +463,8 @@ public class RemoteUserServiceImpl implements RemoteUserService {
     if (CollUtil.isEmpty(roleIds)) {
       return Collections.emptyMap();
     }
-    return roleService
-        .list(
+    return roleMapper
+        .selectList(
             new LambdaQueryWrapper<SysRole>()
                 .select(SysRole::getRoleId, SysRole::getRoleName)
                 .in(SysRole::getRoleId, roleIds))
@@ -473,8 +483,8 @@ public class RemoteUserServiceImpl implements RemoteUserService {
     if (CollUtil.isEmpty(deptIds)) {
       return Collections.emptyMap();
     }
-    return deptService
-        .list(
+    return deptMapper
+        .selectList(
             new LambdaQueryWrapper<SysDept>()
                 .select(SysDept::getDeptId, SysDept::getDeptName)
                 .in(SysDept::getDeptId, deptIds))
@@ -493,8 +503,8 @@ public class RemoteUserServiceImpl implements RemoteUserService {
     if (CollUtil.isEmpty(postIds)) {
       return Collections.emptyMap();
     }
-    return postService
-        .list(
+    return postMapper
+        .selectList(
             new LambdaQueryWrapper<SysPost>()
                 .select(SysPost::getPostId, SysPost::getPostName)
                 .in(SysPost::getPostId, postIds))

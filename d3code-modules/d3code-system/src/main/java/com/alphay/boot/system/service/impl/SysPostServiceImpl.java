@@ -6,9 +6,9 @@ import com.alphay.boot.common.core.constant.SystemConstants;
 import com.alphay.boot.common.core.exception.ServiceException;
 import com.alphay.boot.common.core.utils.MapstructUtils;
 import com.alphay.boot.common.core.utils.StreamUtils;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
-import com.alphay.boot.system.api.domain.param.SysPostQueryParam;
+import com.alphay.boot.common.core.utils.StringUtils;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.SysDept;
 import com.alphay.boot.system.domain.SysPost;
 import com.alphay.boot.system.domain.SysUserPost;
@@ -19,38 +19,43 @@ import com.alphay.boot.system.mapper.SysPostMapper;
 import com.alphay.boot.system.mapper.SysUserPostMapper;
 import com.alphay.boot.system.service.ISysPostService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import jakarta.annotation.Resource;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
  * 岗位信息 服务层处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
-public class SysPostServiceImpl extends ServiceImplX<SysPostMapper, SysPost, SysPostVo>
-    implements ISysPostService {
+public class SysPostServiceImpl implements ISysPostService {
 
-  @Resource private SysDeptMapper deptMapper;
-  @Resource private SysUserPostMapper userPostMapper;
+  private final SysPostMapper baseMapper;
+  private final SysDeptMapper deptMapper;
+  private final SysUserPostMapper userPostMapper;
 
   @Override
-  public PageResult<SysPostVo> queryPageList(SysPostQueryParam param) {
-    return listPageVo(param, buildQueryWrapper(param));
+  public TableDataInfo<SysPostVo> selectPagePostList(SysPostBo post, PageQuery pageQuery) {
+    Page<SysPostVo> page =
+        baseMapper.selectPagePostList(pageQuery.build(), buildQueryWrapper(post));
+    return TableDataInfo.build(page);
   }
 
   /**
    * 查询岗位信息集合
    *
-   * @param param 岗位信息
+   * @param post 岗位信息
    * @return 岗位信息集合
    */
   @Override
-  public List<SysPostVo> queryList(SysPostQueryParam param) {
-    return listVo(buildQueryWrapper(param));
+  public List<SysPostVo> selectPostList(SysPostBo post) {
+    return baseMapper.selectVoList(buildQueryWrapper(post));
   }
 
   /**
@@ -60,39 +65,68 @@ public class SysPostServiceImpl extends ServiceImplX<SysPostMapper, SysPost, Sys
    * @return 岗位ID
    */
   @Override
-  public List<SysPostVo> queryListByUserId(Long userId) {
+  public List<SysPostVo> selectPostsByUserId(Long userId) {
     return baseMapper.selectPostsByUserId(userId);
   }
 
   /**
    * 根据查询条件构建查询包装器
    *
-   * @param param 查询条件对象
+   * @param bo 查询条件对象
    * @return 构建好的查询包装器
    */
-  private LambdaQueryWrapper<SysPost> buildQueryWrapper(SysPostQueryParam param) {
-    LambdaQueryWrapper<SysPost> wrapper =
-        this.lambdaQueryWrapper()
-            .likeIfPresent(SysPost::getPostCode, param.getPostCode())
-            .likeIfPresent(SysPost::getPostCategory, param.getPostCategory())
-            .likeIfPresent(SysPost::getPostName, param.getPostName())
-            .eqIfPresent(SysPost::getStatus, param.getStatus())
-            .betweenIfPresent(SysPost::getCreateTime, param.getCreateTime())
-            .orderByAsc(SysPost::getPostSort);
-    if (ObjectUtil.isNotNull(param.getDeptId())) {
+  private LambdaQueryWrapper<SysPost> buildQueryWrapper(SysPostBo bo) {
+    Map<String, Object> params = bo.getParams();
+    LambdaQueryWrapper<SysPost> wrapper = new LambdaQueryWrapper<>();
+    wrapper
+        .like(StringUtils.isNotBlank(bo.getPostCode()), SysPost::getPostCode, bo.getPostCode())
+        .like(
+            StringUtils.isNotBlank(bo.getPostCategory()),
+            SysPost::getPostCategory,
+            bo.getPostCategory())
+        .like(StringUtils.isNotBlank(bo.getPostName()), SysPost::getPostName, bo.getPostName())
+        .eq(StringUtils.isNotBlank(bo.getStatus()), SysPost::getStatus, bo.getStatus())
+        .between(
+            params.get("beginTime") != null && params.get("endTime") != null,
+            SysPost::getCreateTime,
+            params.get("beginTime"),
+            params.get("endTime"))
+        .orderByAsc(SysPost::getPostSort);
+    if (ObjectUtil.isNotNull(bo.getDeptId())) {
       // 优先单部门搜索
-      wrapper.eq(SysPost::getDeptId, param.getDeptId());
-    } else if (ObjectUtil.isNotNull(param.getBelongDeptId())) {
+      wrapper.eq(SysPost::getDeptId, bo.getDeptId());
+    } else if (ObjectUtil.isNotNull(bo.getBelongDeptId())) {
       // 部门树搜索
       wrapper.and(
           x -> {
-            List<SysDept> deptList = deptMapper.selectListByParentId(param.getBelongDeptId());
+            List<SysDept> deptList = deptMapper.selectListByParentId(bo.getBelongDeptId());
             List<Long> deptIds = StreamUtils.toList(deptList, SysDept::getDeptId);
-            deptIds.add(param.getBelongDeptId());
+            deptIds.add(bo.getBelongDeptId());
             x.in(SysPost::getDeptId, deptIds);
           });
     }
     return wrapper;
+  }
+
+  /**
+   * 查询所有岗位
+   *
+   * @return 岗位列表
+   */
+  @Override
+  public List<SysPostVo> selectPostAll() {
+    return baseMapper.selectVoList(new QueryWrapper<>());
+  }
+
+  /**
+   * 通过岗位ID查询岗位信息
+   *
+   * @param postId 岗位ID
+   * @return 角色对象信息
+   */
+  @Override
+  public SysPostVo selectPostById(Long postId) {
+    return baseMapper.selectVoById(postId);
   }
 
   /**
@@ -115,7 +149,7 @@ public class SysPostServiceImpl extends ServiceImplX<SysPostMapper, SysPost, Sys
    */
   @Override
   public List<SysPostVo> selectPostByIds(List<Long> postIds) {
-    return listVo(
+    return baseMapper.selectVoList(
         new LambdaQueryWrapper<SysPost>()
             .select(SysPost::getPostId, SysPost::getPostName, SysPost::getPostCode)
             .eq(SysPost::getStatus, SystemConstants.NORMAL)

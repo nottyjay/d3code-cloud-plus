@@ -1,4 +1,4 @@
-import { MessageBoxData } from 'element-plus'
+import {MessageBoxData} from 'element-plus'
 
 let loadingInstance: ReturnType<typeof ElLoading.service> | null = null
 export default {
@@ -24,15 +24,15 @@ export default {
   },
   // 错误提示
   alertError(content: any) {
-    ElMessageBox.alert(content, '系统提示', { type: 'error' })
+    ElMessageBox.alert(content, '系统提示', {type: 'error'})
   },
   // 成功提示
   alertSuccess(content: any) {
-    ElMessageBox.alert(content, '系统提示', { type: 'success' })
+    ElMessageBox.alert(content, '系统提示', {type: 'success'})
   },
   // 警告提示
   alertWarning(content: any) {
-    ElMessageBox.alert(content, '系统提示', { type: 'warning' })
+    ElMessageBox.alert(content, '系统提示', {type: 'warning'})
   },
   // 通知提示
   notify(content: any) {

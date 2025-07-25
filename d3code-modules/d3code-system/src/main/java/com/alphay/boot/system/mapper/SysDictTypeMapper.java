@@ -1,12 +1,12 @@
 package com.alphay.boot.system.mapper;
 
-import com.alphay.boot.common.mybatis.core.mapper.BaseMapperX;
+import com.alphay.boot.common.mybatis.core.mapper.BaseMapperPlus;
 import com.alphay.boot.system.domain.SysDictType;
+import com.alphay.boot.system.domain.vo.SysDictTypeVo;
 
 /**
  * 字典表 数据层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface SysDictTypeMapper extends BaseMapperX<SysDictType> {}
+public interface SysDictTypeMapper extends BaseMapperPlus<SysDictType, SysDictTypeVo> {}

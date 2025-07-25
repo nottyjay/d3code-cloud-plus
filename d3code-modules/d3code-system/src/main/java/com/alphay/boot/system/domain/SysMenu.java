@@ -15,8 +15,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 菜单权限表 sys_menu
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -77,14 +76,6 @@ public class SysMenu extends BaseEntity {
   @TableField(exist = false)
   private List<SysMenu> children = new ArrayList<>();
 
-  /** 内链域名特殊字符替换 */
-  public static String innerLinkReplaceEach(String path) {
-    return StringUtils.replaceEach(
-        path,
-        new String[] {Constants.HTTP, Constants.HTTPS, Constants.WWW, ".", ":"},
-        new String[] {"", "", "", "/", "/"});
-  }
-
   /** 获取路由名称 */
   public String getRouteName() {
     String routerName = StringUtils.capitalize(path);
@@ -143,5 +134,13 @@ public class SysMenu extends BaseEntity {
   /** 是否为parent_view组件 */
   public boolean isParentView() {
     return getParentId() != 0L && SystemConstants.TYPE_DIR.equals(menuType);
+  }
+
+  /** 内链域名特殊字符替换 */
+  public static String innerLinkReplaceEach(String path) {
+    return StringUtils.replaceEach(
+        path,
+        new String[] {Constants.HTTP, Constants.HTTPS, Constants.WWW, ".", ":"},
+        new String[] {"", "", "", "/", "/"});
   }
 }

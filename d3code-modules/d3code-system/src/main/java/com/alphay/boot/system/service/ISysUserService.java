@@ -1,9 +1,7 @@
 package com.alphay.boot.system.service;
 
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.IServiceX;
-import com.alphay.boot.system.api.domain.param.SysUserQueryParam;
-import com.alphay.boot.system.domain.SysUser;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.bo.SysUserBo;
 import com.alphay.boot.system.domain.vo.SysUserExportVo;
 import com.alphay.boot.system.domain.vo.SysUserVo;
@@ -12,42 +10,42 @@ import java.util.List;
 /**
  * 用户 业务层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface ISysUserService extends IServiceX<SysUser, SysUserVo> {
+public interface ISysUserService {
 
   /**
    * 根据条件分页查询用户列表
    *
-   * @param param 用户信息
+   * @param user 用户信息
+   * @param pageQuery 发呢也
    * @return 用户信息
    */
-  PageResult<SysUserVo> queryPageList(SysUserQueryParam param);
+  TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery);
 
   /**
    * 导出用户列表
    *
-   * @param param 用户信息
+   * @param user 用户信息
    * @return 用户信息集合信息
    */
-  List<SysUserExportVo> queryExportList(SysUserQueryParam param);
+  List<SysUserExportVo> selectUserExportList(SysUserBo user);
 
   /**
    * 根据条件分页查询已分配用户角色列表
    *
-   * @param param 用户信息
+   * @param user 用户信息
    * @return 用户信息集合信息
    */
-  PageResult<SysUserVo> queryPageAllocatedList(SysUserQueryParam param);
+  TableDataInfo<SysUserVo> selectAllocatedList(SysUserBo user, PageQuery pageQuery);
 
   /**
    * 根据条件分页查询未分配用户角色列表
    *
-   * @param param 用户信息
+   * @param user 用户信息
    * @return 用户信息集合信息
    */
-  PageResult<SysUserVo> queryPageUnallocatedList(SysUserQueryParam param);
+  TableDataInfo<SysUserVo> selectUnallocatedList(SysUserBo user, PageQuery pageQuery);
 
   /**
    * 通过用户名查询用户
@@ -66,13 +64,21 @@ public interface ISysUserService extends IServiceX<SysUser, SysUserVo> {
   SysUserVo selectUserByPhonenumber(String phonenumber);
 
   /**
+   * 通过用户ID查询用户
+   *
+   * @param userId 用户ID
+   * @return 用户对象信息
+   */
+  SysUserVo selectUserById(Long userId);
+
+  /**
    * 通过用户ID串查询用户
    *
    * @param userIds 用户ID串
    * @param deptId 部门id
    * @return 用户列表信息
    */
-  List<SysUserVo> queryListByIds(List<Long> userIds, Long deptId);
+  List<SysUserVo> selectUserByIds(List<Long> userIds, Long deptId);
 
   /**
    * 根据用户ID查询用户所属角色组
@@ -96,7 +102,7 @@ public interface ISysUserService extends IServiceX<SysUser, SysUserVo> {
    * @param user 用户信息
    * @return 结果
    */
-  boolean checkUserNameUnique(SysUserQueryParam user);
+  boolean checkUserNameUnique(SysUserBo user);
 
   /**
    * 校验手机号码是否唯一
@@ -104,7 +110,7 @@ public interface ISysUserService extends IServiceX<SysUser, SysUserVo> {
    * @param user 用户信息
    * @return 结果
    */
-  boolean checkPhoneUnique(SysUserQueryParam user);
+  boolean checkPhoneUnique(SysUserBo user);
 
   /**
    * 校验email是否唯一
@@ -112,7 +118,7 @@ public interface ISysUserService extends IServiceX<SysUser, SysUserVo> {
    * @param user 用户信息
    * @return 结果
    */
-  boolean checkEmailUnique(SysUserQueryParam user);
+  boolean checkEmailUnique(SysUserBo user);
 
   /**
    * 校验用户是否允许操作
@@ -266,6 +272,4 @@ public interface ISysUserService extends IServiceX<SysUser, SysUserVo> {
    * @return 用户ids
    */
   List<Long> selectUserIdsByRoleIds(List<Long> roleIds);
-
-  SysUserVo selectUserByEmail(String email);
 }

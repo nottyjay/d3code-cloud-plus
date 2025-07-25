@@ -12,10 +12,9 @@ import com.alphay.boot.common.core.exception.ServiceException;
 import com.alphay.boot.common.core.utils.MapstructUtils;
 import com.alphay.boot.common.core.utils.StreamUtils;
 import com.alphay.boot.common.core.utils.StringUtils;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.ServiceImplX;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.satoken.utils.LoginHelper;
-import com.alphay.boot.system.api.domain.param.SysRoleQueryParam;
 import com.alphay.boot.system.api.model.LoginUser;
 import com.alphay.boot.system.domain.SysRole;
 import com.alphay.boot.system.domain.SysRoleDept;
@@ -32,8 +31,10 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import jakarta.annotation.Resource;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,44 +42,51 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 角色 业务层处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
+@RequiredArgsConstructor
 @Service
-public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, SysRoleVo>
-    implements ISysRoleService {
+public class SysRoleServiceImpl implements ISysRoleService {
 
-  @Resource private SysRoleMenuMapper roleMenuMapper;
-  @Resource private SysUserRoleMapper userRoleMapper;
-  @Resource private SysRoleDeptMapper roleDeptMapper;
+  private final SysRoleMapper baseMapper;
+  private final SysRoleMenuMapper roleMenuMapper;
+  private final SysUserRoleMapper userRoleMapper;
+  private final SysRoleDeptMapper roleDeptMapper;
 
   @Override
-  public PageResult<SysRoleVo> queryPageList(SysRoleQueryParam param) {
-    return listPageVo(param, buildQueryWrapper(param));
+  public TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleBo role, PageQuery pageQuery) {
+    Page<SysRoleVo> page =
+        baseMapper.selectPageRoleList(pageQuery.build(), this.buildQueryWrapper(role));
+    return TableDataInfo.build(page);
   }
 
   /**
    * 根据条件分页查询角色数据
    *
-   * @param param 角色信息
+   * @param role 角色信息
    * @return 角色数据集合信息
    */
   @Override
-  public List<SysRoleVo> queryList(SysRoleQueryParam param) {
-    return baseMapper.selectRoleList(this.buildQueryWrapper(param));
+  public List<SysRoleVo> selectRoleList(SysRoleBo role) {
+    return baseMapper.selectRoleList(this.buildQueryWrapper(role));
   }
 
-  private Wrapper<SysRole> buildQueryWrapper(SysRoleQueryParam param) {
-    QueryWrapper<SysRole> wrapper =
-        this.queryWrapper()
-            .eq("r.del_flag", SystemConstants.NORMAL)
-            .eqIfPresent("r.role_id", param.getRoleId())
-            .likeIfPresent("r.role_name", param.getRoleName())
-            .eqIfPresent("r.status", param.getStatus())
-            .likeIfPresent("r.role_key", param.getRoleKey())
-            .betweenIfPresent("r.create_time", param.getCreateTime())
-            .orderByAsc("r.role_sort")
-            .orderByAsc("r.create_time");
+  private Wrapper<SysRole> buildQueryWrapper(SysRoleBo bo) {
+    Map<String, Object> params = bo.getParams();
+    QueryWrapper<SysRole> wrapper = Wrappers.query();
+    wrapper
+        .eq("r.del_flag", SystemConstants.NORMAL)
+        .eq(ObjectUtil.isNotNull(bo.getRoleId()), "r.role_id", bo.getRoleId())
+        .like(StringUtils.isNotBlank(bo.getRoleName()), "r.role_name", bo.getRoleName())
+        .eq(StringUtils.isNotBlank(bo.getStatus()), "r.status", bo.getStatus())
+        .like(StringUtils.isNotBlank(bo.getRoleKey()), "r.role_key", bo.getRoleKey())
+        .between(
+            params.get("beginTime") != null && params.get("endTime") != null,
+            "r.create_time",
+            params.get("beginTime"),
+            params.get("endTime"))
+        .orderByAsc("r.role_sort")
+        .orderByAsc("r.create_time");
     return wrapper;
   }
 
@@ -89,7 +97,7 @@ public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, Sys
    * @return 角色列表
    */
   @Override
-  public List<SysRoleVo> queryListByUserId(Long userId) {
+  public List<SysRoleVo> selectRolesByUserId(Long userId) {
     return baseMapper.selectRolesByUserId(userId);
   }
 
@@ -100,9 +108,9 @@ public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, Sys
    * @return 角色列表
    */
   @Override
-  public List<SysRoleVo> queryListAuthByUserId(Long userId) {
+  public List<SysRoleVo> selectRolesAuthByUserId(Long userId) {
     List<SysRoleVo> userRoles = baseMapper.selectRolesByUserId(userId);
-    List<SysRoleVo> roles = queryAll();
+    List<SysRoleVo> roles = selectRoleAll();
     // 使用HashSet提高查找效率
     Set<Long> userRoleIds = StreamUtils.toSet(userRoles, SysRoleVo::getRoleId);
     for (SysRoleVo role : roles) {
@@ -120,7 +128,7 @@ public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, Sys
    * @return 权限列表
    */
   @Override
-  public Set<String> fetchPermissionByUserId(Long userId) {
+  public Set<String> selectRolePermissionByUserId(Long userId) {
     List<SysRoleVo> perms = baseMapper.selectRolesByUserId(userId);
     Set<String> permsSet = new HashSet<>();
     for (SysRoleVo perm : perms) {
@@ -137,8 +145,8 @@ public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, Sys
    * @return 角色列表
    */
   @Override
-  public List<SysRoleVo> queryAll() {
-    return this.queryList(new SysRoleQueryParam());
+  public List<SysRoleVo> selectRoleAll() {
+    return this.selectRoleList(new SysRoleBo());
   }
 
   /**
@@ -148,9 +156,20 @@ public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, Sys
    * @return 选中角色ID列表
    */
   @Override
-  public List<Long> fetchListByUserId(Long userId) {
+  public List<Long> selectRoleListByUserId(Long userId) {
     List<SysRoleVo> list = baseMapper.selectRolesByUserId(userId);
     return StreamUtils.toList(list, SysRoleVo::getRoleId);
+  }
+
+  /**
+   * 通过角色ID查询角色
+   *
+   * @param roleId 角色ID
+   * @return 角色对象信息
+   */
+  @Override
+  public SysRoleVo selectRoleById(Long roleId) {
+    return baseMapper.selectRoleById(roleId);
   }
 
   /**
@@ -160,7 +179,7 @@ public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, Sys
    * @return 角色列表信息
    */
   @Override
-  public List<SysRoleVo> queryListByIds(List<Long> roleIds) {
+  public List<SysRoleVo> selectRoleByIds(List<Long> roleIds) {
     return baseMapper.selectRoleList(
         new QueryWrapper<SysRole>()
             .eq("r.status", SystemConstants.NORMAL)
@@ -174,7 +193,7 @@ public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, Sys
    * @return 结果
    */
   @Override
-  public boolean checkRoleNameUnique(SysRoleQueryParam role) {
+  public boolean checkRoleNameUnique(SysRoleBo role) {
     boolean exist =
         baseMapper.exists(
             new LambdaQueryWrapper<SysRole>()
@@ -190,7 +209,7 @@ public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, Sys
    * @return 结果
    */
   @Override
-  public boolean checkRoleKeyUnique(SysRoleQueryParam role) {
+  public boolean checkRoleKeyUnique(SysRoleBo role) {
     boolean exist =
         baseMapper.exists(
             new LambdaQueryWrapper<SysRole>()
@@ -205,7 +224,7 @@ public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, Sys
    * @param role 角色信息
    */
   @Override
-  public void checkRoleAllowed(SysRoleQueryParam role) {
+  public void checkRoleAllowed(SysRoleBo role) {
     if (ObjectUtil.isNotNull(role.getRoleId()) && LoginHelper.isSuperAdmin(role.getRoleId())) {
       throw new ServiceException("不允许操作超级管理员角色");
     }
@@ -242,7 +261,7 @@ public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, Sys
     if (LoginHelper.isSuperAdmin()) {
       return;
     }
-    List<SysRoleVo> roles = this.queryList(new SysRoleQueryParam().setRoleId(roleId));
+    List<SysRoleVo> roles = this.selectRoleList(new SysRoleBo(roleId));
     if (CollUtil.isEmpty(roles)) {
       throw new ServiceException("没有权限访问角色数据！");
     }
@@ -409,7 +428,7 @@ public class SysRoleServiceImpl extends ServiceImplX<SysRoleMapper, SysRole, Sys
   public int deleteRoleByIds(Long[] roleIds) {
     for (Long roleId : roleIds) {
       SysRole role = baseMapper.selectById(roleId);
-      checkRoleAllowed(BeanUtil.toBean(role, SysRoleQueryParam.class));
+      checkRoleAllowed(BeanUtil.toBean(role, SysRoleBo.class));
       checkRoleDataScope(roleId);
       if (countUserRoleByRoleId(roleId) > 0) {
         throw new ServiceException(String.format("%1$s已分配，不能删除!", role.getRoleName()));

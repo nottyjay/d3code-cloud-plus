@@ -1,9 +1,7 @@
 package com.alphay.boot.system.service;
 
-import com.alphay.boot.common.mybatis.core.page.PageResult;
-import com.alphay.boot.common.mybatis.core.service.IServiceX;
-import com.alphay.boot.system.api.domain.param.SysDictTypeQueryParam;
-import com.alphay.boot.system.domain.SysDictType;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.system.domain.bo.SysDictTypeBo;
 import com.alphay.boot.system.domain.vo.SysDictDataVo;
 import com.alphay.boot.system.domain.vo.SysDictTypeVo;
@@ -12,20 +10,19 @@ import java.util.List;
 /**
  * 字典 业务层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface ISysDictTypeService extends IServiceX<SysDictType, SysDictTypeVo> {
+public interface ISysDictTypeService {
 
-  PageResult<SysDictTypeVo> queryPageList(SysDictTypeQueryParam param);
+  TableDataInfo<SysDictTypeVo> selectPageDictTypeList(SysDictTypeBo dictType, PageQuery pageQuery);
 
   /**
    * 根据条件分页查询字典类型
    *
-   * @param param 字典类型信息
+   * @param dictType 字典类型信息
    * @return 字典类型集合信息
    */
-  List<SysDictTypeVo> queryList(SysDictTypeQueryParam param);
+  List<SysDictTypeVo> selectDictTypeList(SysDictTypeBo dictType);
 
   /**
    * 根据所有字典类型
@@ -41,6 +38,14 @@ public interface ISysDictTypeService extends IServiceX<SysDictType, SysDictTypeV
    * @return 字典数据集合信息
    */
   List<SysDictDataVo> selectDictDataByType(String dictType);
+
+  /**
+   * 根据字典类型ID查询信息
+   *
+   * @param dictId 字典类型ID
+   * @return 字典类型
+   */
+  SysDictTypeVo selectDictTypeById(Long dictId);
 
   /**
    * 根据字典类型查询信息

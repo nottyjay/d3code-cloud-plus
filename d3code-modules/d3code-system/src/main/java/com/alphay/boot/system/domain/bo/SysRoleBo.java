@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 /**
  * 角色信息业务对象 sys_role
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @NoArgsConstructor

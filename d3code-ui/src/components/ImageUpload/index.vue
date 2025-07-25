@@ -19,7 +19,7 @@
       :class="{ hide: fileList.length >= limit }"
     >
       <el-icon class="avatar-uploader-icon">
-        <plus />
+        <plus/>
       </el-icon>
     </el-upload>
     <!-- 上传提示 -->
@@ -37,17 +37,17 @@
     </div>
 
     <el-dialog v-model="dialogVisible" title="预览" width="800px" append-to-body>
-      <img :src="dialogImageUrl" style="display: block; max-width: 100%; margin: 0 auto" />
+      <img :src="dialogImageUrl" style="display: block; max-width: 100%; margin: 0 auto"/>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { delOss, listByIds } from '@/api/system/oss'
-import { OssVO } from '@/api/system/oss/types'
-import { propTypes } from '@/utils/propTypes'
-import { globalHeaders } from '@/utils/request'
-import { compressAccurately } from 'image-conversion'
+import {delOss, listByIds} from '@/api/system/oss'
+import {OssVO} from '@/api/system/oss/types'
+import {propTypes} from '@/utils/propTypes'
+import {globalHeaders} from '@/utils/request'
+import {compressAccurately} from 'image-conversion'
 
 const props = defineProps({
   modelValue: {
@@ -74,7 +74,7 @@ const props = defineProps({
   compressTargetSize: propTypes.number.def(300),
 })
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
+const {proxy} = getCurrentInstance() as ComponentInternalInstance
 const emit = defineEmits(['update:modelValue'])
 const number = ref(0)
 const uploadList = ref<any[]>([])
@@ -110,10 +110,10 @@ watch(
         // 字符串回显处理 如果此处存的是url可直接回显 如果存的是id需要调用接口查出来
         let itemData
         if (typeof item === 'string') {
-          itemData = { name: item, url: item }
+          itemData = {name: item, url: item}
         } else {
           // 此处name使用ossId 防止删除出现重名
-          itemData = { name: item.ossId, url: item.url, ossId: item.ossId }
+          itemData = {name: item.ossId, url: item.url, ossId: item.ossId}
         }
         return itemData
       })
@@ -122,7 +122,7 @@ watch(
       return []
     }
   },
-  { deep: true, immediate: true }
+  {deep: true, immediate: true}
 )
 
 /** 上传前loading加载 */
@@ -176,7 +176,7 @@ const handleExceed = () => {
 // 上传成功回调
 const handleUploadSuccess = (res: any, file: UploadFile) => {
   if (res.code === 200) {
-    uploadList.value.push({ name: res.data.fileName, url: res.data.url, ossId: res.data.ossId })
+    uploadList.value.push({name: res.data.fileName, url: res.data.url, ossId: res.data.ossId})
     uploadedSuccessfully()
   } else {
     number.value--

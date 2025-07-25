@@ -8,8 +8,7 @@ import lombok.Data;
 /**
  * 角色和菜单关联 sys_role_menu
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Data
 @TableName("sys_role_menu")

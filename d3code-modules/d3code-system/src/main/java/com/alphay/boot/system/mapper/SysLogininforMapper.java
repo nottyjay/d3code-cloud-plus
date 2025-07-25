@@ -1,12 +1,12 @@
 package com.alphay.boot.system.mapper;
 
-import com.alphay.boot.common.mybatis.core.mapper.BaseMapperX;
+import com.alphay.boot.common.mybatis.core.mapper.BaseMapperPlus;
 import com.alphay.boot.system.domain.SysLogininfor;
+import com.alphay.boot.system.domain.vo.SysLogininforVo;
 
 /**
  * 系统访问日志情况信息 数据层
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
-public interface SysLogininforMapper extends BaseMapperX<SysLogininfor> {}
+public interface SysLogininforMapper extends BaseMapperPlus<SysLogininfor, SysLogininforVo> {}

@@ -1,8 +1,8 @@
 package com.alphay.boot.system.domain.convert;
 
-import com.alphay.boot.system.api.domain.bo.RemoteUserBo;
 import com.alphay.boot.system.domain.bo.SysUserBo;
 import io.github.linpeilie.BaseMapper;
+import com.alphay.boot.system.api.domain.bo.RemoteUserBo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -11,8 +11,7 @@ import org.mapstruct.ReportingPolicy;
 /**
  * 用户信息转换器
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author zhujie
  */
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,

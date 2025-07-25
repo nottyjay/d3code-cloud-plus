@@ -11,11 +11,11 @@
           @select="onHandleSelect"
         >
           <template #prefix>
-            <svg-icon class-name="search-icon" icon-class="search" />
+            <svg-icon class-name="search-icon" icon-class="search"/>
           </template>
           <template #default="{ item }">
             <div>
-              <svg-icon :icon-class="item.icon" class="mr5" />
+              <svg-icon :icon-class="item.icon" class="mr5"/>
               {{ item.title }}
             </div>
           </template>
@@ -26,10 +26,10 @@
 </template>
 
 <script setup lang="ts" name="layoutBreadcrumbSearch">
-import { getNormalPath } from '@/utils/d3code'
-import { isHttp } from '@/utils/validate'
-import { usePermissionStore } from '@/store/modules/permission'
-import { RouteRecordRaw } from 'vue-router'
+import {getNormalPath} from '@/utils/d3code'
+import {isHttp} from '@/utils/validate'
+import {usePermissionStore} from '@/store/modules/permission'
+import {RouteRecordRaw} from 'vue-router'
 
 type Router = Array<{
   path: string

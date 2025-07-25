@@ -10,8 +10,7 @@ import org.mapstruct.ReportingPolicy;
 /**
  * 字典数据转换器
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author zhujie
  */
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,

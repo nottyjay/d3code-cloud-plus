@@ -1,5 +1,5 @@
-import { RoleVO } from '@/api/system/role/types'
-import { PostVO } from '@/api/system/post/types'
+import {RoleVO} from '@/api/system/role/types'
+import {PostVO} from '@/api/system/post/types'
 
 /**
  * 用户信息

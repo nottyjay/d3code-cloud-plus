@@ -5,10 +5,10 @@ import com.alphay.boot.common.core.domain.R;
 import com.alphay.boot.common.core.service.DictService;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.log.enums.BusinessType;
-import com.alphay.boot.common.mybatis.core.page.PageResult;
+import com.alphay.boot.common.mybatis.core.page.PageQuery;
+import com.alphay.boot.common.mybatis.core.page.TableDataInfo;
 import com.alphay.boot.common.web.core.BaseController;
 import com.alphay.boot.resource.api.RemoteMessageService;
-import com.alphay.boot.system.api.domain.param.SysNoticeQueryParam;
 import com.alphay.boot.system.domain.bo.SysNoticeBo;
 import com.alphay.boot.system.domain.vo.SysNoticeVo;
 import com.alphay.boot.system.service.ISysNoticeService;
@@ -20,8 +20,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 公告 信息操作处理
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Lion Li
  */
 @Validated
 @RequiredArgsConstructor
@@ -37,8 +36,8 @@ public class SysNoticeController extends BaseController {
   /** 获取通知公告列表 */
   @SaCheckPermission("system:notice:list")
   @GetMapping("/list")
-  public PageResult<SysNoticeVo> list(SysNoticeQueryParam param) {
-    return noticeService.queryPageList(param);
+  public TableDataInfo<SysNoticeVo> list(SysNoticeBo notice, PageQuery pageQuery) {
+    return noticeService.selectPageNoticeList(notice, pageQuery);
   }
 
   /**
@@ -49,7 +48,7 @@ public class SysNoticeController extends BaseController {
   @SaCheckPermission("system:notice:query")
   @GetMapping(value = "/{noticeId}")
   public R<SysNoticeVo> getInfo(@PathVariable Long noticeId) {
-    return R.ok(noticeService.getVoById(noticeId));
+    return R.ok(noticeService.selectNoticeById(noticeId));
   }
 
   /** 新增通知公告 */

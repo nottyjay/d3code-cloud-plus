@@ -14,8 +14,7 @@ import lombok.Data;
 /**
  * 参数配置视图对象 sys_config
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @ExcelIgnoreUnannotated

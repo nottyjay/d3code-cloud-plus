@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 // global css
 import 'virtual:uno.css'
 import '@/assets/styles/index.scss'
@@ -34,7 +34,7 @@ import i18n from '@/lang/index'
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 // 修改 el-dialog 默认点击遮照为不关闭
-import { ElDialog } from 'element-plus'
+import {ElDialog} from 'element-plus'
 
 VXETable.setConfig({
   zIndex: 999999,

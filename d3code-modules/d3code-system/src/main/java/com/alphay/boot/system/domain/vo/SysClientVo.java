@@ -14,8 +14,7 @@ import lombok.Data;
 /**
  * 授权管理视图对象 sys_client
  *
- * @author Nottyjay
- * @since 1.0.0
+ * @author Michelle.Chung
  */
 @Data
 @ExcelIgnoreUnannotated

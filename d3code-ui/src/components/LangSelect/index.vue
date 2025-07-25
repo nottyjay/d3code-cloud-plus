@@ -1,7 +1,7 @@
 <template>
   <el-dropdown trigger="click" @command="handleLanguageChange">
     <div class="lang-select--style">
-      <svg-icon icon-class="language" />
+      <svg-icon icon-class="language"/>
     </div>
     <template #dropdown>
       <el-dropdown-menu>
@@ -13,12 +13,12 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { useAppStore } from '@/store/modules/app'
+import {useI18n} from 'vue-i18n'
+import {useAppStore} from '@/store/modules/app'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 
 const appStore = useAppStore()
-const { locale } = useI18n()
+const {locale} = useI18n()
 
 const message: any = {
   zh_CN: '切换语言成功！',
