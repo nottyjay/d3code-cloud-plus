@@ -1,6 +1,5 @@
 package com.alphay.boot.resource.api;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,8 +11,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class RemoteMessageServiceStub implements RemoteMessageService {
+  private RemoteMessageService remoteMessageService;
 
-  @Resource private RemoteMessageService remoteMessageService;
+  public RemoteMessageServiceStub(RemoteMessageService remoteMessageService) {
+    this.remoteMessageService = remoteMessageService;
+  }
 
   /**
    * 发送消息
