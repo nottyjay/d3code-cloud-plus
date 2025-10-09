@@ -44,7 +44,7 @@ public class PlusTenantLineHandler implements TenantLineHandler {
     // 判断是否有租户
     if (StringUtils.isNotBlank(tenantId)) {
       TableInfo tableInfo = TableInfoHelper.getTableInfo(tableName);
-      if (tableInfo != null && TenantEntity.class.isAssignableFrom(tableInfo.getEntityType())) {
+      if (tableInfo != null && !TenantEntity.class.isAssignableFrom(tableInfo.getEntityType())) {
         return true;
       }
 

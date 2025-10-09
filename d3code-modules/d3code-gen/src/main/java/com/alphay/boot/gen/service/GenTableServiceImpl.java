@@ -549,6 +549,14 @@ public class GenTableServiceImpl implements IGenTableService {
         throw new ServiceException("树名称字段不能为空");
       }
     }
+    String moduleName = genTable.getModuleName();
+    if (moduleName.startsWith("/")) {
+      moduleName = moduleName.substring(1);
+    }
+    if (moduleName.endsWith("/")) {
+      moduleName = moduleName.substring(0, moduleName.length() - 1);
+    }
+    genTable.setModuleName(moduleName);
   }
 
   /**
