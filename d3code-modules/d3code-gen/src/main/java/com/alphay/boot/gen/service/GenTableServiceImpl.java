@@ -129,7 +129,7 @@ public class GenTableServiceImpl implements IGenTableService {
    * @param param 包含查询条件的GenTable对象
    * @return 包含分页结果的PageResult对象
    */
-  @DS("#genTable.dataName")
+  @DS("#param.dataName")
   @Override
   public PageResult<GenTable> queryPageDbTableList(GenTableQueryParam param) {
     // 获取查询条件
