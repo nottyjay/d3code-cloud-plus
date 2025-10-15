@@ -786,22 +786,22 @@ on column sys_menu.remark       is '备注';
 -- ----------------------------
 -- 一级菜单
 insert into sys_menu
-values ('1', '系统管理', '0', '1', 'system', null, '', '1', '0', 'M', '0', '0', '', 'system', 103, 1, now(), null, null,
+values ('1', '系统管理', '0', '91', 'system', null, '', '1', '0', 'M', '0', '0', '', 'system', 103, 1, now(), null, null,
         '系统管理目录');
 insert into sys_menu
-values ('6', '租户管理', '0', '2', 'tenant', null, '', '1', '0', 'M', '0', '0', '', 'chart', 103, 1, now(), null, null,
+values ('6', '租户管理', '0', '92', 'tenant', null, '', '1', '0', 'M', '0', '0', '', 'chart', 103, 1, now(), null, null,
         '租户管理目录');
 insert into sys_menu
-values ('2', '系统监控', '0', '3', 'monitor', null, '', '1', '0', 'M', '0', '0', '', 'monitor', 103, 1, now(), null,
+values ('2', '系统监控', '0', '93', 'monitor', null, '', '1', '0', 'M', '0', '0', '', 'monitor', 103, 1, now(), null,
         null, '系统监控目录');
 insert into sys_menu
-values ('3', '系统工具', '0', '4', 'tool', null, '', '1', '0', 'M', '0', '0', '', 'tool', 103, 1, now(), null, null,
+values ('3', '系统工具', '0', '94', 'tool', null, '', '1', '0', 'M', '0', '0', '', 'tool', 103, 1, now(), null, null,
         '系统工具目录');
 insert into sys_menu
-values ('4', 'PLUS官网', '0', '5', 'https://gitee.com/dromara/RuoYi-Cloud-Plus', null, '', '0', '0', 'M', '0', '0', '',
-        'guide', 103, 1, now(), null, null, 'RuoYi-Cloud-Plus官网地址');
+values ('4', 'PLUS官网', '0', '95', 'https://gitee.com/anhui-infomation/d3code-cloud-plus', null, '', '0', '0', 'M', '0', '0', '',
+        'guide', 103, 1, now(), null, null, 'D3code-Cloud-Plus官网地址');
 insert into sys_menu
-values ('5', '测试菜单', '0', '5', 'demo', null, '', '1', '0', 'M', '0', '0', null, 'star', 103, 1, now(), null, null,
+values ('5', '测试菜单', '0', '96', 'demo', null, '', '1', '0', 'M', '0', '0', null, 'star', 103, 1, now(), null, null,
         '测试菜单');
 -- 二级菜单
 insert into sys_menu
