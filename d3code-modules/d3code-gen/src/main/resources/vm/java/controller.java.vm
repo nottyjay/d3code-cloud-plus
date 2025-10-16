@@ -8,7 +8,8 @@ import jakarta.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
-import annotation.com.alphay.boot.common.idempotent.RepeatSubmit;
+import com.alphay.boot.common.idempotent.annotation.RepeatSubmit;
+import com.alphay.boot.common.mybatis.core.page.PageResult;
 import com.alphay.boot.common.log.annotation.Log;
 import com.alphay.boot.common.web.core.BaseController;
 import com.alphay.boot.common.core.domain.R;
@@ -38,23 +39,24 @@ import jakarta.annotation.Resource;
 @RequestMapping("/${businessName}")
 public class ${ClassName}Controller extends BaseController {
 
-  @Resource private I${ClassName}Service ${className}Service;
+  @Resource
+  private I${ClassName}Service ${className}Service;
 
-  /**
-   * 查询${functionName}列表
-   */
-  @SaCheckPermission("${permissionPrefix}:list")
-  @GetMapping("/list")
-#if($table.crud)
+/**
+ * 查询${functionName}列表
+ */
+@SaCheckPermission("${permissionPrefix}:list")
+@GetMapping("/list")
+  #if($table.crud)
   public PageResult<${ClassName}Vo> list(${ClassName}QueryParam param) {
     return ${className}Service.queryPageList(param);
   }
-#elseif($table.tree)
+  #elseif($table.tree)
   public R<List<${ClassName}Vo>> list(${ClassName}QueryParam param) {
     List<${ClassName}Vo> list = ${className}Service.queryList(param);
     return R.ok(list);
   }
-#end
+  #end
 
   /**
    * 导出${functionName}列表
@@ -75,7 +77,7 @@ public class ${ClassName}Controller extends BaseController {
   @SaCheckPermission("${permissionPrefix}:query")
   @GetMapping("/{${pkColumn.javaField}}")
   public R<${ClassName}Vo> getInfo(@NotNull(message = "主键不能为空")
-                   @PathVariable("${pkColumn.javaField}") ${pkColumn.javaType} ${pkColumn.javaField}) {
+                                   @PathVariable("${pkColumn.javaField}") ${pkColumn.javaType} ${pkColumn.javaField}) {
     return R.ok(${className}Service.getVoById(${pkColumn.javaField}));
   }
 
@@ -110,7 +112,7 @@ public class ${ClassName}Controller extends BaseController {
   @Log(title = "${functionName}", businessType = BusinessType.DELETE)
   @DeleteMapping("/{${pkColumn.javaField}s}")
   public R<Void> remove(@NotEmpty(message = "主键不能为空")
-              @PathVariable("${pkColumn.javaField}s") ${pkColumn.javaType}[] ${pkColumn.javaField}s) {
+                        @PathVariable("${pkColumn.javaField}s") ${pkColumn.javaType}[] ${pkColumn.javaField}s) {
     return toAjax(${className}Service.deleteWithValidByIds(List.of(${pkColumn.javaField}s), true));
   }
 }

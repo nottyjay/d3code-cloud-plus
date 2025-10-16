@@ -21,7 +21,7 @@ import java.io.Serial;
  * @since 1.0.0
  * @date ${datetime}
  */
-#if($IsTenant==1)
+#if($isTenant==1)
 #set($Entity="TenantEntity")
 #else
 #set($Entity="BaseEntity")

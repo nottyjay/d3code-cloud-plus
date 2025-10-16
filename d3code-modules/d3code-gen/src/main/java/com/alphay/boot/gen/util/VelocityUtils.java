@@ -154,7 +154,7 @@ public class VelocityUtils {
     } else if (template.contains("vo.java.vm")) {
       fileName = StringUtils.format("{}/domain/vo/{}Vo.java", javaPath, className);
     } else if (template.contains("param.java.vm")) {
-      fileName = StringUtils.format("{}/domain/param/{}Param.java", javaPath, className);
+      fileName = StringUtils.format("{}/domain/param/{}QueryParam.java", javaPath, className);
     } else if (template.contains("bo.java.vm")) {
       fileName = StringUtils.format("{}/domain/bo/{}Bo.java", javaPath, className);
     } else if (template.contains("mapper.java.vm")) {
