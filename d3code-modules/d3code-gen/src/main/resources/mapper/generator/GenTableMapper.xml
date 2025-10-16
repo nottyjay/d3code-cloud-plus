@@ -30,6 +30,7 @@
            t.function_author,
            t.gen_type,
            t.gen_path,
+           t.tenant_flag,
            t.options,
            t.remark,
            c.column_id,

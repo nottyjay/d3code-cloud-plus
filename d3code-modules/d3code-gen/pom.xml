@@ -83,11 +83,11 @@
     <!--            <version>${anyline.version}</version>-->
     <!--        </dependency>-->
 
-    <!--        <dependency>-->
-    <!--            <groupId>org.anyline</groupId>-->
-    <!--            <artifactId>anyline-data-jdbc-postgresql</artifactId>-->
-    <!--            <version>${anyline.version}</version>-->
-    <!--        </dependency>-->
+    <dependency>
+      <groupId>org.anyline</groupId>
+      <artifactId>anyline-data-jdbc-postgresql</artifactId>
+      <version>${anyline.version}</version>
+    </dependency>
 
     <!--        <dependency>-->
     <!--            <groupId>org.anyline</groupId>-->

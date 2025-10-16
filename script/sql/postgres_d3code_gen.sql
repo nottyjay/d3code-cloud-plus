@@ -54,9 +54,8 @@ create table if not exists gen_table
 (
   50
 ) default null :: varchar,
-  gen_type char default '0'::bpchar not null,
-  tenant_flag char default '0'::bpchar not null,
-  gen_path varchar
+    gen_type char default '0'::bpchar not null,
+    gen_path varchar
 (
   200
 ) default '/':: varchar,
@@ -64,12 +63,12 @@ create table if not exists gen_table
 (
   1000
 ) default null :: varchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  remark varchar
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    remark varchar
 (
   500
 ) default null :: varchar,
@@ -123,6 +122,8 @@ comment
 on column gen_table.update_by is '更新者';
 comment
 on column gen_table.update_time is '更新时间';
+comment
+on column gen_table.tenant_flag is '租户标识（0非租户 1租户）';
 comment
 on column gen_table.remark is '备注';
 

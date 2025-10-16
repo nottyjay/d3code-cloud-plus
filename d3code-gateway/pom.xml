@@ -77,7 +77,7 @@
       <artifactId>d3code-common-satoken</artifactId>
     </dependency>
 
-    <!-- RuoYi Common Redis-->
+    <!-- D3code Common Redis-->
     <dependency>
       <groupId>com.alphay.boot</groupId>
       <artifactId>d3code-common-redis</artifactId>

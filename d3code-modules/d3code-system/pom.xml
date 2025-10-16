@@ -27,7 +27,7 @@
       <artifactId>d3code-common-sentinel</artifactId>
     </dependency>
 
-    <!-- RuoYi Common Log -->
+    <!-- D3code Common Log -->
     <dependency>
       <groupId>com.alphay.boot</groupId>
       <artifactId>d3code-common-log</artifactId>
@@ -93,7 +93,7 @@
       <artifactId>d3code-common-encrypt</artifactId>
     </dependency>
 
-    <!-- RuoYi Api System -->
+    <!-- D3code Api System -->
     <dependency>
       <groupId>com.alphay.boot</groupId>
       <artifactId>d3code-api-system</artifactId>

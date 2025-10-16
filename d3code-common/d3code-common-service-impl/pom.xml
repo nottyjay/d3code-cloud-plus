@@ -17,7 +17,7 @@
 
   <dependencies>
 
-    <!-- RuoYi Common Security -->
+    <!-- D3code Common Security -->
     <dependency>
       <groupId>com.alphay.boot</groupId>
       <artifactId>d3code-common-redis</artifactId>

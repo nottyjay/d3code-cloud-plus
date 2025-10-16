@@ -3,36 +3,36 @@
 -- ----------------------------
 create table sys_social
 (
-  id                 int8          not null,
-  user_id            int8          not null,
-  tenant_id          varchar(20)   default '000000'::varchar,
-  auth_id            varchar(255)  not null,
-  source             varchar(255)  not null,
-  open_id            varchar(255)  default null::varchar,
-  user_name          varchar(30)   not null,
-  nick_name          varchar(30)   default ''::varchar,
-  email              varchar(255)  default ''::varchar,
-  avatar             varchar(500)  default ''::varchar,
-  access_token       varchar(2000) not null,
-  expire_in          int8          default null,
-  refresh_token      varchar(2000) default null::varchar,
-  access_code        varchar(255)  default null::varchar,
-  union_id           varchar(255)  default null::varchar,
-  scope              varchar(255)  default null::varchar,
-  token_type         varchar(255)  default null::varchar,
-  id_token           varchar(2000) default null::varchar,
-  mac_algorithm      varchar(255)  default null::varchar,
-  mac_key            varchar(255)  default null::varchar,
-  code               varchar(255)  default null::varchar,
-  oauth_token        varchar(255)  default null::varchar,
-  oauth_token_secret varchar(255)  default null::varchar,
-  create_dept        int8,
-  create_by          int8,
-  create_time        timestamp,
-  update_by          int8,
-  update_time        timestamp,
-  del_flag           char          default '0'::bpchar,
-  constraint "pk_sys_social" primary key (id)
+    id                 int8          not null,
+    user_id            int8          not null,
+    tenant_id          varchar(20)   default '000000'::varchar,
+    auth_id            varchar(255)  not null,
+    source             varchar(255)  not null,
+    open_id            varchar(255)  default null::varchar,
+    user_name          varchar(30)   not null,
+    nick_name          varchar(30)   default ''::varchar,
+    email              varchar(255)  default ''::varchar,
+    avatar             varchar(500)  default ''::varchar,
+    access_token       varchar(2000) not null,
+    expire_in          int8          default null,
+    refresh_token      varchar(2000) default null::varchar,
+    access_code        varchar(255)  default null::varchar,
+    union_id           varchar(255)  default null::varchar,
+    scope              varchar(255)  default null::varchar,
+    token_type         varchar(255)  default null::varchar,
+    id_token           varchar(2000) default null::varchar,
+    mac_algorithm      varchar(255)  default null::varchar,
+    mac_key            varchar(255)  default null::varchar,
+    code               varchar(255)  default null::varchar,
+    oauth_token        varchar(255)  default null::varchar,
+    oauth_token_secret varchar(255)  default null::varchar,
+    create_dept        int8,
+    create_by          int8,
+    create_time        timestamp,
+    update_by          int8,
+    update_time        timestamp,
+    del_flag           char          default '0'::bpchar,
+    constraint "pk_sys_social" primary key (id)
 );
 
 comment
@@ -101,60 +101,60 @@ on column  sys_social.del_flag          is '删除标志（0代表存在 2代表
 -- ----------------------------
 create table if not exists sys_tenant
 (
-  id
-  int8,
-  tenant_id
-  varchar
+    id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) not null,
-  contact_user_name varchar
+    contact_user_name varchar
 (
-  20
+    20
 ) default null :: varchar,
-  contact_phone varchar
+    contact_phone varchar
 (
-  20
+    20
 ) default null :: varchar,
-  company_name varchar
+    company_name varchar
 (
-  30
+    30
 ) default null :: varchar,
-  license_number varchar
+    license_number varchar
 (
-  30
+    30
 ) default null :: varchar,
-  address varchar
+    address varchar
 (
-  200
+    200
 ) default null :: varchar,
-  intro varchar
+    intro varchar
 (
-  200
+    200
 ) default null :: varchar,
-  domain varchar
+    domain varchar
 (
-  200
+    200
 ) default null :: varchar,
-  remark varchar
+    remark varchar
 (
-  200
+    200
 ) default null :: varchar,
-  package_id int8,
-  expire_time timestamp,
-  account_count int4 default -1,
-  status char default '0'::bpchar,
-  del_flag char default '0'::bpchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  constraint "pk_sys_tenant" primary key
+    package_id int8,
+    expire_time timestamp,
+    account_count int4 default -1,
+    status char default '0'::bpchar,
+    del_flag char default '0'::bpchar,
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    constraint "pk_sys_tenant" primary key
 (
-  id
+    id
 )
-  );
+    );
 
 
 comment
@@ -213,34 +213,34 @@ values (1, '000000', '管理组', '15888888888', 'XXX有限公司', null, null, 
 -- ----------------------------
 create table if not exists sys_tenant_package
 (
-  package_id
-  int8,
-  package_name
-  varchar
+    package_id
+    int8,
+    package_name
+    varchar
 (
-  20
+    20
 ) default '':: varchar,
-  menu_ids varchar
+    menu_ids varchar
 (
-  3000
+    3000
 ) default '':: varchar,
-  remark varchar
+    remark varchar
 (
-  200
+    200
 ) default '':: varchar,
-  menu_check_strictly bool default true,
-  status char default '0'::bpchar,
-  del_flag char default '0'::bpchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  constraint "pk_sys_tenant_package" primary key
+    menu_check_strictly bool default true,
+    status char default '0'::bpchar,
+    del_flag char default '0'::bpchar,
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    constraint "pk_sys_tenant_package" primary key
 (
-  package_id
+    package_id
 )
-  );
+    );
 
 
 comment
@@ -274,48 +274,48 @@ on column  sys_tenant_package.update_time        is '更新时间';
 -- ----------------------------
 create table if not exists sys_dept
 (
-  dept_id
-  int8,
-  tenant_id
-  varchar
+    dept_id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  parent_id int8 default 0,
-  ancestors varchar
+    parent_id int8 default 0,
+    ancestors varchar
 (
-  500
+    500
 ) default '':: varchar,
-  dept_name varchar
+    dept_name varchar
 (
-  30
+    30
 ) default '':: varchar,
-  dept_category varchar
+    dept_category varchar
 (
-  100
+    100
 ) default null :: varchar,
-  order_num int4 default 0,
-  leader int8 default null,
-  phone varchar
+    order_num int4 default 0,
+    leader int8 default null,
+    phone varchar
 (
-  11
+    11
 ) default null :: varchar,
-  email varchar
+    email varchar
 (
-  50
+    50
 ) default null :: varchar,
-  status char default '0'::bpchar,
-  del_flag char default '0'::bpchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  constraint "sys_dept_pk" primary key
+    status char default '0'::bpchar,
+    del_flag char default '0'::bpchar,
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    constraint "sys_dept_pk" primary key
 (
-  dept_id
+    dept_id
 )
-  );
+    );
 
 comment
 on table sys_dept               is '部门表';
@@ -393,61 +393,61 @@ values (109, '000000', 102, '0,100,102', '财务部门', null, 2, null, '1588888
 -- ----------------------------
 create table if not exists sys_user
 (
-  user_id
-  int8,
-  tenant_id
-  varchar
+    user_id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  dept_id int8,
-  user_name varchar
+    dept_id int8,
+    user_name varchar
 (
-  30
+    30
 ) not null,
-  nick_name varchar
+    nick_name varchar
 (
-  30
+    30
 ) not null,
-  user_type varchar
+    user_type varchar
 (
-  10
+    10
 ) default 'sys_user':: varchar,
-  email varchar
+    email varchar
 (
-  50
+    50
 ) default '':: varchar,
-  phonenumber varchar
+    phonenumber varchar
 (
-  11
+    11
 ) default '':: varchar,
-  sex char default '0'::bpchar,
-  avatar int8,
-  password varchar
+    sex char default '0'::bpchar,
+    avatar int8,
+    password varchar
 (
-  100
+    100
 ) default '':: varchar,
-  status char default '0'::bpchar,
-  del_flag char default '0'::bpchar,
-  login_ip varchar
+    status char default '0'::bpchar,
+    del_flag char default '0'::bpchar,
+    login_ip varchar
 (
-  128
+    128
 ) default '':: varchar,
-  login_date timestamp,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  remark varchar
+    login_date timestamp,
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    remark varchar
 (
-  500
+    500
 ) default null :: varchar,
-  constraint "sys_user_pk" primary key
+    constraint "sys_user_pk" primary key
 (
-  user_id
+    user_id
 )
-  );
+    );
 
 comment
 on table sys_user               is '用户信息表';
@@ -517,42 +517,42 @@ values (4, '000000', 102, 'test1', '仅本人 密码666666', 'sys_user', '', '',
 -- ----------------------------
 create table if not exists sys_post
 (
-  post_id
-  int8,
-  tenant_id
-  varchar
+    post_id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  dept_id int8,
-  post_code varchar
+    dept_id int8,
+    post_code varchar
 (
-  64
+    64
 ) not null,
-  post_category varchar
+    post_category varchar
 (
-  100
+    100
 ) default null,
-  post_name varchar
+    post_name varchar
 (
-  50
+    50
 ) not null,
-  post_sort int4 not null,
-  status char not null,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  remark varchar
+    post_sort int4 not null,
+    status char not null,
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    remark varchar
 (
-  500
+    500
 ) default null :: varchar,
-  constraint "sys_post_pk" primary key
+    constraint "sys_post_pk" primary key
 (
-  post_id
+    post_id
 )
-  );
+    );
 
 comment
 on table sys_post               is '岗位信息表';
@@ -602,41 +602,41 @@ values (4, '000000', 100, 'user', null, '普通员工', 4, '0', 103, 1, now(), n
 -- ----------------------------
 create table if not exists sys_role
 (
-  role_id
-  int8,
-  tenant_id
-  varchar
+    role_id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  role_name varchar
+    role_name varchar
 (
-  30
+    30
 ) not null,
-  role_key varchar
+    role_key varchar
 (
-  100
+    100
 ) not null,
-  role_sort int4 not null,
-  data_scope char default '1'::bpchar,
-  menu_check_strictly bool default true,
-  dept_check_strictly bool default true,
-  status char not null,
-  del_flag char default '0'::bpchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  remark varchar
+    role_sort int4 not null,
+    data_scope char default '1'::bpchar,
+    menu_check_strictly bool default true,
+    dept_check_strictly bool default true,
+    status char not null,
+    del_flag char default '0'::bpchar,
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    remark varchar
 (
-  500
+    500
 ) default null :: varchar,
-  constraint "sys_role_pk" primary key
+    constraint "sys_role_pk" primary key
 (
-  role_id
+    role_id
 )
-  );
+    );
 
 comment
 on table sys_role                       is '角色信息表';
@@ -689,54 +689,54 @@ values ('4', '000000', '仅本人', 'test2', 4, '5', 't', 't', '0', '0', 103, 1,
 -- ----------------------------
 create table if not exists sys_menu
 (
-  menu_id
-  int8,
-  menu_name
-  varchar
+    menu_id
+    int8,
+    menu_name
+    varchar
 (
-  50
+    50
 ) not null,
-  parent_id int8 default 0,
-  order_num int4 default 0,
-  path varchar
+    parent_id int8 default 0,
+    order_num int4 default 0,
+    path varchar
 (
-  200
+    200
 ) default '':: varchar,
-  component varchar
+    component varchar
 (
-  255
+    255
 ) default null :: varchar,
-  query_param varchar
+    query_param varchar
 (
-  255
+    255
 ) default null :: varchar,
-  is_frame char default '1'::bpchar,
-  is_cache char default '0'::bpchar,
-  menu_type char default ''::bpchar,
-  visible char default '0'::bpchar,
-  status char default '0'::bpchar,
-  perms varchar
+    is_frame char default '1'::bpchar,
+    is_cache char default '0'::bpchar,
+    menu_type char default ''::bpchar,
+    visible char default '0'::bpchar,
+    status char default '0'::bpchar,
+    perms varchar
 (
-  100
+    100
 ) default null :: varchar,
-  icon varchar
+    icon varchar
 (
-  100
+    100
 ) default '#':: varchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  remark varchar
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    remark varchar
 (
-  500
+    500
 ) default '':: varchar,
-  constraint "sys_menu_pk" primary key
+    constraint "sys_menu_pk" primary key
 (
-  menu_id
+    menu_id
 )
-  );
+    );
 
 comment
 on table sys_menu               is '菜单权限表';
@@ -786,8 +786,7 @@ on column sys_menu.remark       is '备注';
 -- ----------------------------
 -- 一级菜单
 insert into sys_menu
-values ('1', '系统管理', '0', '91', 'system', null, '', '1', '0', 'M', '0', '0', '', 'system', 103, 1, now(), null,
-        null,
+values ('1', '系统管理', '0', '91', 'system', null, '', '1', '0', 'M', '0', '0', '', 'system', 103, 1, now(), null, null,
         '系统管理目录');
 insert into sys_menu
 values ('6', '租户管理', '0', '92', 'tenant', null, '', '1', '0', 'M', '0', '0', '', 'chart', 103, 1, now(), null, null,
@@ -799,9 +798,11 @@ insert into sys_menu
 values ('3', '系统工具', '0', '94', 'tool', null, '', '1', '0', 'M', '0', '0', '', 'tool', 103, 1, now(), null, null,
         '系统工具目录');
 insert into sys_menu
-values ('4', 'Github', '0', '95', 'hhttps://github.com/nottyjay/d3code-cloud-plus', null, '', '0', '0', 'M', '0', '0',
-        '',
+values ('4', 'PLUS官网', '0', '95', 'https://gitee.com/anhui-infomation/d3code-cloud-plus', null, '', '0', '0', 'M', '0', '0', '',
         'guide', 103, 1, now(), null, null, 'D3code-Cloud-Plus官网地址');
+insert into sys_menu
+values ('5', '测试菜单', '0', '96', 'demo', null, '', '1', '0', 'M', '0', '0', null, 'star', 103, 1, now(), null, null,
+        '测试菜单');
 -- 二级菜单
 insert into sys_menu
 values ('100', '用户管理', '1', '1', 'user', 'system/user/index', '', '1', '0', 'C', '0', '0', 'system:user:list',
@@ -1137,29 +1138,66 @@ values ('1064', '客户端管理删除', '123', '4', '#', '', '', '1', '0', 'F',
 insert into sys_menu
 values ('1065', '客户端管理导出', '123', '5', '#', '', '', '1', '0', 'F', '0', '0', 'system:client:export', '#', 103, 1,
         now(), null, null, '');
+-- 测试菜单
+insert into sys_menu
+values ('1500', '测试单表', '5', '1', 'demo', 'demo/demo/index', '', '1', '0', 'C', '0', '0', 'demo:demo:list', '#',
+        103, 1, now(), NULL, NULL, '测试单表菜单');
+insert into sys_menu
+values ('1501', '测试单表查询', '1500', '1', '#', '', '', '1', '0', 'F', '0', '0', 'demo:demo:query', '#', 103, 1,
+        now(), NULL, NULL, '');
+insert into sys_menu
+values ('1502', '测试单表新增', '1500', '2', '#', '', '', '1', '0', 'F', '0', '0', 'demo:demo:add', '#', 103, 1, now(),
+        NULL, NULL, '');
+insert into sys_menu
+values ('1503', '测试单表修改', '1500', '3', '#', '', '', '1', '0', 'F', '0', '0', 'demo:demo:edit', '#', 103, 1, now(),
+        NULL, NULL, '');
+insert into sys_menu
+values ('1504', '测试单表删除', '1500', '4', '#', '', '', '1', '0', 'F', '0', '0', 'demo:demo:remove', '#', 103, 1,
+        now(), NULL, NULL, '');
+insert into sys_menu
+values ('1505', '测试单表导出', '1500', '5', '#', '', '', '1', '0', 'F', '0', '0', 'demo:demo:export', '#', 103, 1,
+        now(), NULL, NULL, '');
+insert into sys_menu
+values ('1506', '测试树表', '5', '1', 'tree', 'demo/tree/index', '', '1', '0', 'C', '0', '0', 'demo:tree:list', '#',
+        103, 1, now(), NULL, NULL, '测试树表菜单');
+insert into sys_menu
+values ('1507', '测试树表查询', '1506', '1', '#', '', '', '1', '0', 'F', '0', '0', 'demo:tree:query', '#', 103, 1,
+        now(), NULL, NULL, '');
+insert into sys_menu
+values ('1508', '测试树表新增', '1506', '2', '#', '', '', '1', '0', 'F', '0', '0', 'demo:tree:add', '#', 103, 1, now(),
+        NULL, NULL, '');
+insert into sys_menu
+values ('1509', '测试树表修改', '1506', '3', '#', '', '', '1', '0', 'F', '0', '0', 'demo:tree:edit', '#', 103, 1, now(),
+        NULL, NULL, '');
+insert into sys_menu
+values ('1510', '测试树表删除', '1506', '4', '#', '', '', '1', '0', 'F', '0', '0', 'demo:tree:remove', '#', 103, 1,
+        now(), NULL, NULL, '');
+insert into sys_menu
+values ('1511', '测试树表导出', '1506', '5', '#', '', '', '1', '0', 'F', '0', '0', 'demo:tree:export', '#', 103, 1,
+        now(), NULL, NULL, '');
 
 -- ----------------------------
 -- 6、用户和角色关联表  用户N-1角色
 -- ----------------------------
 create table if not exists sys_user_role
 (
-  user_id
-  int8
-  not
-  null,
-  role_id
-  int8
-  not
-  null,
-  constraint
-  sys_user_role_pk
-  primary
-  key
+    user_id
+    int8
+    not
+    null,
+    role_id
+    int8
+    not
+    null,
+    constraint
+    sys_user_role_pk
+    primary
+    key
 (
-  user_id,
-  role_id
+    user_id,
+    role_id
 )
-  );
+    );
 
 comment
 on table sys_user_role              is '用户和角色关联表';
@@ -1184,23 +1222,23 @@ values ('4', '4');
 -- ----------------------------
 create table if not exists sys_role_menu
 (
-  role_id
-  int8
-  not
-  null,
-  menu_id
-  int8
-  not
-  null,
-  constraint
-  sys_role_menu_pk
-  primary
-  key
+    role_id
+    int8
+    not
+    null,
+    menu_id
+    int8
+    not
+    null,
+    constraint
+    sys_role_menu_pk
+    primary
+    key
 (
-  role_id,
-  menu_id
+    role_id,
+    menu_id
 )
-  );
+    );
 
 comment
 on table sys_role_menu              is '角色和菜单关联表';
@@ -1455,23 +1493,23 @@ values ('4', '1511');
 -- ----------------------------
 create table if not exists sys_role_dept
 (
-  role_id
-  int8
-  not
-  null,
-  dept_id
-  int8
-  not
-  null,
-  constraint
-  sys_role_dept_pk
-  primary
-  key
+    role_id
+    int8
+    not
+    null,
+    dept_id
+    int8
+    not
+    null,
+    constraint
+    sys_role_dept_pk
+    primary
+    key
 (
-  role_id,
-  dept_id
+    role_id,
+    dept_id
 )
-  );
+    );
 
 comment
 on table sys_role_dept              is '角色和部门关联表';
@@ -1486,23 +1524,23 @@ on column sys_role_dept.dept_id     is '部门ID';
 -- ----------------------------
 create table if not exists sys_user_post
 (
-  user_id
-  int8
-  not
-  null,
-  post_id
-  int8
-  not
-  null,
-  constraint
-  sys_user_post_pk
-  primary
-  key
+    user_id
+    int8
+    not
+    null,
+    post_id
+    int8
+    not
+    null,
+    constraint
+    sys_user_post_pk
+    primary
+    key
 (
-  user_id,
-  post_id
+    user_id,
+    post_id
 )
-  );
+    );
 
 comment
 on table sys_user_post              is '用户与岗位关联表';
@@ -1522,67 +1560,67 @@ values ('1', '1');
 -- ----------------------------
 create table if not exists sys_oper_log
 (
-  oper_id
-  int8,
-  tenant_id
-  varchar
+    oper_id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  title varchar
+    title varchar
 (
-  50
+    50
 ) default '':: varchar,
-  business_type int4 default 0,
-  method varchar
+    business_type int4 default 0,
+    method varchar
 (
-  100
+    100
 ) default '':: varchar,
-  request_method varchar
+    request_method varchar
 (
-  10
+    10
 ) default '':: varchar,
-  operator_type int4 default 0,
-  oper_name varchar
+    operator_type int4 default 0,
+    oper_name varchar
 (
-  50
+    50
 ) default '':: varchar,
-  dept_name varchar
+    dept_name varchar
 (
-  50
+    50
 ) default '':: varchar,
-  oper_url varchar
+    oper_url varchar
 (
-  255
+    255
 ) default '':: varchar,
-  oper_ip varchar
+    oper_ip varchar
 (
-  128
+    128
 ) default '':: varchar,
-  oper_location varchar
+    oper_location varchar
 (
-  255
+    255
 ) default '':: varchar,
-  oper_param varchar
+    oper_param varchar
 (
-  4000
+    4000
 ) default '':: varchar,
-  json_result varchar
+    json_result varchar
 (
-  4000
+    4000
 ) default '':: varchar,
-  status int4 default 0,
-  error_msg varchar
+    status int4 default 0,
+    error_msg varchar
 (
-  4000
+    4000
 ) default '':: varchar,
-  oper_time timestamp,
-  cost_time int8 default 0,
-  constraint sys_oper_log_pk primary key
+    oper_time timestamp,
+    cost_time int8 default 0,
+    constraint sys_oper_log_pk primary key
 (
-  oper_id
+    oper_id
 )
-  );
+    );
 
 create index idx_sys_oper_log_bt ON sys_oper_log (business_type);
 create index idx_sys_oper_log_s ON sys_oper_log (status);
@@ -1632,35 +1670,35 @@ on column sys_oper_log.cost_time        is '消耗时间';
 -- ----------------------------
 create table if not exists sys_dict_type
 (
-  dict_id
-  int8,
-  tenant_id
-  varchar
+    dict_id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  dict_name varchar
+    dict_name varchar
 (
-  100
+    100
 ) default '':: varchar,
-  dict_type varchar
+    dict_type varchar
 (
-  100
+    100
 ) default '':: varchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  remark varchar
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    remark varchar
 (
-  500
+    500
 ) default null :: varchar,
-  constraint sys_dict_type_pk primary key
+    constraint sys_dict_type_pk primary key
 (
-  dict_id
+    dict_id
 )
-  );
+    );
 
 create unique index sys_dict_type_index1 ON sys_dict_type (tenant_id, dict_type);
 
@@ -1719,49 +1757,49 @@ VALUES (15, '000000', '任务状态', 'wf_task_status', 103, 1, now(), NULL, NUL
 -- ----------------------------
 create table if not exists sys_dict_data
 (
-  dict_code
-  int8,
-  tenant_id
-  varchar
+    dict_code
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  dict_sort int4 default 0,
-  dict_label varchar
+    dict_sort int4 default 0,
+    dict_label varchar
 (
-  100
+    100
 ) default '':: varchar,
-  dict_value varchar
+    dict_value varchar
 (
-  100
+    100
 ) default '':: varchar,
-  dict_type varchar
+    dict_type varchar
 (
-  100
+    100
 ) default '':: varchar,
-  css_class varchar
+    css_class varchar
 (
-  100
+    100
 ) default null :: varchar,
-  list_class varchar
+    list_class varchar
 (
-  100
+    100
 ) default null :: varchar,
-  is_default char default 'N'::bpchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  remark varchar
+    is_default char default 'N'::bpchar,
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    remark varchar
 (
-  500
+    500
 ) default null :: varchar,
-  constraint sys_dict_data_pk primary key
+    constraint sys_dict_data_pk primary key
 (
-  dict_code
+    dict_code
 )
-  );
+    );
 
 comment
 on table sys_dict_data                  is '字典数据表';
@@ -1927,40 +1965,40 @@ VALUES (59, '000000', 11, '超时', 'timeout', 'wf_task_status', '', 'danger', '
 -- ----------------------------
 create table if not exists sys_config
 (
-  config_id
-  int8,
-  tenant_id
-  varchar
+    config_id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  config_name varchar
+    config_name varchar
 (
-  100
+    100
 ) default '':: varchar,
-  config_key varchar
+    config_key varchar
 (
-  100
+    100
 ) default '':: varchar,
-  config_value varchar
+    config_value varchar
 (
-  500
+    500
 ) default '':: varchar,
-  config_type char default 'N'::bpchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  remark varchar
+    config_type char default 'N'::bpchar,
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    remark varchar
 (
-  500
+    500
 ) default null :: varchar,
-  constraint sys_config_pk primary key
+    constraint sys_config_pk primary key
 (
-  config_id
+    config_id
 )
-  );
+    );
 
 comment
 on table sys_config                 is '参数配置表';
@@ -2011,52 +2049,52 @@ values (11, '000000', 'OSS预览列表资源开关', 'sys.oss.previewListResourc
 -- ----------------------------
 create table if not exists sys_logininfor
 (
-  info_id
-  int8,
-  tenant_id
-  varchar
+    info_id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  user_name varchar
+    user_name varchar
 (
-  50
+    50
 ) default '':: varchar,
-  client_key varchar
+    client_key varchar
 (
-  32
+    32
 ) default '':: varchar,
-  device_type varchar
+    device_type varchar
 (
-  32
+    32
 ) default '':: varchar,
-  ipaddr varchar
+    ipaddr varchar
 (
-  128
+    128
 ) default '':: varchar,
-  login_location varchar
+    login_location varchar
 (
-  255
+    255
 ) default '':: varchar,
-  browser varchar
+    browser varchar
 (
-  50
+    50
 ) default '':: varchar,
-  os varchar
+    os varchar
 (
-  50
+    50
 ) default '':: varchar,
-  status char default '0'::bpchar,
-  msg varchar
+    status char default '0'::bpchar,
+    msg varchar
 (
-  255
+    255
 ) default '':: varchar,
-  login_time timestamp,
-  constraint sys_logininfor_pk primary key
+    login_time timestamp,
+    constraint sys_logininfor_pk primary key
 (
-  info_id
+    info_id
 )
-  );
+    );
 
 create index idx_sys_logininfor_s ON sys_logininfor (status);
 create index idx_sys_logininfor_lt ON sys_logininfor (login_time);
@@ -2093,34 +2131,34 @@ on column sys_logininfor.login_time     is '访问时间';
 -- ----------------------------
 create table if not exists sys_notice
 (
-  notice_id
-  int8,
-  tenant_id
-  varchar
+    notice_id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  notice_title varchar
+    notice_title varchar
 (
-  50
+    50
 ) not null,
-  notice_type char not null,
-  notice_content text,
-  status char default '0'::bpchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  remark varchar
+    notice_type char not null,
+    notice_content text,
+    status char default '0'::bpchar,
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    remark varchar
 (
-  255
+    255
 ) default null :: varchar,
-  constraint sys_notice_pk primary key
+    constraint sys_notice_pk primary key
 (
-  notice_id
+    notice_id
 )
-  );
+    );
 
 comment
 on table sys_notice                 is '通知公告表';
@@ -2162,47 +2200,47 @@ values ('2', '000000', '维护通知：2018-07-01 系统凌晨维护', '1', '维
 -- ----------------------------
 create table if not exists sys_oss
 (
-  oss_id
-  int8,
-  tenant_id
-  varchar
+    oss_id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  file_name varchar
+    file_name varchar
 (
-  255
+    255
 ) default '':: varchar not null,
-  original_name varchar
+    original_name varchar
 (
-  255
+    255
 ) default '':: varchar not null,
-  file_suffix varchar
+    file_suffix varchar
 (
-  10
+    10
 ) default '':: varchar not null,
-  url varchar
+    url varchar
 (
-  500
+    500
 ) default '':: varchar not null,
-  ext1 varchar
+    ext1 varchar
 (
-  500
+    500
 ) default '':: varchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  service varchar
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    service varchar
 (
-  20
+    20
 ) default 'minio':: varchar,
-  constraint sys_oss_pk primary key
+    constraint sys_oss_pk primary key
 (
-  oss_id
+    oss_id
 )
-  );
+    );
 
 comment
 on table sys_oss                    is 'OSS对象存储表';
@@ -2238,69 +2276,69 @@ on column sys_oss.service           is '服务商';
 -- ----------------------------
 create table if not exists sys_oss_config
 (
-  oss_config_id
-  int8,
-  tenant_id
-  varchar
+    oss_config_id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000':: varchar,
-  config_key varchar
+    config_key varchar
 (
-  20
+    20
 ) default '':: varchar not null,
-  access_key varchar
+    access_key varchar
 (
-  255
+    255
 ) default '':: varchar,
-  secret_key varchar
+    secret_key varchar
 (
-  255
+    255
 ) default '':: varchar,
-  bucket_name varchar
+    bucket_name varchar
 (
-  255
+    255
 ) default '':: varchar,
-  prefix varchar
+    prefix varchar
 (
-  255
+    255
 ) default '':: varchar,
-  endpoint varchar
+    endpoint varchar
 (
-  255
+    255
 ) default '':: varchar,
-  domain varchar
+    domain varchar
 (
-  255
+    255
 ) default '':: varchar,
-  is_https char default 'N'::bpchar,
-  region varchar
+    is_https char default 'N'::bpchar,
+    region varchar
 (
-  255
+    255
 ) default '':: varchar,
-  access_policy char
+    access_policy char
 (
-  1
+    1
 ) default '1'::bpchar not null,
-  status char default '1'::bpchar,
-  ext1 varchar
+    status char default '1'::bpchar,
+    ext1 varchar
 (
-  255
+    255
 ) default '':: varchar,
-  create_dept int8,
-  create_by int8,
-  create_time timestamp,
-  update_by int8,
-  update_time timestamp,
-  remark varchar
+    create_dept int8,
+    create_by int8,
+    create_time timestamp,
+    update_by int8,
+    update_time timestamp,
+    remark varchar
 (
-  500
+    500
 ) default '':: varchar,
-  constraint sys_oss_config_pk primary key
+    constraint sys_oss_config_pk primary key
 (
-  oss_config_id
+    oss_config_id
 )
-  );
+    );
 
 comment
 on table sys_oss_config                 is '对象存储配置表';
@@ -2367,22 +2405,22 @@ values (5, '000000', 'image', 'd3code', 'd3code123', 'd3code', 'image', '127.0.0
 -- ----------------------------
 create table sys_client
 (
-  id             int8,
-  client_id      varchar(64)  default ''::varchar,
-  client_key     varchar(32)  default ''::varchar,
-  client_secret  varchar(255) default ''::varchar,
-  grant_type     varchar(255) default ''::varchar,
-  device_type    varchar(32)  default ''::varchar,
-  active_timeout int4         default 1800,
-  timeout        int4         default 604800,
-  status         char(1)      default '0'::bpchar,
-  del_flag       char(1)      default '0'::bpchar,
-  create_dept    int8,
-  create_by      int8,
-  create_time    timestamp,
-  update_by      int8,
-  update_time    timestamp,
-  constraint sys_client_pk primary key (id)
+    id             int8,
+    client_id      varchar(64)  default ''::varchar,
+    client_key     varchar(32)  default ''::varchar,
+    client_secret  varchar(255) default ''::varchar,
+    grant_type     varchar(255) default ''::varchar,
+    device_type    varchar(32)  default ''::varchar,
+    active_timeout int4         default 1800,
+    timeout        int4         default 604800,
+    status         char(1)      default '0'::bpchar,
+    del_flag       char(1)      default '0'::bpchar,
+    create_dept    int8,
+    create_by      int8,
+    create_time    timestamp,
+    update_by      int8,
+    update_time    timestamp,
+    constraint sys_client_pk primary key (id)
 );
 
 comment
@@ -2427,32 +2465,32 @@ values (2, '428a8310cd442757ae699df5d894f051', 'app', 'app123', 'password,sms,so
 
 create table if not exists test_demo
 (
-  id
-  int8,
-  tenant_id
-  varchar
+    id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000',
-  dept_id int8,
-  user_id int8,
-  order_num int4 default 0,
-  test_key varchar
+    dept_id int8,
+    user_id int8,
+    order_num int4 default 0,
+    test_key varchar
 (
-  255
+    255
 ),
-  value varchar
+    value varchar
 (
-  255
+    255
 ),
-  version int4 default 0,
-  create_dept int8,
-  create_time timestamp,
-  create_by int8,
-  update_time timestamp,
-  update_by int8,
-  del_flag int4 default 0
-  );
+    version int4 default 0,
+    create_dept int8,
+    create_time timestamp,
+    create_by int8,
+    update_time timestamp,
+    update_by int8,
+    del_flag int4 default 0
+    );
 
 comment
 on table test_demo is '测试单表';
@@ -2487,28 +2525,28 @@ on column test_demo.del_flag is '删除标志';
 
 create table if not exists test_tree
 (
-  id
-  int8,
-  tenant_id
-  varchar
+    id
+    int8,
+    tenant_id
+    varchar
 (
-  20
+    20
 ) default '000000',
-  parent_id int8 default 0,
-  dept_id int8,
-  user_id int8,
-  tree_name varchar
+    parent_id int8 default 0,
+    dept_id int8,
+    user_id int8,
+    tree_name varchar
 (
-  255
+    255
 ),
-  version int4 default 0,
-  create_dept int8,
-  create_time timestamp,
-  create_by int8,
-  update_time timestamp,
-  update_by int8,
-  del_flag integer default 0
-  );
+    version int4 default 0,
+    create_dept int8,
+    create_time timestamp,
+    create_by int8,
+    update_time timestamp,
+    update_by int8,
+    del_flag integer default 0
+    );
 
 comment
 on table test_tree is '测试树表';
@@ -2596,43 +2634,43 @@ values (13, '000000', 10, 108, 3, '子节点99', 0, 103, now(), 1, NULL, NULL, 0
 -- for AT mode you must to init this sql for you business database. the seata server not need it.
 CREATE TABLE IF NOT EXISTS public.undo_log
 (
-  id
-  SERIAL
-  NOT
-  NULL,
-  branch_id
-  BIGINT
-  NOT
-  NULL,
-  xid
-  VARCHAR
+    id
+    SERIAL
+    NOT
+    NULL,
+    branch_id
+    BIGINT
+    NOT
+    NULL,
+    xid
+    VARCHAR
 (
-  128
+    128
 ) NOT NULL,
-  context VARCHAR
+    context VARCHAR
 (
-  128
+    128
 ) NOT NULL,
-  rollback_info BYTEA NOT NULL,
-  log_status INT NOT NULL,
-  log_created TIMESTAMP
+    rollback_info BYTEA NOT NULL,
+    log_status INT NOT NULL,
+    log_created TIMESTAMP
 (
-  0
+    0
 ) NOT NULL,
-  log_modified TIMESTAMP
+    log_modified TIMESTAMP
 (
-  0
+    0
 ) NOT NULL,
-  CONSTRAINT pk_undo_log PRIMARY KEY
+    CONSTRAINT pk_undo_log PRIMARY KEY
 (
-  id
+    id
 ),
-  CONSTRAINT ux_undo_log UNIQUE
+    CONSTRAINT ux_undo_log UNIQUE
 (
-  xid,
-  branch_id
+    xid,
+    branch_id
 )
-  );
+    );
 CREATE INDEX ix_log_created ON undo_log (log_created);
 
 COMMENT

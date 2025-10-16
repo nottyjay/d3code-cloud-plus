@@ -29,13 +29,13 @@
       <version>${satoken.version}</version>
     </dependency>
 
-    <!-- RuoYi Api System -->
+    <!-- D3code Api System -->
     <dependency>
       <groupId>com.alphay.boot</groupId>
       <artifactId>d3code-api-system</artifactId>
     </dependency>
 
-    <!-- RuoYi Common Redis-->
+    <!-- D3code Common Redis-->
     <dependency>
       <groupId>com.alphay.boot</groupId>
       <artifactId>d3code-common-redis</artifactId>
