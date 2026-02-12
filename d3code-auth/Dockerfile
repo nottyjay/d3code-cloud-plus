@@ -11,17 +11,20 @@ RUN mkdir -p /d3code/auth/logs  \
 
 WORKDIR /d3code/auth
 
-ENV SERVER_PORT=9210 LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS=""
+ENV TZ=PRC LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS="" SEATA_IP="" SEATA_PORT="" SERVER_PORT=9210
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 EXPOSE ${SERVER_PORT}
 
 ADD ./target/d3code-auth.jar ./app.jar
+ADD ./target/lib ./lib
 
 SHELL ["/bin/bash", "-c"]
 
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -Dserver.port=${SERVER_PORT} \
-           #-Dskywalking.agent.service_name=d3code-auth \
-           #-javaagent:/d3code/skywalking/agent/skywalking-agent.jar \
-           -XX:+HeapDumpOnOutOfMemoryError -XX:+UseZGC ${JAVA_OPTS} \
-           -jar app.jar
+            #-Dskywalking.agent.service_name=d3code-auth \
+            -Dloader.path=lib \
+            #-javaagent:/d3code/skywalking/agent/skywalking-agent.jar \
+            -XX:+:HeapDumpOnOutOfMemoryError -XX:+UseZGC ${JAVA_OPTS} \
+            -jar app.jar
 

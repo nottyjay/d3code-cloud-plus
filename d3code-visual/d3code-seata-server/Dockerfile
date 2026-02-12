@@ -17,11 +17,13 @@ EXPOSE 7091
 EXPOSE 8091
 
 ADD ./target/d3code-seata-server.jar ./app.jar
+ADD ./target/lib ./lib
 
 SHELL ["/bin/bash", "-c"]
 
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom \
-           #-Dskywalking.agent.service_name=d3code-seata-server \
-           #-Dskywalking.plugin.seata.server=true \
-           #-javaagent:/d3code/skywalking/agent/skywalking-agent.jar \
-           ${JAVA_OPTS} -jar app.jar
+            #-Dskywalking.agent.service_name=d3code-seata-server \
+            -Dloader.path=lib \
+            #-Dskywalking.plugin.seata.server=true \
+            #-javaagent:/d3code/skywalking/agent/skywalking-agent.jar \
+            ${JAVA_OPTS} -jar app.jar

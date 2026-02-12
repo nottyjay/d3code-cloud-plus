@@ -9,14 +9,17 @@ RUN mkdir -p /d3code/monitor/logs
 
 WORKDIR /d3code/monitor
 
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS=""
+ENV TZ=PRC LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS="" SEATA_IP="" SEATA_PORT=""
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 EXPOSE 9100
 
 ADD ./target/d3code-monitor.jar ./app.jar
+ADD ./target/lib ./lib
 
 SHELL ["/bin/bash", "-c"]
 
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom \
-           -XX:+HeapDumpOnOutOfMemoryError -XX:+UseZGC ${JAVA_OPTS} \
-           -jar app.jar
+            -Dloader.path=lib \
+            -XX:+HeapDumpOnOutOfMemoryError -XX:+UseZGC ${JAVA_OPTS} \
+            -jar app.jar

@@ -11,17 +11,20 @@ RUN mkdir -p /d3code/resource/logs \
 
 WORKDIR /d3code/resource
 
-ENV SERVER_PORT=9204 LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS=""
+ENV TZ=PRC LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS="" SEATA_IP="" SEATA_PORT="" SERVER_PORT=9204
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 EXPOSE ${SERVER_PORT}
 
 ADD ./target/d3code-resource.jar ./app.jar
+ADD ./target/lib ./lib
 
 SHELL ["/bin/bash", "-c"]
 
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -Dserver.port=${SERVER_PORT} \
-           #-Dskywalking.agent.service_name=d3code-resource \
-           #-javaagent:/d3code/skywalking/agent/skywalking-agent.jar \
-           -XX:+HeapDumpOnOutOfMemoryError -XX:+UseZGC ${JAVA_OPTS} \
-           -jar app.jar
+            #-Dskywalking.agent.service_name=d3code-resource \
+            -Dloader.path=lib \
+            #-javaagent:/d3code/skywalking/agent/skywalking-agent.jar \
+            -XX:+HeapDumpOnOutOfMemoryError -XX:+UseZGC ${JAVA_OPTS} \
+            -jar app.jar
 

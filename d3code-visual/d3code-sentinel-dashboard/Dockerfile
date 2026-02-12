@@ -10,15 +10,18 @@ RUN mkdir -p /d3code/sentinel-dashboard/logs \
 
 WORKDIR /d3code/sentinel-dashboard
 
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS=""
+ENV TZ=PRC LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS="" SEATA_IP="" SEATA_PORT=""
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 EXPOSE 8718
 
 ADD ./target/d3code-sentinel-dashboard.jar ./app.jar
+ADD ./target/lib ./lib
 
 SHELL ["/bin/bash", "-c"]
 
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom \
-           #-Dskywalking.agent.service_name=d3code-sentinel-dashboard \
-           #-javaagent:/d3code/skywalking/agent/skywalking-agent.jar \
-           ${JAVA_OPTS} -jar app.jar
+            #-Dskywalking.agent.service_name=d3code-sentinel-dashboard \
+            -Dloader.path=lib \
+            #-javaagent:/d3code/skywalking/agent/skywalking-agent.jar \
+            ${JAVA_OPTS} -jar app.jar
